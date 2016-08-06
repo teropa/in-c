@@ -8,6 +8,15 @@ if (process.env.ENV === 'production') {
   enableProdMode();
 }
 
-bootstrap(AppComponent, [
-  provideStore({counter: counterReducer})
-]);
+function main(hmrState?: any) {
+  return bootstrap(AppComponent, [
+    provideStore({counter: counterReducer}, hmrState)
+  ]);
+}
+
+if (process.env.ENV !== 'production') {
+  let ngrxHmr = require('ngrx-store-hmr/lib/index').hotModuleReplacement;
+  ngrxHmr(main, module);
+} else {
+  document.addEventListener('DOMContentLoaded', () => main());
+}

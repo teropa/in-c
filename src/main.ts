@@ -2,7 +2,7 @@ import { bootstrap } from '@angular/platform-browser-dynamic';
 import { enableProdMode } from '@angular/core';
 import { provideStore } from '@ngrx/store';
 import { AppComponent } from './app/app.component';
-import { counterReducer } from './app/counter.reducer';
+import { listReducer } from './app/list.reducer';
 
 if (process.env.ENV === 'production') {
   enableProdMode();
@@ -10,7 +10,7 @@ if (process.env.ENV === 'production') {
 
 function main(hmrState?: any) {
   return bootstrap(AppComponent, [
-    provideStore({counter: counterReducer}, hmrState)
+    provideStore({list: listReducer}, hmrState)
   ]);
 }
 

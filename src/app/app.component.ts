@@ -1,33 +1,43 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
-import { INCREMENT, DECREMENT, RESET } from './counter.reducer';
+import { List } from 'immutable';
+import {ADD, REMOVE } from './list.reducer';
 
 interface AppState {
-  counter: number;
+  list: List<string>;
 }
 
 @Component({
   selector: 'my-app',
   template: `
-    <button (click)="increment()">Increment</button>
-    <div>Count: {{ counter | async }}</div>
-    <button (click)="decrement()">Decrement</button>
+    <ul>
+      <li *ngFor="let itm of list | async; let idx = index">
+        {{ itm }}
+        <button (click)="remove(idx)">X</button>
+      </li>
+    </ul>
+    <div>
+      <input [(ngModel)]="newItem">
+      <button (click)="add()">Add</button>
+    </div>
   `
 })
 export class AppComponent {
-  counter: Observable<number>;
+  list: Observable<List<string>>;
+  newItem = '';
 
   constructor(public store: Store<AppState>) {
-    this.counter = <Observable<number>>store.select('counter');
+    this.list = <Observable<List<string>>>store.select('list');
   }
 
-  increment() {
-    this.store.dispatch({type: INCREMENT});
+  add() {
+    this.store.dispatch({type: ADD, payload: this.newItem});
+    this.newItem = '';
   }
 
-  decrement() {
-    this.store.dispatch({type: DECREMENT});
+  remove(idx: number) {
+    this.store.dispatch({type: REMOVE, payload: idx});
   }
 
 }

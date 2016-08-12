@@ -18,16 +18,16 @@ function main(hmrState?: any) {
   return bootstrap(AppComponent, [
     provideStore(appReducer, hmrState),
     runEffects(PulseService, PlayerService),
-    {provide: 'bpm', useValue: 120},
+    {provide: 'bpm', useValue: 180},
     {provide: 'audioCtx', useValue: new AudioContext()},
     SamplesService,
     TimeService
   ]);
 }
 
-/*if (process.env.ENV !== 'production') {
+if (process.env.ENV !== 'production') {
   let ngrxHmr = require('ngrx-store-hmr/lib/index').hotModuleReplacement;
   ngrxHmr(main, module);
-} else {*/
+} else {
   document.addEventListener('DOMContentLoaded', () => main());
-/*}*/
+}

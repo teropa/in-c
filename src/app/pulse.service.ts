@@ -1,30 +1,28 @@
 import { Injectable, Inject } from '@angular/core';
-import { Observable } from 'rxjs/Observable'; 
-import { Action }from '@ngrx/store';
-import { Effect } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { PULSE, AppState } from './app.reducer';
 import { TimeService } from './time.service';
+
+const MetronomeWorker = require('worker!./metronome.worker');
 
 @Injectable()
 export class PulseService {
   private startTime: number;
+  private metronome: Worker;
   private pulseCount = 1;
 
-  @Effect() pulse$ =
-    Observable.interval(this.getBeatInterval() * 1000)
-      .flatMap(() => this.makePulses());
-
-  constructor(@Inject('bpm') private bpm: number, private time: TimeService) {
+  constructor(@Inject('bpm') private bpm: number, private time: TimeService, private store: Store<AppState>) {
     this.startTime = time.now();
+    this.metronome = new MetronomeWorker();
+    this.metronome.postMessage({command: 'start', interval: this.getBeatInterval() * 1000});
+    this.metronome.onmessage = (evt => this.makePulses());
   }
 
   private makePulses() {
-    const pulses: Action[] = [];
-    while (this.getNextPulseTime() - this.time.now() <= this.getBeatInterval()) {
+    while (this.getNextPulseTime() - this.time.now() < this.getBeatInterval() * 2) {
       this.pulseCount++;
-      pulses.push({type: PULSE, payload: this.getNextPulseTime()});
+      this.store.dispatch({type: PULSE, payload: this.getNextPulseTime()});
     }
-    return pulses;
   }
 
   private getBeatInterval() {

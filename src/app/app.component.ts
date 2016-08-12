@@ -6,7 +6,8 @@ import { List } from 'immutable';
   selector: 'in-c-app',
   template: `
     <div>lol</div>
-  `
+  `,
+  providers: [ ]
 })
 export class AppComponent implements OnInit {
 

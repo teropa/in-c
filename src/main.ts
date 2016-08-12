@@ -7,6 +7,7 @@ import { AppComponent } from './app/app.component';
 import { appReducer } from './app/app.reducer';
 import { BeatService } from './app/beat.service';
 import { PlayerService } from './app/player.service';
+import { SamplesService } from './app/samples.service';
 
 if (process.env.ENV === 'production') {
   enableProdMode();
@@ -18,6 +19,8 @@ function main(hmrState?: any) {
     runEffects(BeatService),
     runEffects(PlayerService),
     {provide: 'bpm', useValue: 180},
+    {provide: 'audioCtx', useValue: new AudioContext()},
+    SamplesService
   ]);
 }
 

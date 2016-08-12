@@ -2,7 +2,7 @@ import { ActionReducer, Action } from '@ngrx/store';
 import { Map } from 'immutable';
 import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
 
-export const BEAT = 'BEAT';
+export const PULSE = 'PULSE';
 
 export interface PlayerState {
   module: number;
@@ -28,7 +28,7 @@ function play(player: PlayerState) {
 
 export const appReducer: ActionReducer<AppStateRecord> = (state: AppStateRecord = makeTypedFactory<AppState, AppStateRecord>(defaultAppState)(), action: Action) => {
   switch (action.type) {
-    case BEAT:
+    case PULSE:
       return state
         .update('beat', b => b + 1)
         .update('players', p => p.map(play));

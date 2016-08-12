@@ -5,9 +5,10 @@ import { runEffects } from '@ngrx/effects';
 
 import { AppComponent } from './app/app.component';
 import { appReducer } from './app/app.reducer';
-import { BeatService } from './app/beat.service';
+import { PulseService } from './app/pulse.service';
 import { PlayerService } from './app/player.service';
 import { SamplesService } from './app/samples.service';
+import { TimeService }from './app/time.service';
 
 if (process.env.ENV === 'production') {
   enableProdMode();
@@ -16,17 +17,17 @@ if (process.env.ENV === 'production') {
 function main(hmrState?: any) {
   return bootstrap(AppComponent, [
     provideStore(appReducer, hmrState),
-    runEffects(BeatService),
-    runEffects(PlayerService),
-    {provide: 'bpm', useValue: 180},
+    runEffects(PulseService, PlayerService),
+    {provide: 'bpm', useValue: 120},
     {provide: 'audioCtx', useValue: new AudioContext()},
-    SamplesService
+    SamplesService,
+    TimeService
   ]);
 }
 
-if (process.env.ENV !== 'production') {
+/*if (process.env.ENV !== 'production') {
   let ngrxHmr = require('ngrx-store-hmr/lib/index').hotModuleReplacement;
   ngrxHmr(main, module);
-} else {
+} else {*/
   document.addEventListener('DOMContentLoaded', () => main());
-}
+/*}*/

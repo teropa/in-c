@@ -18,11 +18,13 @@ export interface Module {
 
 export interface Beat {
   note?: string,
-  gracenote?: string
+  gracenote?: string,
+  sixteenthNote?: string
 }
 
 export interface PlayerState {
   module?: Module;
+  repeat?: number;
   currentBeat?: number;
   nowPlaying?: Beat
 }
@@ -30,9 +32,9 @@ export interface PlayerState {
 interface ModuleRecord extends TypedRecord<ModuleRecord>, Module {}
 const moduleFactory = makeTypedFactory<Module, ModuleRecord>({number: -1, beats: <List<Beat>>List.of()});
 interface BeatRecord extends TypedRecord<BeatRecord>, Module {}
-const beatFactory = makeTypedFactory<Beat, BeatRecord>({note: null, gracenote: null});
+const beatFactory = makeTypedFactory<Beat, BeatRecord>({note: null, gracenote: null, sixteenthNote: null});
 interface PlayerStateRecord extends TypedRecord<PlayerStateRecord>, PlayerState {}
-const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecord>({module: null, currentBeat: null, nowPlaying: null});
+const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecord>({module: null, repeat: null, currentBeat: null, nowPlaying: null});
 
 
 const defaultAppState = {
@@ -50,7 +52,16 @@ function readScore(score: Module[]): List<Module> {
 
 function assignModule(player: PlayerStateRecord, score: List<Module>) {
   if (!player.module) {
-    return player.merge({module: score.get(0), currentBeat: -1});
+    return player.merge({module: score.get(0), repeat: 1, currentBeat: -1});
+  } else if (player.currentBeat >= player.module.beats.size - 1) {
+    if (player.repeat <= 2) {
+      return player.update('repeat', r => r + 1);
+    } else {
+      const nextModuleIdx = player.module.number;
+      if (nextModuleIdx <= score.size - 1) {
+        return player.merge({module: score.get(nextModuleIdx), repeat: 0, currentBeat: -1});
+      }
+    }
   }
   return player;
 }

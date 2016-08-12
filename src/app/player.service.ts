@@ -19,11 +19,12 @@ export class PlayerService {
     .do(update => this.playState(update.state, update.action.payload))
     .ignoreElements();
 
-  private playState(state: AppState, time: number) {
+  private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     const beatSample = this.samples.getSample('glockenspiel', 'c5');
     this.playSample(beatSample, time);
     state.players.forEach(player => {
-      const {note, gracenote} = player.nowPlaying;
+      const {note, gracenote, sixteenthNote} = player.nowPlaying;
+      console.log(note, sixteenthNote);
       if (gracenote) {
         const sample = this.samples.getSample('piano-p', gracenote);
         this.playSample(sample, time - GRACENOTE_OFFSET);
@@ -31,6 +32,10 @@ export class PlayerService {
       if (note) {
         const sample = this.samples.getSample('piano-p', note);
         this.playSample(sample, time);
+      }
+      if (sixteenthNote) {
+        const sample = this.samples.getSample('piano-p', sixteenthNote);
+        this.playSample(sample, time + 60 / bpm / 2);
       }
     });
   }

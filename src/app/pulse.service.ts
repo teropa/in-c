@@ -21,7 +21,7 @@ export class PulseService {
   private makePulses() {
     while (this.getNextPulseTime() - this.time.now() < this.getBeatInterval() * 2) {
       this.pulseCount++;
-      this.store.dispatch({type: PULSE, payload: this.getNextPulseTime()});
+      this.store.dispatch({type: PULSE, payload: {time: this.getNextPulseTime(), bpm: this.bpm}});
     }
   }
 

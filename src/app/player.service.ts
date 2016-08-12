@@ -21,21 +21,24 @@ export class PlayerService {
 
   private playState(state: AppState, time: number) {
     const beatSample = this.samples.getSample('glockenspiel', 'c5');
-    if (beatSample) {
-      this.playSample(beatSample, time);
-    }
+    this.playSample(beatSample, time);
     state.players.forEach(player => {
-      player.nowPlaying.reverse().forEach((note, idx) => {
-        const timeOffset = idx * GRACENOTE_OFFSET; 
+      const {note, gracenote} = player.nowPlaying;
+      if (gracenote) {
+        const sample = this.samples.getSample('piano-p', gracenote);
+        this.playSample(sample, time - GRACENOTE_OFFSET);
+      }
+      if (note) {
         const sample = this.samples.getSample('piano-p', note);
-        if (sample) {
-          this.playSample(sample, time - timeOffset);
-        }
-      });
+        this.playSample(sample, time);
+      }
     });
   }
 
   private playSample(sample: Sample, playAt: number) {
+    if (!sample) {
+      return;
+    }
     const src = this.audioCtx.createBufferSource();
     src.buffer = sample.buffer;
     src.playbackRate.value = sample.playbackRate;

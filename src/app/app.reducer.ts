@@ -13,19 +13,26 @@ export interface AppState {
 
 export interface Module {
   number: number,
-  beats: List<List<string>>
+  beats: List<Beat>
+}
+
+export interface Beat {
+  note?: string,
+  gracenote?: string
 }
 
 export interface PlayerState {
   module?: Module;
   currentBeat?: number;
-  nowPlaying?: List<string>
+  nowPlaying?: Beat
 }
 
 interface ModuleRecord extends TypedRecord<ModuleRecord>, Module {}
-const moduleFactory = makeTypedFactory<Module, ModuleRecord>({number: -1, beats: <List<List<string>>>List.of()});
+const moduleFactory = makeTypedFactory<Module, ModuleRecord>({number: -1, beats: <List<Beat>>List.of()});
+interface BeatRecord extends TypedRecord<BeatRecord>, Module {}
+const beatFactory = makeTypedFactory<Beat, BeatRecord>({note: null, gracenote: null});
 interface PlayerStateRecord extends TypedRecord<PlayerStateRecord>, PlayerState {}
-const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecord>({module: null, currentBeat: null, nowPlaying: <List<string>>List.of()});
+const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecord>({module: null, currentBeat: null, nowPlaying: null});
 
 
 const defaultAppState = {
@@ -38,7 +45,7 @@ interface AppStateRecord extends TypedRecord<AppStateRecord>, AppState {}
 const appStateFactory = makeTypedFactory<AppState, AppStateRecord>(defaultAppState)
 
 function readScore(score: Module[]): List<Module> {
-  return List(score.map(({number, beats}) => moduleFactory({number, beats: fromJS(beats)})));
+  return List(score.map(({number, beats}) => moduleFactory({number, beats: List(beats.map(beatFactory))})));
 }
 
 function assignModule(player: PlayerStateRecord, score: List<Module>) {

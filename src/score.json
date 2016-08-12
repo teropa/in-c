@@ -2,12 +2,12 @@
   {
     "number": 1,
     "beats": [
-      ["C4", "E4"],
-      [],
-      ["C4", "E4"],
-      [],
-      ["C4", "E4"],
-      []
+      {"gracenote": "C4", "note": "E4"},
+      {},
+      {"gracenote": "C4", "note": "E4"},
+      {},
+      {"gracenote": "C4", "note": "E4"},
+      {}
     ]
   }
 ]

@@ -1,8 +1,10 @@
 import { Injectable, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Effect, StateUpdates } from '@ngrx/effects';
-import { AppState, PULSE } from './app.reducer';
-import { SamplesService } from './samples.service';
+import { AppState, PlayerState, PULSE } from './app.reducer';
+import { SamplesService, Sample } from './samples.service';
+
+const GRACENOTE_OFFSET = 0.07;
 
 @Injectable()
 export class PlayerService {
@@ -18,17 +20,27 @@ export class PlayerService {
     .ignoreElements();
 
   private playState(state: AppState, time: number) {
-    const beatBuffer = this.samples.getSample('glockenspiel-c5');
-    if (beatBuffer) {
-      this.playBuffer(beatBuffer, time);
+    const beatSample = this.samples.getSample('glockenspiel', 'c5');
+    if (beatSample) {
+      this.playSample(beatSample, time);
     }
+    state.players.forEach(player => {
+      player.nowPlaying.reverse().forEach((note, idx) => {
+        const timeOffset = idx * GRACENOTE_OFFSET; 
+        const sample = this.samples.getSample('piano-p', note);
+        if (sample) {
+          this.playSample(sample, time - timeOffset);
+        }
+      });
+    });
   }
 
-  private playBuffer(buf: AudioBuffer, time: number) {
+  private playSample(sample: Sample, playAt: number) {
     const src = this.audioCtx.createBufferSource();
-    src.buffer = buf;
+    src.buffer = sample.buffer;
+    src.playbackRate.value = sample.playbackRate;
     src.connect(this.audioCtx.destination);
-    src.start(time);
+    src.start(playAt);
   }
 
 }

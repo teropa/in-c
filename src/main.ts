@@ -25,9 +25,9 @@ function main(hmrState?: any) {
   ]);
 }
 
-if (process.env.ENV !== 'production') {
+/*if (process.env.ENV !== 'production') {
   let ngrxHmr = require('ngrx-store-hmr/lib/index').hotModuleReplacement;
   ngrxHmr(main, module);
-} else {
+} else {*/
   document.addEventListener('DOMContentLoaded', () => main());
-}
+/*}*/

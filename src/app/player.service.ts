@@ -24,10 +24,9 @@ export class PlayerService {
     this.playSample(beatSample, time);
     state.players.forEach(player => {
       const {note, gracenote, sixteenthNote} = player.nowPlaying;
-      console.log(note, sixteenthNote);
       if (gracenote) {
         const sample = this.samples.getSample('piano-p', gracenote);
-        this.playSample(sample, time - GRACENOTE_OFFSET);
+        this.playSample(sample, time - GRACENOTE_OFFSET, {vol: 0.5, stopAfter: GRACENOTE_OFFSET});
       }
       if (note) {
         const sample = this.samples.getSample('piano-p', note);
@@ -40,14 +39,23 @@ export class PlayerService {
     });
   }
 
-  private playSample(sample: Sample, playAt: number) {
+  private playSample(sample: Sample, playAt: number, {vol = 1, stopAfter = null} = {}) {
     if (!sample) {
       return;
     }
     const src = this.audioCtx.createBufferSource();
+    const gain = this.audioCtx.createGain();
+
     src.buffer = sample.buffer;
     src.playbackRate.value = sample.playbackRate;
-    src.connect(this.audioCtx.destination);
+    gain.gain.value = vol;
+    
+    if (stopAfter) {
+      gain.gain.setTargetAtTime(0, playAt + stopAfter, 0.3);
+    }
+
+    src.connect(gain);
+    gain.connect(this.audioCtx.destination);
     src.start(playAt);
   }
 

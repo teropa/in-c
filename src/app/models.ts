@@ -18,7 +18,13 @@ export interface Note {
   gracenote?: string
 }
 
+export interface Player {
+  instrument: string,
+  position: number
+}
+
 export interface PlayerState {
+  player: PlayerRecord,
   moduleIndex?: number;
   playlist?: PlaylistRecord,
   nowPlaying?: List<PlaylistItemRecord>
@@ -32,7 +38,8 @@ export interface Playlist {
 export interface PlaylistItem {
   note: string,
   attackAt: number,
-  releaseAt: number
+  releaseAt: number,
+  pan: number
 }
 
 
@@ -59,11 +66,19 @@ export interface PlaylistItemRecord extends TypedRecord<PlaylistItemRecord>, Pla
 export const playlistItemFactory = makeTypedFactory<PlaylistItem, PlaylistItemRecord>({
   note: null,
   attackAt: 0,
-  releaseAt: 0
+  releaseAt: 0,
+  pan: 0
+});
+
+export interface PlayerRecord extends TypedRecord<PlayerRecord>, Player {}
+export const playerFactory = makeTypedFactory<Player, PlayerRecord>({
+  instrument: null,
+  position: 0
 });
 
 export interface PlayerStateRecord extends TypedRecord<PlayerStateRecord>, PlayerState {}
 export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecord>({
+  player: playerFactory(),
   moduleIndex: null,
   playlist: null,
   nowPlaying: <List<PlaylistItemRecord>>List.of()

@@ -7,6 +7,9 @@ import {
   moduleFactory,
   NoteRecord,
   noteFactory,
+  Player,
+  PlayerRecord,
+  playerFactory,
   PlayerStateRecord,
   playerStateFactory,
   PlaylistRecord,
@@ -33,7 +36,7 @@ function getPulsesUntilStart(score: List<NoteRecord>, noteIdx: number) {
     .reduce((sum, note) => sum + note.duration, 0);
 }
 
-function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRecord>, bpm: number, startTime: number) {
+function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRecord>, bpm: number, startTime: number, pan: number) {
   const pulseDuration = 60 / bpm;
   let items = List.of();
   if (note.note) {
@@ -42,49 +45,51 @@ function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRe
     items = items.push(playlistItemFactory({
       note: note.note,
       attackAt,
-      releaseAt
+      releaseAt,
+      pan
     }));
     if (note.gracenote) {
       items = items.push(playlistItemFactory({
         note: note.gracenote,
         attackAt: attackAt - pulseDuration * GRACENOTE_DURATION,
-        releaseAt: attackAt
+        releaseAt: attackAt,
+        pan
       }))
     }
   }
   return items;
 }
 
-function makePlaylist(playlist: PlaylistRecord, mod: ModuleRecord, startTime: number, beat: number, bpm: number) {
+function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTime: number, beat: number, bpm: number) {
   const pulseDuration = 60 / bpm;
   const items = mod.score.reduce((playlist, note, idx) => {
-    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(note, idx, mod.score, bpm, startTime));
-  }, playlist ? playlist.items : <List<PlaylistItemRecord>>List.of());
+    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(note, idx, mod.score, bpm, startTime, playerState.player.position));
+  }, playerState.playlist ? playerState.playlist.items : <List<PlaylistItemRecord>>List.of());
   const duration = mod.score.reduce((sum, note) => sum + note.duration, 0);
   return playlistFactory({items, lastBeat: beat + duration});
 }
 
-function assignModule(player: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number) {
-  if (player.moduleIndex === null) {
-    return player.merge({
+function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number) {
+  if (playerState.moduleIndex === null) {
+    return playerState.merge({
       moduleIndex: 0,
-      playlist: makePlaylist(player.playlist, score.get(0), time, beat, bpm)
+      playlist: makePlaylist(playerState, score.get(0), time, beat, bpm)
     });
-  } else if (Math.floor(player.playlist.lastBeat) <= beat) {
-    const fromTime = (player.playlist.lastBeat + 1) * 60 / bpm; 
+  } else if (Math.floor(playerState.playlist.lastBeat) <= beat) {
+    const fromTime = (playerState.playlist.lastBeat + 1) * 60 / bpm; 
     if (Math.random() < 0.85) {
-      return player.merge({
-        playlist: makePlaylist(player.playlist, score.get(player.moduleIndex), fromTime, player.playlist.lastBeat, bpm)
+      return playerState.merge({
+        playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), fromTime, playerState.playlist.lastBeat, bpm)
       });
     } else {
-      const nextModuleIdx = Math.min(player.moduleIndex + 1, score.size - 1);
-      return player.merge({
+      const nextModuleIdx = Math.min(playerState.moduleIndex + 1, score.size - 1);
+      return playerState.merge({
         moduleIndex: nextModuleIdx, 
-        playlist: makePlaylist(player.playlist, score.get(nextModuleIdx), fromTime, player.playlist.lastBeat, bpm)
+        playlist: makePlaylist(playerState, score.get(nextModuleIdx), fromTime, playerState.playlist.lastBeat, bpm)
       });
     }
   }
-  return player;
+  return playerState;
 }
 
 function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) {
@@ -104,10 +109,13 @@ function playNext(beat: number, player: PlayerStateRecord, score: List<ModuleRec
   }
 }
 
+const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
+  .map((p: Player) => playerStateFactory({player: playerFactory(p)}))
+);
 const initialState = appStateFactory({
   score: readScore(require('json!../score.json')),
   beat: 0,
-  players: List.of(playerStateFactory({}))
+  players: initialPlayerStates
 });
 
 export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, action: Action) => {

@@ -24,27 +24,31 @@ export class PlayerService {
     const beatSample = this.samples.getSample('glockenspiel', 'c5');
     this.playSample(beatSample, time, time + 60 / bpm);
     state.players.forEach(player => {
-      player.nowPlaying.forEach(({note, attackAt, releaseAt}) => {
+      player.nowPlaying.forEach(({note, attackAt, releaseAt, pan}) => {
         const sample = this.samples.getSample('piano-p', note);
-        this.playSample(sample, attackAt, releaseAt);
+        this.playSample(sample, attackAt, releaseAt, pan);
       });
     });
   }
 
-  private playSample(sample: Sample, attackAt: number, releaseAt: number, {vol = 1} = {}) {
+  private playSample(sample: Sample, attackAt: number, releaseAt: number, pan: number = 0, {vol = 1} = {}) {
     if (!sample) {
       return;
     }
     const src = this.audioCtx.createBufferSource();
     const gain = this.audioCtx.createGain();
+    const panner = this.audioCtx.createStereoPanner();
 
     src.buffer = sample.buffer;
     src.playbackRate.value = sample.playbackRate;
     gain.gain.value = vol;
     gain.gain.setTargetAtTime(0, releaseAt, 0.3);
+    panner.pan.value = pan;
 
     src.connect(gain);
-    gain.connect(this.audioCtx.destination);
+    gain.connect(panner);
+    panner.connect(this.audioCtx.destination);
+    
     src.start(attackAt);
   }
 

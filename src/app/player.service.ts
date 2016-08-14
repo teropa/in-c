@@ -21,25 +21,16 @@ export class PlayerService {
 
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     const beatSample = this.samples.getSample('glockenspiel', 'c5');
-    this.playSample(beatSample, time);
+    this.playSample(beatSample, time, time + 60 / bpm);
     state.players.forEach(player => {
-      const {note, gracenote, sixteenthNote} = player.nowPlaying;
-      if (gracenote) {
-        const sample = this.samples.getSample('piano-p', gracenote);
-        this.playSample(sample, time - GRACENOTE_OFFSET, {vol: 0.5, stopAfter: GRACENOTE_OFFSET});
-      }
-      if (note) {
+      player.nowPlaying.forEach(({note, attackAt, releaseAt}) => {
         const sample = this.samples.getSample('piano-p', note);
-        this.playSample(sample, time);
-      }
-      if (sixteenthNote) {
-        const sample = this.samples.getSample('piano-p', sixteenthNote);
-        this.playSample(sample, time + 60 / bpm / 2);
-      }
+        this.playSample(sample, attackAt, releaseAt);
+      });
     });
   }
 
-  private playSample(sample: Sample, playAt: number, {vol = 1, stopAfter = null} = {}) {
+  private playSample(sample: Sample, attackAt: number, releaseAt: number, {vol = 1} = {}) {
     if (!sample) {
       return;
     }
@@ -49,14 +40,11 @@ export class PlayerService {
     src.buffer = sample.buffer;
     src.playbackRate.value = sample.playbackRate;
     gain.gain.value = vol;
-    
-    if (stopAfter) {
-      gain.gain.setTargetAtTime(0, playAt + stopAfter, 0.3);
-    }
+    gain.gain.setTargetAtTime(0, releaseAt, 0.3);
 
     src.connect(gain);
     gain.connect(this.audioCtx.destination);
-    src.start(playAt);
+    src.start(attackAt);
   }
 
 }

@@ -1,9 +1,10 @@
 import { ActionReducer, Action } from '@ngrx/store';
-import { List, Map, fromJS } from 'immutable';
+import { List, Map, Repeat, fromJS } from 'immutable';
 import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
 
 export const PULSE = 'PULSE';
 
+const GRACENOTE_DURATION = 0.15;
 
 export interface AppState {
   score: List<Module>,
@@ -13,28 +14,44 @@ export interface AppState {
 
 export interface Module {
   number: number,
-  beats: List<Beat>
+  score: List<Note>
 }
 
-export interface Beat {
+export interface Note {
   note?: string,
-  gracenote?: string,
-  sixteenthNote?: string
+  duration: number,
+  gracenote?: string
 }
 
 export interface PlayerState {
-  module?: Module;
-  repeat?: number;
-  currentBeat?: number;
-  nowPlaying?: Beat
+  moduleIndex?: number;
+  moduleRepeat?: number;
+  playlist?: Playlist,
+  nowPlaying?: List<PlaylistItem>
 }
 
+export interface Playlist {
+  items: List<PlaylistItem>,
+  lastBeat: number
+}
+
+export interface PlaylistItem {
+  note: string,
+  attackAt: number,
+  releaseAt: number
+}
+
+
 interface ModuleRecord extends TypedRecord<ModuleRecord>, Module {}
-const moduleFactory = makeTypedFactory<Module, ModuleRecord>({number: -1, beats: <List<Beat>>List.of()});
-interface BeatRecord extends TypedRecord<BeatRecord>, Module {}
-const beatFactory = makeTypedFactory<Beat, BeatRecord>({note: null, gracenote: null, sixteenthNote: null});
+const moduleFactory = makeTypedFactory<Module, ModuleRecord>({number: -1, score: <List<Note>>List.of()});
+interface NoteRecord extends TypedRecord<NoteRecord>, Note {}
+const noteFactory = makeTypedFactory<Note, NoteRecord>({note: null, duration: 1, gracenote: null});
+interface PlaylistRecord extends TypedRecord<PlaylistRecord>, Playlist {}
+const playlistFactory = makeTypedFactory<Playlist, PlaylistRecord>({items: <List<PlaylistItem>>List.of(), lastBeat: 0});
+interface PlaylistItemRecord extends TypedRecord<PlaylistItemRecord>, PlaylistItem {}
+const playlistItemFactory = makeTypedFactory<PlaylistItem, PlaylistItemRecord>({note: null, attackAt: 0, releaseAt: 0});
 interface PlayerStateRecord extends TypedRecord<PlayerStateRecord>, PlayerState {}
-const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecord>({module: null, repeat: null, currentBeat: null, nowPlaying: null});
+const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecord>({moduleIndex: null, moduleRepeat: null, playlist: null, nowPlaying: <List<PlaylistItem>>List.of()});
 
 
 const defaultAppState = {
@@ -46,49 +63,87 @@ const defaultAppState = {
 interface AppStateRecord extends TypedRecord<AppStateRecord>, AppState {}
 const appStateFactory = makeTypedFactory<AppState, AppStateRecord>(defaultAppState)
 
-function readScore(score: Module[]): List<Module> {
-  return List(score.map(({number, beats}) => moduleFactory({number, beats: List(beats.map(beatFactory))})));
+function readScore(fullScore: Module[]): List<Module> {
+  return List(fullScore.map(({number, score}) => moduleFactory({number, score: <List<Note>>List(score.map(noteFactory))})));
 }
 
-function assignModule(player: PlayerStateRecord, score: List<Module>) {
-  if (!player.module) {
-    return player.merge({module: score.get(0), repeat: 1, currentBeat: -1});
-  } else if (player.currentBeat >= player.module.beats.size - 1) {
-    if (player.repeat <= 2) {
-      return player.update('repeat', r => r + 1);
+function getPulsesUntilStart(score: List<Note>, noteIdx: number) {
+  return score
+    .take(noteIdx)
+    .reduce((sum, note) => sum + note.duration, 0);
+}
+
+function makePlaylistItems(note: Note, noteIdx: number, score: List<Note>, bpm: number, startTime: number) {
+  const pulseDuration = 60 / bpm;
+  let items = List.of();
+  if (note.note) {
+    const attackAt = startTime + getPulsesUntilStart(score, noteIdx) * pulseDuration;
+    const releaseAt = attackAt + pulseDuration * note.duration;
+    items = items.push(playlistItemFactory({
+      note: note.note,
+      attackAt,
+      releaseAt
+    }));
+    if (note.gracenote) {
+      items = items.push(playlistItemFactory({
+        note: note.gracenote,
+        attackAt: attackAt - pulseDuration * GRACENOTE_DURATION,
+        releaseAt: attackAt
+      }))
+    }
+  }
+  return items;
+}
+
+function makePlaylist(playlist: Playlist, mod: Module, startTime: number, beat: number, bpm: number) {
+  const pulseDuration = 60 / bpm;
+  const items = mod.score.reduce((playlist, note, idx) => {
+    return <List<PlaylistItem>>playlist.concat(makePlaylistItems(note, idx, mod.score, bpm, startTime));
+  }, playlist ? playlist.items : <List<PlaylistItem>>List.of());
+  const duration = mod.score.reduce((sum, note) => sum + note.duration, 0);
+  return playlistFactory({items, lastBeat: beat + duration});
+}
+
+function assignModule(player: PlayerStateRecord, score: List<Module>, time: number, beat: number, bpm: number) {
+  if (player.moduleIndex === null) {
+    return player.merge({moduleIndex: 0, moduleRepeat: 1, playlist: makePlaylist(player.playlist, score.get(0), time, beat, bpm)});
+  } else if (Math.floor(player.playlist.lastBeat) <= beat) {
+    const fromTime = (player.playlist.lastBeat + 1) * 60 / bpm; 
+    if (player.moduleRepeat <= 2) {
+      return player.merge({moduleRepeat: player.moduleRepeat + 1, playlist: makePlaylist(player.playlist, score.get(player.moduleIndex), fromTime, player.playlist.lastBeat, bpm)});
     } else {
-      const nextModuleIdx = player.module.number;
-      if (nextModuleIdx <= score.size - 1) {
-        return player.merge({module: score.get(nextModuleIdx), repeat: 0, currentBeat: -1});
-      }
+      const nextModuleIdx = Math.min(player.moduleIndex + 1, score.size - 1);
+      return player.merge({moduleIndex: nextModuleIdx, moduleRepeat: 0, playlist: makePlaylist(player.playlist, score.get(nextModuleIdx), fromTime, player.playlist.lastBeat, bpm)});
     }
   }
   return player;
 }
 
-function assignBeat(player: PlayerStateRecord) {
-  if (player.currentBeat < player.module.beats.size - 1) {
-    return player.update('currentBeat', b => b + 1);
-  } else {
-    return player.set('currentBeat', 0);
+function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) {
+  const pulseDuration = 60 / bpm;
+  const nowPlaying = player.playlist.items
+    .takeWhile(itm => itm.attackAt < time + pulseDuration);
+  return player
+    .set('nowPlaying', nowPlaying)
+    .updateIn(['playlist', 'items'], itms => itms.skip(nowPlaying.size));
+}
+
+function playNext(beat: number, player: PlayerStateRecord, score: List<Module>, time: number, bpm: number) {
+  if (beat >= 4) {
+    return assignNowPlaying(assignModule(player, score, time, beat, bpm), time, bpm);
+  } else {
+    return player;
   }
-}
-
-function playCurrentBeat(player: PlayerStateRecord) {
-  return player.set('nowPlaying', player.module.beats.get(player.currentBeat));
-}
-
-function playNext(player: PlayerStateRecord, score: List<Module>) {
-  return playCurrentBeat(assignBeat(assignModule(player, score)));
 }
 
 export const appReducer: ActionReducer<AppStateRecord> =
   (state: AppStateRecord = makeTypedFactory<AppState, AppStateRecord>(defaultAppState)(), action: Action) => {
   switch (action.type) {
     case PULSE:
+      const nextBeat = state.beat + 1;
       return state
-        .update('beat', b => b + 1)
-        .update('players', players => players.map((player: PlayerStateRecord) => playNext(player, state.score)));
+        .set('beat', nextBeat)
+        .update('players', players => players.map((player: PlayerStateRecord) => playNext(nextBeat, player, state.score, action.payload.time, action.payload.bpm)));
     default:
       return state;
   }

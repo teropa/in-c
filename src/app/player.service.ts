@@ -1,7 +1,8 @@
 import { Injectable, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Effect, StateUpdates } from '@ngrx/effects';
-import { AppState, PlayerState, PULSE } from './app.reducer';
+import { AppState, PlayerState } from './models';
+import { PULSE } from './app.reducer';
 import { SamplesService, Sample } from './samples.service';
 
 const GRACENOTE_OFFSET = 0.07;

@@ -1,6 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { PULSE, AppState } from './app.reducer';
+import { AppState } from './models';
+import { PULSE } from './app.reducer';
 import { TimeService } from './time.service';
 
 const MetronomeWorker = require('worker!./metronome.worker');

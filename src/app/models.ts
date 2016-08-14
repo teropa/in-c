@@ -20,7 +20,6 @@ export interface Note {
 
 export interface PlayerState {
   moduleIndex?: number;
-  moduleRepeat?: number;
   playlist?: PlaylistRecord,
   nowPlaying?: List<PlaylistItemRecord>
 }
@@ -66,7 +65,6 @@ export const playlistItemFactory = makeTypedFactory<PlaylistItem, PlaylistItemRe
 export interface PlayerStateRecord extends TypedRecord<PlayerStateRecord>, PlayerState {}
 export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecord>({
   moduleIndex: null,
-  moduleRepeat: null,
   playlist: null,
   nowPlaying: <List<PlaylistItemRecord>>List.of()
 });

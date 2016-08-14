@@ -66,14 +66,22 @@ function makePlaylist(playlist: PlaylistRecord, mod: ModuleRecord, startTime: nu
 
 function assignModule(player: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number) {
   if (player.moduleIndex === null) {
-    return player.merge({moduleIndex: 0, moduleRepeat: 1, playlist: makePlaylist(player.playlist, score.get(0), time, beat, bpm)});
+    return player.merge({
+      moduleIndex: 0,
+      playlist: makePlaylist(player.playlist, score.get(0), time, beat, bpm)
+    });
   } else if (Math.floor(player.playlist.lastBeat) <= beat) {
     const fromTime = (player.playlist.lastBeat + 1) * 60 / bpm; 
-    if (player.moduleRepeat <= 2) {
-      return player.merge({moduleRepeat: player.moduleRepeat + 1, playlist: makePlaylist(player.playlist, score.get(player.moduleIndex), fromTime, player.playlist.lastBeat, bpm)});
+    if (Math.random() < 0.85) {
+      return player.merge({
+        playlist: makePlaylist(player.playlist, score.get(player.moduleIndex), fromTime, player.playlist.lastBeat, bpm)
+      });
     } else {
       const nextModuleIdx = Math.min(player.moduleIndex + 1, score.size - 1);
-      return player.merge({moduleIndex: nextModuleIdx, moduleRepeat: 0, playlist: makePlaylist(player.playlist, score.get(nextModuleIdx), fromTime, player.playlist.lastBeat, bpm)});
+      return player.merge({
+        moduleIndex: nextModuleIdx, 
+        playlist: makePlaylist(player.playlist, score.get(nextModuleIdx), fromTime, player.playlist.lastBeat, bpm)
+      });
     }
   }
   return player;

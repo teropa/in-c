@@ -40,24 +40,28 @@ function getPulsesUntilStart(score: List<NoteRecord>, noteIdx: number) {
     .reduce((sum, note) => sum + note.duration, 0);
 }
 
-function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRecord>, bpm: number, startTime: number, pan: number) {
+function makePlaylistItems(instrument: string, note: NoteRecord, noteIdx: number, score: List<NoteRecord>, bpm: number, startTime: number, pan: number, octaveShift: number) {
   const pulseDuration = 60 / bpm;
   let items = List.of();
   if (note.note) {
     const attackAt = startTime + getPulsesUntilStart(score, noteIdx) * pulseDuration;
     const releaseAt = attackAt + pulseDuration * note.duration;
     items = items.push(playlistItemFactory({
+      instrument,
       note: note.note,
       attackAt,
       releaseAt,
-      pan
+      pan,
+      octaveShift
     }));
     if (note.gracenote) {
       items = items.push(playlistItemFactory({
+        instrument,
         note: note.gracenote,
         attackAt: attackAt - pulseDuration * GRACENOTE_DURATION,
         releaseAt: attackAt,
-        pan
+        pan,
+        octaveShift
       }))
     }
   }
@@ -67,7 +71,7 @@ function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRe
 function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTime: number, beat: number, bpm: number) {
   const pulseDuration = 60 / bpm;
   const items = mod.score.reduce((playlist, note, idx) => {
-    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(note, idx, mod.score, bpm, startTime, playerState.player.position));
+    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(playerState.player.instrument, note, idx, mod.score, bpm, startTime, playerState.player.position, playerState.player.octaveShift));
   }, playerState.playlist ? playerState.playlist.items : <List<PlaylistItemRecord>>List.of());
   const duration = mod.score.reduce((sum, note) => sum + note.duration, 0);
   return playlistFactory({items, lastBeat: beat + duration});

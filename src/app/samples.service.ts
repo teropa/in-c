@@ -33,6 +33,21 @@ const SAMPLE_URLS: {[instrument: string]: SampleBankItem[]} = {
     {note: 'a',  octave: 4, url: require('../samples/piano-p-a4.mp3')},
     {note: 'a',  octave: 5, url: require('../samples/piano-p-a5.mp3')},
     {note: 'c',  octave: 6, url: require('../samples/piano-p-c6.mp3')}
+  ],
+  'basses-piz-rr1': [
+    {note: 'a', octave: 1, url: require('../samples/basses-piz-rr1-a1.mp3')},
+    {note: 'a', octave: 2, url: require('../samples/basses-piz-rr1-a2.mp3')},
+    {note: 'a', octave: 3, url: require('../samples/basses-piz-rr1-a3.mp3')},
+    {note: 'c', octave: 1, url: require('../samples/basses-piz-rr1-c1.mp3')},
+    {note: 'c', octave: 2, url: require('../samples/basses-piz-rr1-c2.mp3')},
+    {note: 'c', octave: 3, url: require('../samples/basses-piz-rr1-c3.mp3')},
+    {note: 'c', octave: 4, url: require('../samples/basses-piz-rr1-c4.mp3')},
+    {note: 'd#', octave: 1, url: require('../samples/basses-piz-rr1-ds1.mp3')},
+    {note: 'd#', octave: 2, url: require('../samples/basses-piz-rr1-ds2.mp3')},
+    {note: 'd#', octave: 3, url: require('../samples/basses-piz-rr1-ds3.mp3')},
+    {note: 'f#', octave: 1, url: require('../samples/basses-piz-rr1-fs1.mp3')},
+    {note: 'f#', octave: 2, url: require('../samples/basses-piz-rr1-fs2.mp3')},
+    {note: 'f#', octave: 3, url: require('../samples/basses-piz-rr1-fs3.mp3')}
   ]
 };
 
@@ -68,16 +83,16 @@ export class SamplesService {
     })
   }
 
-  getSample(instrument: string, noteAndOctave: string): Sample {
+  getSample(instrument: string, noteAndOctave: string, octaveShift = 0): Sample {
     let [, note, octaveS] = /^(\w[b#]?)(\d)$/.exec(noteAndOctave.toLowerCase());
     note = this.flatToSharp(note);
-    let octave = parseInt(octaveS, 10);
+    let octave = parseInt(octaveS, 10) + octaveShift;
 
     let sampleBank = SAMPLE_URLS[instrument];
     let sample = getNearestSample(sampleBank, note, octave);
     let distance =
       getNoteDistance(note, octave, sample.note, sample.octave);
-    
+        
     if (this.sampleBank.hasIn([instrument, sample.note, sample.octave])) {
       return {
         buffer: this.sampleBank.getIn([instrument, sample.note, sample.octave]),

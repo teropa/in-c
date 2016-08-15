@@ -1,10 +1,16 @@
 [
   {
     "instrument": "piano-p",
-    "position": -0.5
+    "position": 0
   },
   {
-    "instrument": "piano-p",
-    "position": 0.5
+    "instrument": "basses-piz-rr1",
+    "position": 0.5,
+    "octaveShift": -2
+  },
+  {
+    "instrument": "basses-piz-rr1",
+    "position": 0.5,
+    "octaveShift": -2
   }
 ]

@@ -22,16 +22,16 @@ export class PlayerService {
 
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     const beatSample = this.samples.getSample('glockenspiel', 'c5');
-    this.playSample(beatSample, time, time + 60 / bpm, 1, {vol: 0.05});
+    this.playSample(beatSample, time, time + 60 / bpm, 1, 0.05);
     state.players.forEach(player => {
-      player.nowPlaying.forEach(({instrument, note, attackAt, releaseAt, pan, octaveShift}) => {
+      player.nowPlaying.forEach(({note, attackAt, releaseAt, player: {instrument, position, gain, octaveShift}}) => {
         const sample = this.samples.getSample(instrument, note, octaveShift);
-        this.playSample(sample, attackAt, releaseAt, pan);
+        this.playSample(sample, attackAt, releaseAt, position, gain);
       });
     });
   }
 
-  private playSample(sample: Sample, attackAt: number, releaseAt: number, pan: number = 0, {vol = 1} = {}) {
+  private playSample(sample: Sample, attackAt: number, releaseAt: number, pan: number = 0, vol = 1) {
     if (!sample) {
       return;
     }

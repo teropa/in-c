@@ -40,28 +40,24 @@ function getPulsesUntilStart(score: List<NoteRecord>, noteIdx: number) {
     .reduce((sum, note) => sum + note.duration, 0);
 }
 
-function makePlaylistItems(instrument: string, note: NoteRecord, noteIdx: number, score: List<NoteRecord>, bpm: number, startTime: number, pan: number, octaveShift: number) {
+function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRecord>, bpm: number, startTime: number, player: PlayerRecord) {
   const pulseDuration = 60 / bpm;
   let items = List.of();
   if (note.note) {
     const attackAt = startTime + getPulsesUntilStart(score, noteIdx) * pulseDuration;
     const releaseAt = attackAt + pulseDuration * note.duration;
     items = items.push(playlistItemFactory({
-      instrument,
+      player,
       note: note.note,
       attackAt,
-      releaseAt,
-      pan,
-      octaveShift
+      releaseAt
     }));
     if (note.gracenote) {
       items = items.push(playlistItemFactory({
-        instrument,
+        player,
         note: note.gracenote,
         attackAt: attackAt - pulseDuration * GRACENOTE_DURATION,
-        releaseAt: attackAt,
-        pan,
-        octaveShift
+        releaseAt: attackAt
       }))
     }
   }
@@ -71,7 +67,7 @@ function makePlaylistItems(instrument: string, note: NoteRecord, noteIdx: number
 function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTime: number, beat: number, bpm: number) {
   const pulseDuration = 60 / bpm;
   const items = mod.score.reduce((playlist, note, idx) => {
-    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(playerState.player.instrument, note, idx, mod.score, bpm, startTime, playerState.player.position, playerState.player.octaveShift));
+    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(note, idx, mod.score, bpm, startTime, playerState.player));
   }, playerState.playlist ? playerState.playlist.items : <List<PlaylistItemRecord>>List.of());
   const duration = mod.score.reduce((sum, note) => sum + note.duration, 0);
   return playlistFactory({items, lastBeat: beat + duration});

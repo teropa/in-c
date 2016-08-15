@@ -22,7 +22,7 @@ export class PlayerService {
 
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     const beatSample = this.samples.getSample('glockenspiel', 'c5');
-    this.playSample(beatSample, time, time + 60 / bpm);
+    this.playSample(beatSample, time, time + 60 / bpm, 1, {vol: 0.5});
     state.players.forEach(player => {
       player.nowPlaying.forEach(({note, attackAt, releaseAt, pan}) => {
         const sample = this.samples.getSample('piano-p', note);
@@ -48,7 +48,7 @@ export class PlayerService {
     src.connect(gain);
     gain.connect(panner);
     panner.connect(this.audioCtx.destination);
-    
+
     src.start(attackAt);
   }
 

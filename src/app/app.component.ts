@@ -1,17 +1,23 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
+import { AppState, PlayerState } from './models';
 
 @Component({
   selector: 'in-c-app',
   template: `
-    <div>lol</div>
+    <div *ngFor="let player of players$ | async">
+      {{ player.moduleIndex }}
+    </div>
   `,
   providers: [ ]
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  ngOnInit() {
+  players$ = this.store.select('players');
+
+  constructor(private store: Store<AppState>) {
   }
 
 }

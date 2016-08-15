@@ -22,6 +22,10 @@ export const PULSE = 'PULSE';
 
 const GRACENOTE_DURATION = 0.15;
 
+interface PlayerStats {
+  minModuleIndex: number;
+  maxModuleIndex: number;
+}
 
 function readScore(fullScore: ModuleRecord[]): List<ModuleRecord> {
   return List(fullScore.map(({number, score}) => moduleFactory({
@@ -69,7 +73,7 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTi
   return playlistFactory({items, lastBeat: beat + duration});
 }
 
-function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number) {
+function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number, playerStats: PlayerStats) {
   if (playerState.moduleIndex === null) {
     return playerState.merge({
       moduleIndex: 0,
@@ -82,7 +86,7 @@ function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>,
         playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), fromTime, playerState.playlist.lastBeat, bpm)
       });
     } else {
-      const nextModuleIdx = Math.min(playerState.moduleIndex + 1, score.size - 1);
+      const nextModuleIdx = Math.min(Math.min(playerState.moduleIndex + 1, score.size - 1), playerStats.minModuleIndex + 2);
       return playerState.merge({
         moduleIndex: nextModuleIdx, 
         playlist: makePlaylist(playerState, score.get(nextModuleIdx), fromTime, playerState.playlist.lastBeat, bpm)
@@ -101,12 +105,20 @@ function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) 
     .updateIn(['playlist', 'items'], itms => itms.skip(nowPlaying.size));
 }
 
-function playNext(beat: number, player: PlayerStateRecord, score: List<ModuleRecord>, time: number, bpm: number) {
+function playNext(beat: number, player: PlayerStateRecord, score: List<ModuleRecord>, time: number, bpm: number, playerStats: PlayerStats) {
   if (beat >= 4) {
-    return assignNowPlaying(assignModule(player, score, time, beat, bpm), time, bpm);
+    return assignNowPlaying(assignModule(player, score, time, beat, bpm, playerStats), time, bpm);
   } else {
     return player;
   }
+}
+
+function collectPlayerStats(players: List<PlayerStateRecord>): PlayerStats {
+  const mods = players.map(p => p.moduleIndex);
+  return {
+    minModuleIndex: mods.min(),
+    maxModuleIndex: mods.max()
+  };
 }
 
 const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
@@ -122,9 +134,10 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
   switch (action.type) {
     case PULSE:
       const nextBeat = state.beat + 1;
+      const playerStats = collectPlayerStats(state.players);
       return state
         .set('beat', nextBeat)
-        .update('players', players => players.map((player: PlayerStateRecord) => playNext(nextBeat, player, state.score, action.payload.time, action.payload.bpm)));
+        .update('players', players => players.map((player: PlayerStateRecord) => playNext(nextBeat, player, state.score, action.payload.time, action.payload.bpm, playerStats)));
     default:
       return state;
   }

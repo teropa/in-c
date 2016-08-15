@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, NgZone } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { AppState } from './models';
 import { PULSE } from './app.reducer';
@@ -12,11 +12,14 @@ export class PulseService {
   private metronome: Worker;
   private pulseCount = 1;
 
-  constructor(@Inject('bpm') private bpm: number, private time: TimeService, private store: Store<AppState>) {
+  constructor(@Inject('bpm') private bpm: number,
+              private time: TimeService,
+              private store: Store<AppState>,
+              zone: NgZone) {
     this.startTime = time.now();
     this.metronome = new MetronomeWorker();
     this.metronome.postMessage({command: 'start', interval: this.getBeatInterval() * 1000});
-    this.metronome.onmessage = (evt => this.makePulses());
+    this.metronome.onmessage = (evt => zone.run(() => this.makePulses()));
   }
 
   private makePulses() {

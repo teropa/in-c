@@ -1,10 +1,5 @@
 [
   {
-    "instrument": "piano-p",
-    "position": 0,
-    "gain": 0.25
-  },
-  {
     "instrument": "basses-piz-rr1",
     "position": -0.75,
     "octaveShift": -2,
@@ -15,5 +10,17 @@
     "position": 0.75,
     "octaveShift": -2,
     "gain": 1
+  },
+  {
+    "instrument": "korg-delta-octave-bass",
+    "position": 0,
+    "octaveShift": -1,
+    "gain": 1
+  },
+  {
+    "instrument": "korg-poly-music-box",
+    "position": 0,
+    "octaveShift": 0,
+    "gain": 0.75
   }
 ]

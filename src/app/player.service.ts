@@ -22,7 +22,9 @@ export class PlayerService {
 
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     const beatSample = this.samples.getSample('glockenspiel', 'c5');
-    this.playSample(beatSample, time, time + 60 / bpm, 1, 0.05);
+    //const kickSample = this.samples.getSample('kickdrum', 'c4');
+    this.playSample(beatSample, time, time + 60 / bpm, 0, 0.05);
+    //this.playSample(kickSample, time, time + 60 / bpm, 1, 0.2);
     state.players.forEach(player => {
       player.nowPlaying.forEach(({note, attackAt, releaseAt, player: {instrument, position, gain, octaveShift}}) => {
         const sample = this.samples.getSample(instrument, note, octaveShift);

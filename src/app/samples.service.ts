@@ -19,6 +19,9 @@ interface SampleBankItem {
 
 
 const SAMPLE_URLS: {[instrument: string]: SampleBankItem[]} = {
+  'kickdrum': [
+    {note: 'c', octave: 4, url: require('../samples/kick.mp3')}
+  ],
   'glockenspiel': [
     {note: 'c', octave: 5, url: require('../samples/glockenspiel-c5.mp3')},
   ],
@@ -48,6 +51,34 @@ const SAMPLE_URLS: {[instrument: string]: SampleBankItem[]} = {
     {note: 'f#', octave: 1, url: require('../samples/basses-piz-rr1-fs1.mp3')},
     {note: 'f#', octave: 2, url: require('../samples/basses-piz-rr1-fs2.mp3')},
     {note: 'f#', octave: 3, url: require('../samples/basses-piz-rr1-fs3.mp3')}
+  ],
+  'korg-delta-octave-bass': [
+    {note: 'c', octave: 1, url: require('../samples/korg-delta-octave-bass/c1.mp3')},
+    {note: 'c', octave: 2, url: require('../samples/korg-delta-octave-bass/c2.mp3')},
+    {note: 'c', octave: 3, url: require('../samples/korg-delta-octave-bass/c3.mp3')},
+    {note: 'c', octave: 4, url: require('../samples/korg-delta-octave-bass/c4.mp3')},
+    {note: 'e', octave: 1, url: require('../samples/korg-delta-octave-bass/e1.mp3')},
+    {note: 'e', octave: 2, url: require('../samples/korg-delta-octave-bass/e2.mp3')},
+    {note: 'e', octave: 3, url: require('../samples/korg-delta-octave-bass/e3.mp3')},
+    {note: 'g#1', octave: 1, url: require('../samples/korg-delta-octave-bass/gs1.mp3')},
+    {note: 'g#2', octave: 2, url: require('../samples/korg-delta-octave-bass/gs2.mp3')},
+    {note: 'g#3', octave: 3, url: require('../samples/korg-delta-octave-bass/gs3.mp3')}
+  ],
+  'korg-poly-music-box': [
+    {note: 'c', octave: 1, url: require('../samples/korg-poly-music-box/c1.mp3')},
+    {note: 'c', octave: 2, url: require('../samples/korg-poly-music-box/c2.mp3')},
+    {note: 'c', octave: 3, url: require('../samples/korg-poly-music-box/c3.mp3')},
+    {note: 'c', octave: 4, url: require('../samples/korg-poly-music-box/c4.mp3')},
+    {note: 'c', octave: 5, url: require('../samples/korg-poly-music-box/c4.mp3')},
+    {note: 'e', octave: 1, url: require('../samples/korg-poly-music-box/e1.mp3')},
+    {note: 'e', octave: 2, url: require('../samples/korg-poly-music-box/e2.mp3')},
+    {note: 'e', octave: 3, url: require('../samples/korg-poly-music-box/e3.mp3')},
+    {note: 'e', octave: 4, url: require('../samples/korg-poly-music-box/e3.mp3')},
+    {note: 'g#1', octave: 1, url: require('../samples/korg-poly-music-box/gs1.mp3')},
+    {note: 'g#2', octave: 2, url: require('../samples/korg-poly-music-box/gs2.mp3')},
+    {note: 'g#3', octave: 3, url: require('../samples/korg-poly-music-box/gs3.mp3')},
+    {note: 'g#3', octave: 3, url: require('../samples/korg-poly-music-box/gs3.mp3')}
+
   ]
 };
 

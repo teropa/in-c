@@ -10,8 +10,7 @@ import { AppState, PlayerState } from './models';
     <div *ngFor="let player of players$ | async">
       {{ player.moduleIndex }}
     </div>
-  `,
-  providers: [ ]
+  `
 })
 export class AppComponent {
 

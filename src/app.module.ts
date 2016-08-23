@@ -8,13 +8,12 @@ import { appReducer } from './app/app.reducer';
 import { PulseService } from './app/pulse.service';
 import { PlayerService } from './app/player.service';
 import { SamplesService } from './app/samples.service';
-import { TimeService }from './app/time.service';
+import { TimeService } from './app/time.service';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
-    StoreModule.provideStore(appReducer)
   ],
   providers: [
     runEffects(PulseService, PlayerService),
@@ -26,4 +25,5 @@ import { TimeService }from './app/time.service';
   bootstrap: [AppComponent]
 })
 export class AppModule {
-}    
+
+}

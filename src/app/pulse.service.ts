@@ -15,11 +15,18 @@ export class PulseService {
   constructor(@Inject('bpm') private bpm: number,
               private time: TimeService,
               private store: Store<AppState>,
-              zone: NgZone) {
-    this.startTime = time.now();
+              private zone: NgZone) {
+  }
+
+  onInit() {
+    this.startTime = this.time.now();
     this.metronome = new MetronomeWorker();
     this.metronome.postMessage({command: 'start', interval: this.getBeatInterval() * 1000});
-    this.metronome.onmessage = (evt => zone.run(() => this.makePulses()));
+    this.metronome.onmessage = (evt => this.zone.run(() => this.makePulses()));
+  }
+
+  onDestroy() {
+    this.metronome.terminate();
   }
 
   private makePulses() {
@@ -36,6 +43,5 @@ export class PulseService {
   private getNextPulseTime() {
     return this.startTime + this.pulseCount * this.getBeatInterval();
   }
-
 
 }

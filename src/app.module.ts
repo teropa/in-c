@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
 import { runEffects } from '@ngrx/effects';
@@ -16,14 +16,16 @@ import { TimeService } from './app/time.service';
     BrowserModule,
   ],
   providers: [
-    runEffects(PulseService, PlayerService),
+    runEffects(PlayerService),
     {provide: 'bpm', useValue: 180},
     {provide: 'audioCtx', useValue: new AudioContext()},
     SamplesService,
-    TimeService
+    TimeService,
+    PulseService
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
+
 
 }

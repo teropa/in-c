@@ -18,7 +18,6 @@ import { TimeService } from './app/time.service';
   providers: [
     runEffects(PlayerService),
     {provide: 'bpm', useValue: 180},
-    {provide: 'audioCtx', useValue: new AudioContext()},
     SamplesService,
     TimeService,
     PulseService

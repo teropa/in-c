@@ -9,11 +9,13 @@ if (process.env.ENV === 'production') {
   enableProdMode();
 }
 
+const audioCtx = new AudioContext();
 
 function main(initialState?: any) {
-  return platformBrowserDynamic(
-    provideStore(appReducer, initialState)
-  ).bootstrapModule(AppModule);
+  return platformBrowserDynamic([
+    provideStore(appReducer, initialState),
+    {provide: 'audioCtx', useValue: audioCtx}
+  ]).bootstrapModule(AppModule);
 }
 
 if((<any>module).hot) {

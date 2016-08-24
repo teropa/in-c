@@ -8,7 +8,6 @@ import { PulseService } from './pulse.service';
 @Component({
   selector: 'in-c-app',
   template: `
-    lol
     <div *ngFor="let player of players$ | async">
       {{ player.moduleIndex }}
     </div>

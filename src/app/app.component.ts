@@ -26,7 +26,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    console.log('destroy');
     this.pulse.onDestroy();
   }
 

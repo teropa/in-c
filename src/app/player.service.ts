@@ -21,14 +21,43 @@ export class PlayerService {
     .ignoreElements();
 
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
-    const beatSample = this.samples.getSample('glockenspiel', 'c5');
-    this.playSample(beatSample, time, time + 60 / bpm, 0, 0.05);
+    this.playBeat(time, bpm);
     state.players.forEach(player => {
       player.nowPlaying.forEach(({note, attackAt, releaseAt, player: {instrument, position, gain, octaveShift}}) => {
         const sample = this.samples.getSample(instrument, note, octaveShift);
         this.playSample(sample, attackAt, releaseAt, position, gain);
       });
     });
+  }
+
+  private playBeat(time: number, bpm: number) {
+    const duration = 0.1;
+    const maxGain = 0.1;
+
+    const osc = this.audioCtx.createOscillator();
+    const gain = this.audioCtx.createGain();
+
+    const echoDelay = this.audioCtx.createDelay(0.1);
+    const echoGain = this.audioCtx.createGain();
+
+    osc.frequency.value = 440 * Math.pow(2, 3/12);
+    echoDelay.delayTime.value = 0.02;
+    echoGain.gain.value = 0.7;
+
+    osc.connect(gain);
+    gain.connect(this.audioCtx.destination);
+    gain.connect(echoDelay);
+    echoDelay.connect(this.audioCtx.destination);
+    echoDelay.connect(echoGain);
+    echoGain.connect(echoDelay);
+
+    osc.start(time);
+    osc.stop(time + duration);
+
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(maxGain, time + 0.003);
+    gain.gain.setValueAtTime(maxGain, time + duration - 0.003);
+    gain.gain.linearRampToValueAtTime(0, time + duration);
   }
 
   private playSample(sample: Sample, attackAt: number, releaseAt: number, pan: number = 0, vol = 1) {

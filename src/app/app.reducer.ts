@@ -73,16 +73,17 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTi
   return playlistFactory({items, lastBeat: beat + duration});
 }
 
-function moveToNext(playerState: PlayerStateRecord) {
+function moveToNext(playerState: PlayerStateRecord, playerStats: PlayerStats) {
   const definitelyMoveByBeat = 500;
   const moveProbability = playerState.timeSpentOnModule / definitelyMoveByBeat;
-  console.log('p', moveProbability);
-  return Math.random() < moveProbability;
+  const limiter = Math.max(0, playerState.moduleIndex - playerStats.minModuleIndex - 1);
+  const limitedMoveProbability = moveProbability / Math.pow(10, limiter);
+  return Math.random() < limitedMoveProbability;
 }
 
 function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number, playerStats: PlayerStats) {
   if (!playerState.playlist) {
-    if (moveToNext(playerState)) {
+    if (moveToNext(playerState, playerStats)) {
       return playerState.merge({
         moduleIndex: 0,
         timeSpentOnModule: 0,
@@ -93,7 +94,7 @@ function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>,
     }
   } else if (Math.floor(playerState.playlist.lastBeat) <= beat) {
     const nextModuleIdx = playerState.moduleIndex + 1;
-    if (moveToNext(playerState) && nextModuleIdx < score.size && nextModuleIdx <= playerStats.minModuleIndex + 2) {
+    if (nextModuleIdx < score.size && moveToNext(playerState, playerStats)) {
       return playerState.merge({
         moduleIndex: nextModuleIdx,
         timeSpentOnModule: 0,

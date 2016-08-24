@@ -73,22 +73,30 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTi
   return playlistFactory({items, lastBeat: beat + duration});
 }
 
+function moveToNext() {
+  return Math.random() < 0.15;
+}
+
 function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number, playerStats: PlayerStats) {
-  if (playerState.moduleIndex === null) {
-    return playerState.merge({
-      moduleIndex: 0,
-      playlist: makePlaylist(playerState, score.get(0), time, beat, bpm)
-    });
-  } else if (Math.floor(playerState.playlist.lastBeat) <= beat) {
-    if (Math.random() < 0.85) {
+  if (!playerState.playlist) {
+    if (moveToNext()) {
       return playerState.merge({
-        playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), time, playerState.playlist.lastBeat, bpm)
+        moduleIndex: 0,
+        playlist: makePlaylist(playerState, score.get(0), time, beat, bpm)
       });
     } else {
+      return playerState;
+    }
+  } else if (Math.floor(playerState.playlist.lastBeat) <= beat) {
+    if (moveToNext()) {
       const nextModuleIdx = Math.min(Math.min(playerState.moduleIndex + 1, score.size - 1), playerStats.minModuleIndex + 2);
       return playerState.merge({
         moduleIndex: nextModuleIdx, 
         playlist: makePlaylist(playerState, score.get(nextModuleIdx), time, playerState.playlist.lastBeat, bpm)
+      });
+    } else {
+      return playerState.merge({
+        playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), time, playerState.playlist.lastBeat, bpm)
       });
     }
   }
@@ -96,20 +104,20 @@ function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>,
 }
 
 function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) {
-  const pulseDuration = 60 / bpm;
-  const nowPlaying = player.playlist.items
-    .takeWhile(itm => itm.attackAt < time + pulseDuration);
-  return player
-    .set('nowPlaying', nowPlaying)
-    .updateIn(['playlist', 'items'], itms => itms.skip(nowPlaying.size));
-}
-
-function playNext(beat: number, player: PlayerStateRecord, score: List<ModuleRecord>, time: number, bpm: number, playerStats: PlayerStats) {
-  if (beat > 8) {
-    return assignNowPlaying(assignModule(player, score, time, beat, bpm, playerStats), time, bpm);
+  if (player.playlist) {
+    const pulseDuration = 60 / bpm;
+    const nowPlaying = player.playlist && player.playlist.items
+      .takeWhile(itm => itm.attackAt < time + pulseDuration);
+    return player
+      .set('nowPlaying', nowPlaying)
+      .updateIn(['playlist', 'items'], itms => itms.skip(nowPlaying.size));
   } else {
     return player;
   }
+}
+
+function playNext(beat: number, player: PlayerStateRecord, score: List<ModuleRecord>, time: number, bpm: number, playerStats: PlayerStats) {
+  return assignNowPlaying(assignModule(player, score, time, beat, bpm, playerStats), time, bpm);
 }
 
 function collectPlayerStats(players: List<PlayerStateRecord>): PlayerStats {

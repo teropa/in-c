@@ -73,34 +73,40 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTi
   return playlistFactory({items, lastBeat: beat + duration});
 }
 
-function moveToNext() {
-  return Math.random() < 0.15;
+function moveToNext(playerState: PlayerStateRecord) {
+  const definitelyMoveByBeat = 500;
+  const moveProbability = playerState.timeSpentOnModule / definitelyMoveByBeat;
+  console.log('p', moveProbability);
+  return Math.random() < moveProbability;
 }
 
 function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number, playerStats: PlayerStats) {
   if (!playerState.playlist) {
-    if (moveToNext()) {
+    if (moveToNext(playerState)) {
       return playerState.merge({
         moduleIndex: 0,
+        timeSpentOnModule: 0,
         playlist: makePlaylist(playerState, score.get(0), time, beat, bpm)
       });
     } else {
-      return playerState;
+      return playerState.update('timeSpentOnModule', t => t + 1);
     }
   } else if (Math.floor(playerState.playlist.lastBeat) <= beat) {
-    if (moveToNext()) {
-      const nextModuleIdx = Math.min(Math.min(playerState.moduleIndex + 1, score.size - 1), playerStats.minModuleIndex + 2);
+    const nextModuleIdx = playerState.moduleIndex + 1;
+    if (moveToNext(playerState) && nextModuleIdx < score.size && nextModuleIdx <= playerStats.minModuleIndex + 2) {
       return playerState.merge({
-        moduleIndex: nextModuleIdx, 
+        moduleIndex: nextModuleIdx,
+        timeSpentOnModule: 0,
         playlist: makePlaylist(playerState, score.get(nextModuleIdx), time, playerState.playlist.lastBeat, bpm)
       });
     } else {
       return playerState.merge({
-        playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), time, playerState.playlist.lastBeat, bpm)
+        playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), time, playerState.playlist.lastBeat, bpm),
+        timeSpentOnModule: playerState.timeSpentOnModule + 1
       });
     }
   }
-  return playerState;
+  return playerState.update('timeSpentOnModule', t => t + 1);
 }
 
 function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) {

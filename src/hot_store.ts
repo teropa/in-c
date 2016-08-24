@@ -2,25 +2,22 @@ import { NgModuleRef, ApplicationRef } from '@angular/core';
 import { StoreModule, Store } from '@ngrx/store';
 
 
+let appState: any;
+
 export function hotModuleReplacement(
-  bootloader: (initialState: any) => Promise<NgModuleRef<any>>,
+  bootloader: () => Promise<NgModuleRef<any>>,
   module: any
 ) {
   let MODULE_REF: NgModuleRef<any>;
-  let DATA = !!module.hot.data ?
-    module.hot.data.state :
-    undefined;
-
-  console.log('APP STATE', DATA);
 
   console.time('bootstrap');
   if (document.readyState === 'complete') {
-    bootloader(DATA)
+    bootloader()
       .then((modRef: NgModuleRef<any>) => MODULE_REF = modRef)
       .then(() => console.timeEnd('bootstrap'));
   } else {
     document.addEventListener('DOMContentLoaded', () => {
-      bootloader(DATA)
+      bootloader()
         .then((modRef: NgModuleRef<any>) =>  MODULE_REF = modRef)
         .then(() => console.timeEnd('bootstrap'));
     });
@@ -58,9 +55,13 @@ export function hotModuleReplacement(
       newNode.style.display = newNodeDisplay;
     });
     const store: Store<any> = MODULE_REF.injector.get(Store);
-    const appState = getState(store);
+    appState = getState(store);
     (<any>Object).assign(data, { appState  });
     console.timeEnd('dispose');
   });
 
+}
+
+export function provideHotStoreModule(reducer: any) {
+  return StoreModule.provideStore(reducer, appState);
 }

@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
 import { runEffects } from '@ngrx/effects';
 
+import { provideHotStoreModule } from './hot_store';
 import { AppComponent } from './app/app.component';
 import { appReducer } from './app/app.reducer';
 import { PulseService } from './app/pulse.service';
@@ -14,6 +15,7 @@ import { TimeService } from './app/time.service';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    provideHotStoreModule(appReducer)
   ],
   providers: [
     runEffects(PlayerService),

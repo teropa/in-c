@@ -80,16 +80,15 @@ function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>,
       playlist: makePlaylist(playerState, score.get(0), time, beat, bpm)
     });
   } else if (Math.floor(playerState.playlist.lastBeat) <= beat) {
-    const fromTime = (playerState.playlist.lastBeat + 1) * 60 / bpm; 
     if (Math.random() < 0.85) {
       return playerState.merge({
-        playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), fromTime, playerState.playlist.lastBeat, bpm)
+        playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), time, playerState.playlist.lastBeat, bpm)
       });
     } else {
       const nextModuleIdx = Math.min(Math.min(playerState.moduleIndex + 1, score.size - 1), playerStats.minModuleIndex + 2);
       return playerState.merge({
         moduleIndex: nextModuleIdx, 
-        playlist: makePlaylist(playerState, score.get(nextModuleIdx), fromTime, playerState.playlist.lastBeat, bpm)
+        playlist: makePlaylist(playerState, score.get(nextModuleIdx), time, playerState.playlist.lastBeat, bpm)
       });
     }
   }
@@ -106,7 +105,7 @@ function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) 
 }
 
 function playNext(beat: number, player: PlayerStateRecord, score: List<ModuleRecord>, time: number, bpm: number, playerStats: PlayerStats) {
-  if (beat >= 4) {
+  if (beat > 8) {
     return assignNowPlaying(assignModule(player, score, time, beat, bpm, playerStats), time, bpm);
   } else {
     return player;

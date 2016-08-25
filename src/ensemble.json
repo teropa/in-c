@@ -1,52 +1,32 @@
 [
   {
-    "instrument": "deep-synth-bass",
-    "position": 0,
+    "instrument": "synthetic-marimba",
+    "position": 0.5,
     "gain": 1
   },
   {
-    "instrument": "delicate-bells",
-    "position": 0,
+    "instrument": "synthetic-marimba-low",
+    "position": -0.5,
     "gain": 1
   },
   {
-    "instrument": "dream-dancer",
-    "position": 0,
-    "gain": 1
+    "instrument": "gnarly-trance-pluck",
+    "position": 0.75,
+    "gain": 0.5
   },
   {
-    "instrument": "eighties-pop-bass",
-    "position": 0,
-    "gain": 1
-  },
-  {
-    "instrument": "fm-piano",
-    "position": 0,
-    "gain": 1
-  },
-  {
-    "instrument": "hard-tech-bass",
-    "position": 0,
-    "gain": 1
-  },
-  {
-    "instrument": "metro-bass",
-    "position": 0,
-    "gain": 1
-  },
-  {
-    "instrument": "micro-pulse",
-    "position": 0,
-    "gain": 1
+    "instrument": "gnarly-trance-pluck-high",
+    "position": -0.75,
+    "gain": 0.5
   },
   {
     "instrument": "tight-synth-bass",
-    "position": 0,
+    "position": 0.3,
     "gain": 1
   },
   {
-    "instrument": "vintage-funk",
-    "position": 0,
+    "instrument": "rising-waves",
+    "position": 0.3,
     "gain": 1
   }
 ]

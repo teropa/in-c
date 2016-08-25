@@ -8,7 +8,7 @@ import { PulseService } from './pulse.service';
 @Component({
   selector: 'in-c-app',
   template: `
-    <in-c-player *ngFor="let player of players$ | async; trackBy:trackPlayer"
+    <in-c-player *ngFor="let player of players$ | async; trackBy: trackPlayer"
                  [playerState]=player>
     </in-c-player>
   `

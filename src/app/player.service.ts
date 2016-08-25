@@ -70,6 +70,8 @@ export class PlayerService {
 
     src.buffer = sample.buffer;
     gain.gain.value = vol;
+    gain.gain.setValueAtTime(0, attackAt);
+    gain.gain.linearRampToValueAtTime(vol, attackAt + 0.003);
     gain.gain.setTargetAtTime(0, releaseAt, 0.3);
     panner.pan.value = pan;
 

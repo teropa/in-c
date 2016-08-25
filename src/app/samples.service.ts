@@ -40,15 +40,22 @@ const SOUNDFONT_URLS = {
   'dreamy-bells': require('../soundfonts/dreamy-bells-mono.mp3'),
   'eighties-pop-bass': require('../soundfonts/eighties-pop-bass-mono.mp3'),
   'fm-piano': require('../soundfonts/fm-piano-mono.mp3'),
+  'gnarly-trance-pluck': require('../soundfonts/gnarly-trance-pluck.mp3'),
+  'gnarly-trance-pluck-high': require('../soundfonts/gnarly-trance-pluck-high.mp3'),
   'hard-tech-bass': require('../soundfonts/hard-tech-bass-mono.mp3'),
   'mellow-chimes': require('../soundfonts/mellow-chimes-mono.mp3'),
   'metro-bass': require('../soundfonts/metro-bass-mono.mp3'),
   'micro-pulse': require('../soundfonts/micro-pulse-mono.mp3'),
   'neon-synth-bass': require('../soundfonts/neon-synth-bass-mono.mp3'),
   'raining-bells': require('../soundfonts/raining-bells-mono.mp3'),
+  'rising-waves': require('../soundfonts/rising-waves-mono.mp3'),
   'soft-synth-bells': require('../soundfonts/soft-synth-bells-mono.mp3'),
+  'synthetic-marimba': require('../soundfonts/synthetic-marimba-mono.mp3'),
+  'synthetic-marimba-low': require('../soundfonts/synthetic-marimba-low-mono.mp3'),
   'synthetic-voice': require('../soundfonts/synthetic-voice-mono.mp3'),
   'tight-synth-bass': require('../soundfonts/tight-synth-bass-mono.mp3'),
+  'upright-studio-bass': require('../soundfonts/upright-studio-bass-mono.mp3'),
+  'vintage-computer': require('../soundfonts/vintage-computer-mono.mp3'),
   'vintage-funk': require('../soundfonts/vintage-funk-mono.mp3')
 };
 

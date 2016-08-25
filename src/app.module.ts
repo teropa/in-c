@@ -5,14 +5,16 @@ import { runEffects } from '@ngrx/effects';
 
 import { provideHotStoreModule } from './hot_store';
 import { AppComponent } from './app/app.component';
+import { PlayerComponent } from './app/player.component';
 import { appReducer } from './app/app.reducer';
 import { PulseService } from './app/pulse.service';
 import { PlayerService } from './app/player.service';
 import { SamplesService } from './app/samples.service';
 import { TimeService } from './app/time.service';
 
+require('./main.css');
+
 @NgModule({
-  declarations: [AppComponent],
   imports: [
     BrowserModule,
     provideHotStoreModule(appReducer)
@@ -24,6 +26,7 @@ import { TimeService } from './app/time.service';
     TimeService,
     PulseService
   ],
+  declarations: [AppComponent, PlayerComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

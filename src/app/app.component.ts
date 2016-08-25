@@ -8,9 +8,9 @@ import { PulseService } from './pulse.service';
 @Component({
   selector: 'in-c-app',
   template: `
-    <div *ngFor="let player of players$ | async">
-      {{ player.moduleIndex }}
-    </div>
+    <in-c-player *ngFor="let player of players$ | async; trackBy:trackPlayer"
+                 [playerState]=player>
+    </in-c-player>
   `
 })
 export class AppComponent implements OnInit, OnDestroy {
@@ -27,6 +27,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.pulse.onDestroy();
+  }
+
+  trackPlayer(index: number, obj: PlayerState): any {
+    return obj.player.instrument;
   }
 
 }

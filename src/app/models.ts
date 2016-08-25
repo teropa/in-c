@@ -34,7 +34,8 @@ export interface PlayerState {
 
 export interface Playlist {
   items: List<PlaylistItemRecord>,
-  lastBeat: number
+  lastBeat: number,
+  imperfectionDelay: number
 }
 
 export interface PlaylistItem {
@@ -61,7 +62,8 @@ export const noteFactory = makeTypedFactory<Note, NoteRecord>({
 export interface PlaylistRecord extends TypedRecord<PlaylistRecord>, Playlist {}
 export const playlistFactory = makeTypedFactory<Playlist, PlaylistRecord>({
   items: <List<PlaylistItemRecord>>List.of(),
-  lastBeat: 0
+  lastBeat: 0,
+  imperfectionDelay: 0
 });
 
 export interface PlaylistItemRecord extends TypedRecord<PlaylistItemRecord>, PlaylistItem {}

@@ -70,7 +70,11 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTi
     return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(note, idx, mod.score, bpm, startTime, playerState.player));
   }, playerState.playlist ? playerState.playlist.items : <List<PlaylistItemRecord>>List.of());
   const duration = mod.score.reduce((sum, note) => sum + note.duration, 0);
-  return playlistFactory({items, lastBeat: beat + duration});
+  return playlistFactory({
+    items,
+    lastBeat: beat + duration,
+    imperfectionDelay: -0.005 + Math.random() * 0.01
+  });
 }
 
 function moveToNext(playerState: PlayerStateRecord, playerStats: PlayerStats) {
@@ -114,7 +118,8 @@ function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) 
   if (player.playlist) {
     const pulseDuration = 60 / bpm;
     const nowPlaying = player.playlist && player.playlist.items
-      .takeWhile(itm => itm.attackAt < time + pulseDuration);
+      .takeWhile(itm => itm.attackAt < time + pulseDuration)
+      .map(itm => itm.update('attackAt', a => a + player.playlist.imperfectionDelay));
     return player
       .set('nowPlaying', nowPlaying)
       .updateIn(['playlist', 'items'], itms => itms.skip(nowPlaying.size));

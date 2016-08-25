@@ -33,23 +33,23 @@ const NOTE_OFFSETS = {
   'B5': [64, 68]
 }
 const SOUNDFONT_URLS = {
-  'boxy-synth-bass': require('../soundfonts/boxy-synth-bass.mp3'),
-  'deep-synth-bass': require('../soundfonts/deep-synth-bass.mp3'),
-  'delicate-bells': require('../soundfonts/delicate-bells.mp3'),
-  'dream-dancer': require('../soundfonts/dream-dancer.mp3'),
-  'dreamy-bells': require('../soundfonts/dreamy-bells.mp3'),
-  'eighties-pop-bass': require('../soundfonts/eighties-pop-bass.mp3'),
-  'fm-piano': require('../soundfonts/fm-piano.mp3'),
-  'hard-tech-bass': require('../soundfonts/hard-tech-bass.mp3'),
-  'mellow-chimes': require('../soundfonts/mellow-chimes.mp3'),
-  'metro-bass': require('../soundfonts/metro-bass.mp3'),
-  'micro-pulse': require('../soundfonts/micro-pulse.mp3'),
-  'neon-synth-bass': require('../soundfonts/neon-synth-bass.mp3'),
-  'raining-bells': require('../soundfonts/raining-bells.mp3'),
-  'soft-synth-bells': require('../soundfonts/soft-synth-bells.mp3'),
-  'synthetic-voice': require('../soundfonts/synthetic-voice.mp3'),
-  'tight-synth-bass': require('../soundfonts/tight-synth-bass.mp3'),
-  'vintage-funk': require('../soundfonts/vintage-funk.mp3')
+  'boxy-synth-bass': require('../soundfonts/boxy-synth-bass-mono.mp3'),
+  'deep-synth-bass': require('../soundfonts/deep-synth-bass-mono.mp3'),
+  'delicate-bells': require('../soundfonts/delicate-bells-mono.mp3'),
+  'dream-dancer': require('../soundfonts/dream-dancer-mono.mp3'),
+  'dreamy-bells': require('../soundfonts/dreamy-bells-mono.mp3'),
+  'eighties-pop-bass': require('../soundfonts/eighties-pop-bass-mono.mp3'),
+  'fm-piano': require('../soundfonts/fm-piano-mono.mp3'),
+  'hard-tech-bass': require('../soundfonts/hard-tech-bass-mono.mp3'),
+  'mellow-chimes': require('../soundfonts/mellow-chimes-mono.mp3'),
+  'metro-bass': require('../soundfonts/metro-bass-mono.mp3'),
+  'micro-pulse': require('../soundfonts/micro-pulse-mono.mp3'),
+  'neon-synth-bass': require('../soundfonts/neon-synth-bass-mono.mp3'),
+  'raining-bells': require('../soundfonts/raining-bells-mono.mp3'),
+  'soft-synth-bells': require('../soundfonts/soft-synth-bells-mono.mp3'),
+  'synthetic-voice': require('../soundfonts/synthetic-voice-mono.mp3'),
+  'tight-synth-bass': require('../soundfonts/tight-synth-bass-mono.mp3'),
+  'vintage-funk': require('../soundfonts/vintage-funk-mono.mp3')
 };
 
 @Injectable()

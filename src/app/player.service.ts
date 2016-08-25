@@ -32,7 +32,7 @@ export class PlayerService {
 
   private playBeat(time: number, bpm: number) {
     const duration = 0.1;
-    const maxGain = 0.1;
+    const maxGain = 0.05;
 
     const osc = this.audioCtx.createOscillator();
     const gain = this.audioCtx.createGain();

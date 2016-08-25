@@ -8,147 +8,78 @@ interface FixedAudioContext extends AudioContext {
 
 export interface Sample {
   buffer: AudioBuffer,
-  playbackRate: number
-}
-
-interface SampleBankItem {
-  note: string;
-  octave: number;
-  url: string
+  startPosition: number,
+  endPosition: number
 }
 
 
-const SAMPLE_URLS: {[instrument: string]: SampleBankItem[]} = {
-  'kickdrum': [
-    {note: 'c', octave: 4, url: require('../samples/kick.mp3')}
-  ],
-  'glockenspiel': [
-    {note: 'c', octave: 5, url: require('../samples/glockenspiel-c5.mp3')},
-  ],
-  'piano-p': [
-    {note: 'c',  octave: 4, url: require('../samples/piano-p-c4.mp3')},
-    {note: 'd#', octave: 4, url: require('../samples/piano-p-ds4.mp3')},
-    {note: 'd#', octave: 5, url: require('../samples/piano-p-ds5.mp3')},
-    {note: 'f#', octave: 4, url: require('../samples/piano-p-fs4.mp3')},
-    {note: 'c',  octave: 5, url: require('../samples/piano-p-c5.mp3')},
-    {note: 'f#', octave: 5, url: require('../samples/piano-p-fs5.mp3')},
-    {note: 'f#', octave: 3, url: require('../samples/piano-p-fs3.mp3')},
-    {note: 'a',  octave: 4, url: require('../samples/piano-p-a4.mp3')},
-    {note: 'a',  octave: 5, url: require('../samples/piano-p-a5.mp3')},
-    {note: 'c',  octave: 6, url: require('../samples/piano-p-c6.mp3')}
-  ],
-  'basses-piz-rr1': [
-    {note: 'a', octave: 1, url: require('../samples/basses-piz-rr1-a1.mp3')},
-    {note: 'a', octave: 2, url: require('../samples/basses-piz-rr1-a2.mp3')},
-    {note: 'a', octave: 3, url: require('../samples/basses-piz-rr1-a3.mp3')},
-    {note: 'c', octave: 1, url: require('../samples/basses-piz-rr1-c1.mp3')},
-    {note: 'c', octave: 2, url: require('../samples/basses-piz-rr1-c2.mp3')},
-    {note: 'c', octave: 3, url: require('../samples/basses-piz-rr1-c3.mp3')},
-    {note: 'c', octave: 4, url: require('../samples/basses-piz-rr1-c4.mp3')},
-    {note: 'd#', octave: 1, url: require('../samples/basses-piz-rr1-ds1.mp3')},
-    {note: 'd#', octave: 2, url: require('../samples/basses-piz-rr1-ds2.mp3')},
-    {note: 'd#', octave: 3, url: require('../samples/basses-piz-rr1-ds3.mp3')},
-    {note: 'f#', octave: 1, url: require('../samples/basses-piz-rr1-fs1.mp3')},
-    {note: 'f#', octave: 2, url: require('../samples/basses-piz-rr1-fs2.mp3')},
-    {note: 'f#', octave: 3, url: require('../samples/basses-piz-rr1-fs3.mp3')}
-  ],
-  'korg-delta-octave-bass': [
-    {note: 'c', octave: 1, url: require('../samples/korg-delta-octave-bass/c1.mp3')},
-    {note: 'c', octave: 2, url: require('../samples/korg-delta-octave-bass/c2.mp3')},
-    {note: 'c', octave: 3, url: require('../samples/korg-delta-octave-bass/c3.mp3')},
-    {note: 'c', octave: 4, url: require('../samples/korg-delta-octave-bass/c4.mp3')},
-    {note: 'e', octave: 1, url: require('../samples/korg-delta-octave-bass/e1.mp3')},
-    {note: 'e', octave: 2, url: require('../samples/korg-delta-octave-bass/e2.mp3')},
-    {note: 'e', octave: 3, url: require('../samples/korg-delta-octave-bass/e3.mp3')},
-    {note: 'g#1', octave: 1, url: require('../samples/korg-delta-octave-bass/gs1.mp3')},
-    {note: 'g#2', octave: 2, url: require('../samples/korg-delta-octave-bass/gs2.mp3')},
-    {note: 'g#3', octave: 3, url: require('../samples/korg-delta-octave-bass/gs3.mp3')}
-  ],
-  'korg-poly-music-box': [
-    {note: 'c', octave: 1, url: require('../samples/korg-poly-music-box/c1.mp3')},
-    {note: 'c', octave: 2, url: require('../samples/korg-poly-music-box/c2.mp3')},
-    {note: 'c', octave: 3, url: require('../samples/korg-poly-music-box/c3.mp3')},
-    {note: 'c', octave: 4, url: require('../samples/korg-poly-music-box/c4.mp3')},
-    {note: 'c', octave: 5, url: require('../samples/korg-poly-music-box/c4.mp3')},
-    {note: 'e', octave: 1, url: require('../samples/korg-poly-music-box/e1.mp3')},
-    {note: 'e', octave: 2, url: require('../samples/korg-poly-music-box/e2.mp3')},
-    {note: 'e', octave: 3, url: require('../samples/korg-poly-music-box/e3.mp3')},
-    {note: 'e', octave: 4, url: require('../samples/korg-poly-music-box/e3.mp3')},
-    {note: 'g#1', octave: 1, url: require('../samples/korg-poly-music-box/gs1.mp3')},
-    {note: 'g#2', octave: 2, url: require('../samples/korg-poly-music-box/gs2.mp3')},
-    {note: 'g#3', octave: 3, url: require('../samples/korg-poly-music-box/gs3.mp3')},
-    {note: 'g#3', octave: 3, url: require('../samples/korg-poly-music-box/gs3.mp3')}
-
-  ]
+const NOTE_OFFSETS = {
+  'G3': [0, 4],
+  'C4': [4, 8],
+  'E4': [8, 12],
+  'F4': [12, 16],
+  'F#4': [16, 20],
+  'G4': [20, 24],
+  'A4': [24, 28],
+  'Bb4': [28, 32],
+  'B4': [32, 36],
+  'C5': [36, 40],
+  'D5': [40, 44],
+  'E5': [44, 48],
+  'F5': [48, 52],
+  'F#5': [52, 56],
+  'G5': [56, 60],
+  'A5': [60, 64],
+  'B5': [64, 68]
+}
+const SOUNDFONT_URLS = {
+  'boxy-synth-bass': require('../soundfonts/boxy-synth-bass.mp3'),
+  'deep-synth-bass': require('../soundfonts/deep-synth-bass.mp3'),
+  'delicate-bells': require('../soundfonts/delicate-bells.mp3'),
+  'dream-dancer': require('../soundfonts/dream-dancer.mp3'),
+  'dreamy-bells': require('../soundfonts/dreamy-bells.mp3'),
+  'eighties-pop-bass': require('../soundfonts/eighties-pop-bass.mp3'),
+  'fm-piano': require('../soundfonts/fm-piano.mp3'),
+  'hard-tech-bass': require('../soundfonts/hard-tech-bass.mp3'),
+  'mellow-chimes': require('../soundfonts/mellow-chimes.mp3'),
+  'metro-bass': require('../soundfonts/metro-bass.mp3'),
+  'micro-pulse': require('../soundfonts/micro-pulse.mp3'),
+  'neon-synth-bass': require('../soundfonts/neon-synth-bass.mp3'),
+  'raining-bells': require('../soundfonts/raining-bells.mp3'),
+  'soft-synth-bells': require('../soundfonts/soft-synth-bells.mp3'),
+  'synthetic-voice': require('../soundfonts/synthetic-voice.mp3'),
+  'tight-synth-bass': require('../soundfonts/tight-synth-bass.mp3'),
+  'vintage-funk': require('../soundfonts/vintage-funk.mp3')
 };
-
-const OCTAVE = ['c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b'];
-
-function noteValue(note: string, octave: number) {
-  return octave * 12 + OCTAVE.indexOf(note);
-}
-
-function getNoteDistance(note1: string, octave1: number, note2: string, octave2: number) {
-  return noteValue(note1, octave1) - noteValue(note2, octave2);
-}
-
-function getNearestSample(sampleBank:{note: string, octave: number, url: string}[], note: string, octave: number) {
-  let sortedBank = sampleBank.slice().sort((sampleA, sampleB) => {
-    let distanceToA =
-      Math.abs(getNoteDistance(note, octave, sampleA.note, sampleA.octave));
-    let distanceToB =
-      Math.abs(getNoteDistance(note, octave, sampleB.note, sampleB.octave));
-    return distanceToA - distanceToB;
-  });
-  return sortedBank[0];
-}
-
 
 @Injectable()
 export class SamplesService {
-  private sampleBank: Map<string, Map<string, Map<number, AudioBuffer>>> = Map.of();
+  private soundBank: Map<string, AudioBuffer> = Map.of();
 
   constructor(@Inject('audioCtx') private audioCtx: FixedAudioContext) {
-    Object.keys(SAMPLE_URLS).forEach(instrument => {
-      SAMPLE_URLS[instrument].map(item => this.loadSample(instrument, item));
+    Object.keys(SOUNDFONT_URLS).forEach(instrument => {
+      this.loadSample(instrument, SOUNDFONT_URLS[instrument]);
     })
   }
 
-  getSample(instrument: string, noteAndOctave: string, octaveShift = 0): Sample {
-    let [, note, octaveS] = /^(\w[b#]?)(\d)$/.exec(noteAndOctave.toLowerCase());
-    note = this.flatToSharp(note);
-    let octave = parseInt(octaveS, 10) + octaveShift;
-
-    let sampleBank = SAMPLE_URLS[instrument];
-    let sample = getNearestSample(sampleBank, note, octave);
-    let distance =
-      getNoteDistance(note, octave, sample.note, sample.octave);
-        
-    if (this.sampleBank.hasIn([instrument, sample.note, sample.octave])) {
+  getSample(instrument: string, noteAndOctave: string): Sample {
+    let soundfont = this.soundBank.get(instrument);
+    if (soundfont) {
       return {
-        buffer: this.sampleBank.getIn([instrument, sample.note, sample.octave]),
-        playbackRate: Math.pow(2, distance/12) 
-      }
+        buffer: soundfont,
+        startPosition: NOTE_OFFSETS[noteAndOctave][0],
+        endPosition: NOTE_OFFSETS[noteAndOctave][1]
+      };
     }
   }
 
-  private flatToSharp(note: string) {
-    switch (note) {
-      case 'Bb': return 'A#';
-      case 'Db': return 'C#';
-      case 'Eb': return 'D#';
-      case 'Gb': return 'F#';
-      case 'Ab': return 'G#';
-      default:   return note;
-    }
-  }
 
-  private loadSample(instrument: string, {note, octave, url}: SampleBankItem) {
+  private loadSample(instrument: string, url: string) {
     return fetch(url)
       .then(res => res.arrayBuffer())
       .then(arrayBuffer => this.audioCtx.decodeAudioData(arrayBuffer))
       .then(audioBuffer => {
-        this.sampleBank = this.sampleBank.setIn([instrument, note, octave], audioBuffer);
+        this.soundBank = this.soundBank.set(instrument, audioBuffer);
       });
   }
 

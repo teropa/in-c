@@ -20,7 +20,6 @@ export interface Note {
 
 export interface Player {
   instrument: string,
-  octaveShift: number,
   position: number,
   gain: number
 }
@@ -76,7 +75,6 @@ export const playlistItemFactory = makeTypedFactory<PlaylistItem, PlaylistItemRe
 export interface PlayerRecord extends TypedRecord<PlayerRecord>, Player {}
 export const playerFactory = makeTypedFactory<Player, PlayerRecord>({
   instrument: null,
-  octaveShift: 0,
   position: 0,
   gain: 1
 });

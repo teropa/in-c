@@ -1,10 +1,5 @@
 [
   {
-    "instrument": "boxy-synth-bass",
-    "position": 0,
-    "gain": 1
-  },
-  {
     "instrument": "deep-synth-bass",
     "position": 0,
     "gain": 1
@@ -16,11 +11,6 @@
   },
   {
     "instrument": "dream-dancer",
-    "position": 0,
-    "gain": 1
-  },
-  {
-    "instrument": "dreamy-bells",
     "position": 0,
     "gain": 1
   },
@@ -40,37 +30,12 @@
     "gain": 1
   },
   {
-    "instrument": "mellow-chimes",
-    "position": 0,
-    "gain": 1
-  },
-  {
     "instrument": "metro-bass",
     "position": 0,
     "gain": 1
   },
   {
     "instrument": "micro-pulse",
-    "position": 0,
-    "gain": 1
-  },
-  {
-    "instrument": "neon-synth-bass",
-    "position": 0,
-    "gain": 1
-  },
-  {
-    "instrument": "raining-bells",
-    "position": 0,
-    "gain": 1
-  },
-  {
-    "instrument": "soft-synth-bells",
-    "position": 0,
-    "gain": 1
-  },
-  {
-    "instrument": "synthetic-voice",
     "position": 0,
     "gain": 1
   },

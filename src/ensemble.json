@@ -21,12 +21,17 @@
   },
   {
     "instrument": "tight-synth-bass",
-    "position": -0.3,
+    "position": 0,
     "gain": 1
   },
   {
     "instrument": "rising-waves",
     "position": 0.3,
+    "gain": 1
+  },
+  {
+    "instrument": "rising-waves-low",
+    "position": -0.3,
     "gain": 1
   }
 ]

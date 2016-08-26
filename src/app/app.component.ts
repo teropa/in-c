@@ -51,7 +51,6 @@ export class AppComponent implements OnInit, OnDestroy {
   setSize() {
     this.width = this.elRef.nativeElement.offsetWidth;
     this.height = this.elRef.nativeElement.offsetHeight;
-    console.log(this.width, this.height);
   }
   
   getViewBox() {

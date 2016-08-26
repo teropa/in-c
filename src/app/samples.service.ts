@@ -37,6 +37,7 @@ const SOUNDFONT_URLS = {
   'gnarly-trance-pluck-high': require('../soundfonts/gnarly-trance-pluck-high.mp3'),
   'hard-tech-bass': require('../soundfonts/hard-tech-bass-mono.mp3'),
   'rising-waves': require('../soundfonts/rising-waves-mono.mp3'),
+  'rising-waves-low': require('../soundfonts/rising-waves-low-mono.mp3'),
   'synthetic-marimba': require('../soundfonts/synthetic-marimba-mono.mp3'),
   'synthetic-marimba-low': require('../soundfonts/synthetic-marimba-low-mono.mp3'),
   'tight-synth-bass': require('../soundfonts/tight-synth-bass-mono.mp3')

@@ -3,9 +3,9 @@ import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app.module';
 import { hotModuleReplacement } from './hot_store';
 
-if (process.env.ENV === 'production') {
+//if (process.env.ENV === 'production') {
   enableProdMode();
-}
+//}
 
 const audioCtx = new AudioContext();
 

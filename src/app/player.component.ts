@@ -2,22 +2,13 @@ import { Component, ChangeDetectionStrategy, Input } from '@angular/core';
 import { PlayerState } from './models';
 
 @Component({
-  selector: 'in-c-player',
+  selector: '[in-c-player]',
   template: `
-    <div>{{ playerState.moduleIndex }}</div>
+    <svg:circle cx="100" cy="100" r="50"></svg:circle>
   `,
   styles: [`
-    :host {
-      display: flex;
-      flex-flow: center;
-      align-items: center;
-
-      width: 100px;
-      height: 100px;
-
-      color: white;
-      border: 1px solid white;
-      border-radius: 50%;
+    circle {
+      fill: white;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush

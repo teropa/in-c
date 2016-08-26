@@ -8,7 +8,7 @@ import { SamplesService, Sample } from './samples.service';
 const GRACENOTE_OFFSET = 0.07;
 
 @Injectable()
-export class PlayerService {
+export class AudioPlayerService {
 
   private convolver: ConvolverNode;
   private dry: GainNode;

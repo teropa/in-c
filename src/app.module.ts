@@ -8,7 +8,7 @@ import { AppComponent } from './app/app.component';
 import { PlayerComponent } from './app/player.component';
 import { appReducer } from './app/app.reducer';
 import { PulseService } from './app/pulse.service';
-import { PlayerService } from './app/player.service';
+import { AudioPlayerService } from './app/audio-player.service';
 import { SamplesService } from './app/samples.service';
 import { TimeService } from './app/time.service';
 
@@ -20,7 +20,7 @@ require('./main.css');
     provideHotStoreModule(appReducer)
   ],
   providers: [
-    runEffects(PlayerService),
+    runEffects(AudioPlayerService),
     {provide: 'bpm', useValue: 180},
     SamplesService,
     TimeService,

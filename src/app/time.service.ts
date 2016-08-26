@@ -10,4 +10,8 @@ export class TimeService {
     return this.audioCtx.currentTime;
   }
 
+  getMillisecondsTo(t: number) {
+    return (t - this.now()) * 1000;
+  }
+
 }

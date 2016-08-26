@@ -10,8 +10,9 @@ import { PulseService } from './pulse.service';
   template: `
     <svg [attr.viewBox]="getViewBox()">
       <g in-c-player
-             *ngFor="let player of players$ | async; trackBy: trackPlayer"
-             [playerState]=player
+             *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
+             [position]=playerState.player.position
+             [nowPlaying]=playerState.nowPlaying
              [screenWidth]=width>
       </g>
     </svg>

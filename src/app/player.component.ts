@@ -4,7 +4,7 @@ import { PlayerState } from './models';
 @Component({
   selector: '[in-c-player]',
   template: `
-    <svg:circle cx="100" cy="100" r="50"></svg:circle>
+    <svg:circle [attr.cx]="getX()" cy="100" r="50"></svg:circle>
   `,
   styles: [`
     circle {
@@ -15,5 +15,10 @@ import { PlayerState } from './models';
 })
 export class PlayerComponent {
   @Input() playerState: PlayerState;
+  @Input() screenWidth: number;
 
+  getX() {
+    const relativeX = (this.playerState.player.position + 1) / 2;
+    return relativeX * this.screenWidth;
+  }
 }

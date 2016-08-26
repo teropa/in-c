@@ -66,7 +66,7 @@ export class SamplesService {
   constructor(@Inject('audioCtx') private audioCtx: FixedAudioContext) {
     Object.keys(SOUNDFONT_URLS).forEach(instrument => {
       this.loadSample(instrument, SOUNDFONT_URLS[instrument]);
-    })
+    });
   }
 
   getSample(instrument: string, noteAndOctave: string): Sample {
@@ -81,12 +81,13 @@ export class SamplesService {
   }
 
 
-  private loadSample(instrument: string, url: string) {
+  loadSample(instrument: string, url: string) {
     return fetch(url)
       .then(res => res.arrayBuffer())
       .then(arrayBuffer => this.audioCtx.decodeAudioData(arrayBuffer))
       .then(audioBuffer => {
         this.soundBank = this.soundBank.set(instrument, audioBuffer);
+        return audioBuffer;
       });
   }
 

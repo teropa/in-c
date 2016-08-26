@@ -10,9 +10,24 @@ const GRACENOTE_OFFSET = 0.07;
 @Injectable()
 export class PlayerService {
 
+  private convolver: ConvolverNode;
+  private dry: GainNode;
+  private wet: GainNode;
+
   constructor(private updates$: StateUpdates<AppState>,
               private samples: SamplesService,
               @Inject('audioCtx') private audioCtx: AudioContext) {
+    this.convolver = audioCtx.createConvolver();
+    this.dry = audioCtx.createGain();
+    this.wet = audioCtx.createGain();
+    this.dry.gain.value = 0.8;
+    this.wet.gain.value = 0.2;
+    this.convolver.connect(this.wet);
+    this.dry.connect(audioCtx.destination);
+    this.wet.connect(audioCtx.destination);
+    samples.loadSample('york-minster', require('../samples/minster1_000_ortf_48k.wav')).then(buf => {
+      this.convolver.buffer = buf;
+    });
   }
 
   @Effect() play$ = this.updates$
@@ -45,9 +60,9 @@ export class PlayerService {
     echoGain.gain.value = 0.7;
 
     osc.connect(gain);
-    gain.connect(this.audioCtx.destination);
+    this.connect(gain)
     gain.connect(echoDelay);
-    echoDelay.connect(this.audioCtx.destination);
+    this.connect(echoDelay);
     echoDelay.connect(echoGain);
     echoGain.connect(echoDelay);
 
@@ -77,10 +92,15 @@ export class PlayerService {
 
     src.connect(gain);
     gain.connect(panner);
-    panner.connect(this.audioCtx.destination);
+    this.connect(panner);
 
     src.start(attackAt, sample.startPosition);
     src.stop(attackAt + (sample.endPosition - sample.startPosition));
+  }
+
+  private connect(node: AudioNode) {
+    node.connect(this.dry);
+    node.connect(this.convolver);
   }
 
 }

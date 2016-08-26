@@ -46,7 +46,7 @@ export class AudioPlayerService {
   }
 
   private playBeat(time: number, bpm: number) {
-    const duration = 0.1;
+    const duration = 0.15;
     const maxGain = 0.05;
 
     const osc = this.audioCtx.createOscillator();
@@ -56,22 +56,15 @@ export class AudioPlayerService {
     const echoGain = this.audioCtx.createGain();
 
     osc.frequency.value = 440 * Math.pow(2, 3/12);
-    echoDelay.delayTime.value = 0.02;
-    echoGain.gain.value = 0.7;
 
     osc.connect(gain);
     this.connect(gain)
-    gain.connect(echoDelay);
-    this.connect(echoDelay);
-    echoDelay.connect(echoGain);
-    echoGain.connect(echoDelay);
 
     osc.start(time);
     osc.stop(time + duration);
 
-    gain.gain.setValueAtTime(0, time);
-    gain.gain.linearRampToValueAtTime(maxGain, time + 0.003);
-    gain.gain.setValueAtTime(maxGain, time + duration - 0.003);
+    gain.gain.value = maxGain;
+    gain.gain.setValueAtTime(maxGain, time);
     gain.gain.linearRampToValueAtTime(0, time + duration);
   }
 

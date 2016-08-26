@@ -14,6 +14,7 @@
     "@angular/core": "2.0.0-rc.5",
     "@angular/platform-browser": "2.0.0-rc.5",
     "@angular/platform-browser-dynamic": "2.0.0-rc.5",
+    "@mohayonao/web-audio-api-shim": "0.3.0",
     "@ngrx/core": "1.0.2",
     "@ngrx/effects": "1.1.1",
     "@ngrx/store": "2.1.2",
@@ -22,6 +23,7 @@
     "reflect-metadata": "0.1.8",
     "rxjs": "5.0.0-beta.6",
     "typed-immutable-record": "0.0.3",
+    "web-animations-js": "2.2.2",
     "whatwg-fetch": "1.0.0",
     "zone.js": "0.6.14"
   },

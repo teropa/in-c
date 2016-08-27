@@ -34,9 +34,10 @@ interface PlayerStats {
 }
 
 function readScore(fullScore: ModuleRecord[]): List<ModuleRecord> {
-  return List(fullScore.map(({number, score}) => moduleFactory({
+  return List(fullScore.map(({number, score, hue}) => moduleFactory({
     number,
-    score: <List<NoteRecord>>List(score.map(noteFactory))
+    score: <List<NoteRecord>>List(score.map(noteFactory)),
+    hue
   })));
 }
 
@@ -46,7 +47,7 @@ function getPulsesUntilStart(score: List<NoteRecord>, noteIdx: number) {
     .reduce((sum, note) => sum + note.duration, 0);
 }
 
-function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRecord>, bpm: number, startTime: number) {
+function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRecord>, hue: number, bpm: number, startTime: number) {
   const pulseDuration = 60 / bpm;
   let items = List.of();
   if (note.note) {
@@ -55,13 +56,15 @@ function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRe
     items = items.push(playlistItemFactory({
       note: note.note,
       attackAt,
-      releaseAt
+      releaseAt,
+      hue
     }));
     if (note.gracenote) {
       items = items.push(playlistItemFactory({
         note: note.gracenote,
         attackAt: attackAt - pulseDuration * GRACENOTE_DURATION,
-        releaseAt: attackAt
+        releaseAt: attackAt,
+        hue
       }))
     }
   }
@@ -71,7 +74,7 @@ function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRe
 function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTime: number, beat: number, bpm: number) {
   const pulseDuration = 60 / bpm;
   const items = mod.score.reduce((playlist, note, idx) => {
-    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(note, idx, mod.score, bpm, startTime));
+    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(note, idx, mod.score, mod.hue, bpm, startTime));
   }, playerState.playlist ? playerState.playlist.items : <List<PlaylistItemRecord>>List.of());
   const duration = mod.score.reduce((sum, note) => sum + note.duration, 0);
   return playlistFactory({

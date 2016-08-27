@@ -21,6 +21,7 @@ import * as Hammer from 'hammerjs';
 import { AppState, PlaylistItem } from './models';
 import { ADJUST_GAIN, ADJUST_PAN, MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from './app.reducer';
 import { TimeService } from './time.service';
+import { ColorService } from './color.service';
 
 const MAX_RADIUS = 500;
 const MIN_RADIUS = 10;
@@ -32,16 +33,16 @@ const MIN_RADIUS = 10;
                 [attr.cx]="getX()"
                 [attr.cy]="getY()"
                 [attr.r]="getRadius()"
-                (wheel)="onWheel($event)"
-                [@flash]="notesPlayed">
+                [attr.fill]="getFill()"
+                (wheel)="onWheel($event)">
     </svg:circle>
   `,
   styles: [`
     circle {
-      fill: white;
-      opacity: 0.5;
+      stroke: black;
+      stroke-width: 4;
     }
-  `],
+  `]/*,
   animations: [
     trigger('flash', [
       transition('* => *', animate('500ms ease-out', keyframes([
@@ -50,7 +51,7 @@ const MIN_RADIUS = 10;
         style({opacity: 0.5, offset: 1})
       ])))
     ])
-  ]
+  ]*/
 })
 export class PlayerComponent implements OnChanges, AfterViewInit {
   @Input() instrument: string;
@@ -62,9 +63,11 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   notesPlayed = 0;
   panOffset = [0, 0];
   y = 100;
+  hue = 0;
+  brightness = 50;
   hammer: HammerManager;
 
-  constructor(private time: TimeService, private store: Store<AppState>) {
+  constructor(private time: TimeService, private colors: ColorService, private store: Store<AppState>) {
   }
 
   getX() {
@@ -83,6 +86,10 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
     return MIN_RADIUS + radiusRange * relativeGain;
   }
 
+  getFill() {
+    return `hsla(${this.hue}, 64%, ${this.brightness}%, 0.5)`;
+  }
+
   ngAfterViewInit() {
     this.hammer = new Hammer(this.circle.nativeElement);
     this.hammer.on('panstart', evt => this.onPanStart(evt));
@@ -93,7 +100,11 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
     if (changes['nowPlaying']) {
       this.nowPlaying.forEach(item => {
         const playAfter = this.time.getMillisecondsTo(item.attackAt);
-        setTimeout(() => this.notesPlayed++, playAfter);
+        setTimeout(() => {
+          this.notesPlayed++;
+          this.hue = item.hue;
+          this.brightness = this.colors.getNoteBrightness(item.note);
+        }, playAfter);
       });
     }
   }

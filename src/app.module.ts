@@ -11,6 +11,7 @@ import { PulseService } from './app/pulse.service';
 import { AudioPlayerService } from './app/audio-player.service';
 import { SamplesService } from './app/samples.service';
 import { TimeService } from './app/time.service';
+import { ColorService } from './app/color.service';
 
 require('./main.css');
 
@@ -24,7 +25,8 @@ require('./main.css');
     {provide: 'bpm', useValue: 180},
     SamplesService,
     TimeService,
-    PulseService
+    PulseService,
+    ColorService
   ],
   declarations: [AppComponent, PlayerComponent],
   bootstrap: [AppComponent]

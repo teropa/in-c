@@ -5,7 +5,8 @@
       {"note": "E4", "duration": 2, "gracenote": "C4"},
       {"note": "E4", "duration": 2, "gracenote": "C4"},
       {"note": "E4", "duration": 2, "gracenote": "C4"}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 2,
@@ -13,7 +14,8 @@
       {"note": "E4", "duration": 1, "gracenote": "C4"},
       {"note": "F4", "duration": 1},
       {"note": "E4", "duration": 2}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 3,
@@ -22,7 +24,8 @@
       {"note": "E4", "duration": 1},
       {"note": "F4", "duration": 1},
       {"note": "E4", "duration": 1}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 4,
@@ -31,7 +34,8 @@
       {"note": "E4", "duration": 1},
       {"note": "F4", "duration": 1},
       {"note": "G4", "duration": 1}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 5,
@@ -40,14 +44,16 @@
       {"note": "F4", "duration": 1},
       {"note": "G4", "duration": 1},
       {"duration": 1}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 6,
     "score": [
       {"note": "C5", "duration": 8},
       {"note": "C5", "duration": 8}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 7,
@@ -64,7 +70,8 @@
       {"duration": 2},
       {"duration": 2},
       {"duration": 2}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 8,
@@ -72,7 +79,8 @@
       {"note": "G4", "duration": 12},
       {"note": "F4", "duration": 8},
       {"note": "F4", "duration": 8}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 9,
@@ -83,14 +91,16 @@
       {"duration": 2},
       {"duration": 2},
       {"duration": 2}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 10,
     "score": [
       {"note": "B4", "duration": 0.5},
       {"note": "G4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 11,
@@ -101,7 +111,8 @@
       {"note": "G4", "duration": 0.5},
       {"note": "B4", "duration": 0.5},
       {"note": "G4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 12,
@@ -110,7 +121,8 @@
       {"note": "G4", "duration": 1},
       {"note": "B4", "duration": 8},
       {"note": "C5", "duration": 2}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 13,
@@ -123,7 +135,8 @@
       {"duration": 1.5},
       {"note": "G4", "duration": 0.5},
       {"note": "G4", "duration": 6}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 14,
@@ -132,7 +145,8 @@
       {"note": "B4", "duration": 8},
       {"note": "G4", "duration": 8},
       {"note": "F#4", "duration": 8}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 15,
@@ -142,7 +156,8 @@
       {"duration": 2},
       {"duration": 2},
       {"duration": 2}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 16,
@@ -151,7 +166,8 @@
       {"note": "B4", "duration": 0.5},
       {"note": "C5", "duration": 0.5},
       {"note": "B4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 17,
@@ -162,7 +178,8 @@
       {"note": "C5", "duration": 0.5},
       {"note": "B4", "duration": 0.5},
       {"duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 18,
@@ -173,14 +190,16 @@
       {"note": "F#4", "duration": 0.5},
       {"note": "E4", "duration": 1.5},
       {"note": "E4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 19,
     "score": [
       {"duration": 3},
       {"note": "G5", "duration": 3}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 20,
@@ -195,13 +214,15 @@
       {"note": "E4", "duration": 0.5},
       {"note": "F#4", "duration": 0.5},
       {"note": "E4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 21,
     "score": [
       {"note": "F#4", "duration": 6}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 22,
@@ -215,7 +236,8 @@
       {"note": "G4", "duration": 3},
       {"note": "A4", "duration": 3},
       {"note": "B4", "duration": 1}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 23,
@@ -229,7 +251,8 @@
       {"note": "G4", "duration": 3},
       {"note": "A4", "duration": 3},
       {"note": "B4", "duration": 2}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 24,
@@ -243,7 +266,8 @@
       {"note": "G4", "duration": 3},
       {"note": "A4", "duration": 3},
       {"note": "B4", "duration": 1}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 25,
@@ -257,7 +281,8 @@
       {"note": "A4", "duration": 3},
       {"note": "A4", "duration": 3},
       {"note": "B4", "duration": 3}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 26,
@@ -271,7 +296,8 @@
       {"note": "B4", "duration": 3},
       {"note": "B4", "duration": 3},
       {"note": "B4", "duration": 3}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 27,
@@ -287,7 +313,8 @@
       {"note": "E4", "duration": 0.5},
       {"note": "F#4", "duration": 0.5},
       {"note": "E4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 28,
@@ -298,7 +325,8 @@
       {"note": "F#4", "duration": 0.5},
       {"note": "E4", "duration": 1.5},
       {"note": "E4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 29,
@@ -306,13 +334,15 @@
       {"note": "E4", "duration": 6},
       {"note": "G4", "duration": 6},
       {"note": "C5", "duration": 6}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 30,
     "score": [
       {"note": "C5", "duration": 12}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 31,
@@ -323,7 +353,8 @@
       {"note": "B4", "duration": 0.5},
       {"note": "G4", "duration": 0.5},
       {"note": "B4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 32,
@@ -336,7 +367,8 @@
       {"note": "F4", "duration": 0.5},
       {"note": "F4", "duration": 6},
       {"note": "G4", "duration": 3}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 33,
@@ -344,14 +376,16 @@
       {"note": "G4", "duration": 0.5},
       {"note": "F4", "duration": 0.5},
       {"duration": 1}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 34,
     "score": [
       {"note": "G4", "duration": 0.5},
       {"note": "F4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 35,
@@ -388,7 +422,8 @@
       {"note": "E5", "duration": 1},
       {"note": "E5", "duration": 4},
       {"note": "F5", "duration": 12}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 36,
@@ -399,14 +434,16 @@
       {"note": "G4", "duration": 0.5},
       {"note": "B4", "duration": 0.5},
       {"note": "G4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 37,
     "score": [
       {"note": "F4", "duration": 0.5},
       {"note": "G4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 38,
@@ -414,7 +451,8 @@
       {"note": "F4", "duration": 0.5},
       {"note": "G4", "duration": 0.5},
       {"note": "B4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 39,
@@ -425,21 +463,24 @@
       {"note": "G4", "duration": 0.5},
       {"note": "B4", "duration": 0.5},
       {"note": "C5", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 40,
     "score": [
       {"note": "B4", "duration": 0.5},
       {"note": "F4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 41,
     "score": [
       {"note": "B4", "duration": 0.5},
       {"note": "G4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 42,
@@ -448,7 +489,8 @@
       {"note": "B4", "duration": 8},
       {"note": "A4", "duration": 8},
       {"note": "C5", "duration": 8}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 43,
@@ -462,7 +504,8 @@
       {"note": "E5", "duration": 1},
       {"note": "F5", "duration": 0.5},
       {"note": "E5", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 44,
@@ -472,7 +515,8 @@
       {"note": "E5", "duration": 1},
       {"note": "E5", "duration": 1},
       {"note": "C5", "duration": 2}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 45,
@@ -480,7 +524,8 @@
       {"note": "D5", "duration": 2},
       {"note": "D5", "duration": 2},
       {"note": "G4", "duration": 2}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 46,
@@ -499,7 +544,8 @@
       {"note": "D5", "duration": 0.5},
       {"note": "E5", "duration": 0.5},
       {"note": "D5", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 47,
@@ -507,7 +553,8 @@
       {"note": "D5", "duration": 0.5},
       {"note": "E5", "duration": 0.5},
       {"note": "D5", "duration": 1}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 48,
@@ -516,7 +563,8 @@
       {"note": "G4", "duration": 8},
       {"note": "F4", "duration": 8},
       {"note": "F4", "duration": 2}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 49,
@@ -527,14 +575,16 @@
       {"note": "G4", "duration": 0.5},
       {"note": "Bb4", "duration": 0.5},
       {"note": "G4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 50,
     "score": [
       {"note": "F4", "duration": 0.5},
       {"note": "G4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 51,
@@ -542,21 +592,24 @@
       {"note": "F4", "duration": 0.5},
       {"note": "G4", "duration": 0.5},
       {"note": "Bb4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 52,
     "score": [
       {"note": "G4", "duration": 0.5},
       {"note": "Bb4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   },
   {
     "number": 53,
     "score": [
       {"note": "Bb4", "duration": 0.5},
       {"note": "G4", "duration": 0.5}
-    ]
+    ],
+    "hue": 227
   }
   
 ]

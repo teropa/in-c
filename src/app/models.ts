@@ -9,7 +9,8 @@ export interface AppState {
 
 export interface Module {
   number: number,
-  score: List<NoteRecord>
+  score: List<NoteRecord>,
+  hue: number
 }
 
 export interface Note {
@@ -42,14 +43,16 @@ export interface Playlist {
 export interface PlaylistItem {
   note: string,
   attackAt: number,
-  releaseAt: number
+  releaseAt: number,
+  hue: number
 }
 
 
 export interface ModuleRecord extends TypedRecord<ModuleRecord>, Module {}
 export const moduleFactory = makeTypedFactory<Module, ModuleRecord>({
   number: -1,
-  score: <List<NoteRecord>>List.of()
+  score: <List<NoteRecord>>List.of(),
+  hue: 0
 });
 
 export interface NoteRecord extends TypedRecord<NoteRecord>, Note {}
@@ -70,7 +73,8 @@ export interface PlaylistItemRecord extends TypedRecord<PlaylistItemRecord>, Pla
 export const playlistItemFactory = makeTypedFactory<PlaylistItem, PlaylistItemRecord>({
   note: null,
   attackAt: 0,
-  releaseAt: 0
+  releaseAt: 0,
+  hue: 0
 });
 
 export interface PlayerRecord extends TypedRecord<PlayerRecord>, Player {}

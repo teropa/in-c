@@ -153,7 +153,7 @@ function adjustGain(playerState: PlayerStateRecord, amount: number) {
 }
 
 const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
-  .map((p: Player) => playerStateFactory({player: playerFactory(p), pan: 0}))
+  .map((p: Player) => playerStateFactory({player: playerFactory(p), pan: 0, y: 100}))
 );
 const initialState = appStateFactory({
   score: readScore(require('json!../score.json')),
@@ -177,8 +177,10 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
     case ADJUST_PAN:
       const playerIdxForPan = state.players
         .findIndex(p => p.player.instrument === action.payload.instrument);
+      // Todo: could use mergeIn but there's a bug in immutable typescript definitions 
       return state
-        .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)));
+        .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)))
+        .setIn(['players', playerIdxForPan, 'y'], action.payload.y);
     default:
       return state;
   }

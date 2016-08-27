@@ -33,14 +33,12 @@ const MIN_RADIUS = 10;
                 [attr.cx]="getX()"
                 [attr.cy]="getY()"
                 [attr.r]="getRadius()"
-                [attr.fill]="getFill()"
                 (wheel)="onWheel($event)">
     </svg:circle>
   `,
   styles: [`
     circle {
-      stroke: black;
-      stroke-width: 4;
+      fill: hsla(0, 100%, 100%, 0.5);
     }
   `]/*,
   animations: [
@@ -57,17 +55,17 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   @Input() instrument: string;
   @Input() nowPlaying: List<PlaylistItem>;
   @Input() pan: number;
+  @Input() y: number;
   @Input() gainAdjust: number;
   @Input() screenWidth: number;
   @ViewChild('circle') circle: ElementRef;
   notesPlayed = 0;
   panOffset = [0, 0];
-  y = 100;
-  hue = 0;
-  brightness = 50;
   hammer: HammerManager;
 
-  constructor(private time: TimeService, private colors: ColorService, private store: Store<AppState>) {
+  constructor(private time: TimeService,
+              private colors: ColorService,
+              private store: Store<AppState>) {
   }
 
   getX() {
@@ -86,10 +84,6 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
     return MIN_RADIUS + radiusRange * relativeGain;
   }
 
-  getFill() {
-    return `hsla(${this.hue}, 64%, ${this.brightness}%, 0.5)`;
-  }
-
   ngAfterViewInit() {
     this.hammer = new Hammer(this.circle.nativeElement);
     this.hammer.on('panstart', evt => this.onPanStart(evt));
@@ -102,8 +96,30 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
         const playAfter = this.time.getMillisecondsTo(item.attackAt);
         setTimeout(() => {
           this.notesPlayed++;
-          this.hue = item.hue;
-          this.brightness = this.colors.getNoteBrightness(item.note);
+          const hue = item.hue;
+          const brightness = this.colors.getNoteBrightness(item.note);
+          const beginSaturation = 100;
+          const endSaturation = 50;
+          this.circle.nativeElement.animate([
+            {fill: `hsla(${hue}, ${beginSaturation}%, ${brightness}%, 0.9)`},
+            {fill: `hsla(${hue}, ${endSaturation}%, ${brightness}%, 0.2)`}
+          ], {
+            duration: 2000,
+            easing: 'ease-out',
+            fill: 'forwards'
+          });
+          /*this.circle.nativeElement.animate([
+            {r: this.getRadius() * (1 + 0.0150)},
+            {r: this.getRadius() * (1 - 0.0125)},
+            {r: this.getRadius() * (1 + 0.0100)},
+            {r: this.getRadius() * (1 - 0.0075)},
+            {r: this.getRadius() * (1 + 0.0050)},
+            {r: this.getRadius() * (1 - 0.0025)},
+            {r: this.getRadius() * (1 + 0.0000)}
+          ], {
+            duration: 500,
+            easing: 'ease-out'
+          });*/
         }, playAfter);
       });
     }
@@ -124,8 +140,8 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
 
   onPanMove(evt: HammerInput) {
     const newPan = ((evt.center.x - this.panOffset[0]) / this.screenWidth) * 2 - 1;
-    this.store.dispatch({type: ADJUST_PAN, payload: {instrument: this.instrument, pan: newPan}});
-    this.y = evt.center.y - this.panOffset[1];
+    const newY = evt.center.y - this.panOffset[1];;
+    this.store.dispatch({type: ADJUST_PAN, payload: {instrument: this.instrument, pan: newPan, y: newY}});
   }
 
 }

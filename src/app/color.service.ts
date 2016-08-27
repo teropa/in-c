@@ -2,6 +2,9 @@ const MIN_OCTAVE = 3;
 const MAX_OCTAVE = 5;
 const OCTAVE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
+const MIN_BRIGHTNESS = 33;
+const MAX_BRIGHTNESS = 66;
+
 export class ColorService {
 
   getNoteBrightness(noteAndOctave: string) {
@@ -10,7 +13,9 @@ export class ColorService {
     const minValue = this.noteValue(OCTAVE[0], MIN_OCTAVE);
     const maxValue = this.noteValue(OCTAVE[OCTAVE.length - 1], MAX_OCTAVE);
     const valueRange = maxValue - minValue;
-    return 100 * (value - minValue) / valueRange;
+    const relativeValue = (value - minValue) / valueRange;
+    const brightnessRange = MAX_BRIGHTNESS - MIN_BRIGHTNESS;
+    return MIN_BRIGHTNESS + brightnessRange * relativeValue;
   }
 
   private noteValue(note: string, octave: number) {

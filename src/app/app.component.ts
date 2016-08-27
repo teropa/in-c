@@ -13,8 +13,16 @@ import { PulseService } from './pulse.service';
              *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
              [instrument]=playerState.player.instrument
              [pan]=playerState.pan
+             [y]=playerState.y
              [gainAdjust]=playerState.gainAdjust
              [nowPlaying]=playerState.nowPlaying
+             [screenWidth]=width>
+      </g>
+      <g in-c-player-outline
+             *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
+             [pan]=playerState.pan
+             [y]=playerState.y
+             [gainAdjust]=playerState.gainAdjust
              [screenWidth]=width>
       </g>
     </svg>

@@ -32,6 +32,7 @@ export interface PlayerState {
   nowPlaying?: List<PlaylistItemRecord>;
   gainAdjust?: number;
   pan: number;
+  y: number;
 }
 
 export interface Playlist {
@@ -91,7 +92,8 @@ export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecor
   playlist: null,
   nowPlaying: <List<PlaylistItemRecord>>List.of(),
   gainAdjust: 1,
-  pan: 0
+  pan: 0,
+  y: 100
 });
 
 export interface AppStateRecord extends TypedRecord<AppStateRecord>, AppState {}

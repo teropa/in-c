@@ -30,7 +30,7 @@ const MIN_RADIUS = 10;
   template: `
     <svg:circle #circle
                 [attr.cx]="getX()"
-                cy="100"
+                [attr.cy]="getY()"
                 [attr.r]="getRadius()"
                 (wheel)="onWheel($event)"
                 [@flash]="notesPlayed">
@@ -60,7 +60,8 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   @Input() screenWidth: number;
   @ViewChild('circle') circle: ElementRef;
   notesPlayed = 0;
-  panOffset = 0;
+  panOffset = [0, 0];
+  y = 100;
   hammer: HammerManager;
 
   constructor(private time: TimeService, private store: Store<AppState>) {
@@ -69,6 +70,10 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   getX() {
     const relativeX = (this.pan + 1) / 2;
     return relativeX * this.screenWidth;
+  }
+
+  getY() {
+    return this.y;
   }
 
   getRadius() {
@@ -103,12 +108,13 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   }
 
   onPanStart(evt: HammerInput) {
-    this.panOffset = evt.center.x - this.getX();
+    this.panOffset = [evt.center.x - this.getX(), evt.center.y - this.getY()];
   }
 
   onPanMove(evt: HammerInput) {
-    const newPan = ((evt.center.x - this.panOffset) / this.screenWidth) * 2 - 1;
+    const newPan = ((evt.center.x - this.panOffset[0]) / this.screenWidth) * 2 - 1;
     this.store.dispatch({type: ADJUST_PAN, payload: {instrument: this.instrument, pan: newPan}});
+    this.y = evt.center.y - this.panOffset[1];
   }
 
 }

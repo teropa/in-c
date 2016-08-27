@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Effect, StateUpdates } from '@ngrx/effects';
 import { Map } from 'immutable';
 import { AppState, Player, PlayerState } from './models';
-import { PULSE, ADJUST_GAIN } from './app.reducer';
+import { PULSE, ADJUST_GAIN, ADJUST_PAN } from './app.reducer';
 import { SamplesService, Sample } from './samples.service';
 
 const GRACENOTE_OFFSET = 0.07;
@@ -14,7 +14,7 @@ export class AudioPlayerService {
   private convolver: ConvolverNode;
   private convolverDry: GainNode;
   private convolverWet: GainNode;
-  private playerGains: Map<Player, GainNode> = Map.of();
+  private playerPipelines: Map<Player, {gain: GainNode, pan: StereoPannerNode}> = Map.of();
 
   constructor(private updates$: StateUpdates<AppState>,
               private samples: SamplesService,
@@ -38,23 +38,23 @@ export class AudioPlayerService {
     .ignoreElements();
 
   @Effect() gainAdjust$ = this.updates$
-    .whenAction(ADJUST_GAIN)
-    .do(update => this.setPlayerGains(update.state))
+    .whenAction(ADJUST_GAIN, ADJUST_PAN)
+    .do(update => this.updatePlayerPipelines(update.state))
     .ignoreElements();
 
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
-    state.players.forEach(({player, nowPlaying, gainAdjust}) => {
+    state.players.forEach(({player, nowPlaying, gainAdjust, pan}) => {
       nowPlaying.forEach(({note, attackAt, releaseAt}) => {
         const sample = this.samples.getSample(player.instrument, note);
-        const gainNode = this.createOrUpdatePlayerGain(player, gainAdjust);
-        this.playSample(sample, attackAt, releaseAt, player.position, gainNode);
+        const pipelineNode = this.createOrUpdatePlayerPipeline(player, gainAdjust, pan);
+        this.playSample(sample, attackAt, releaseAt, pipelineNode);
       });
     });
   }
 
-  private setPlayerGains(state: AppState) {
-    state.players.forEach(p => this.createOrUpdatePlayerGain(p.player, p.gainAdjust));
+  private updatePlayerPipelines(state: AppState) {
+    state.players.forEach(p => this.createOrUpdatePlayerPipeline(p.player, p.gainAdjust, p.pan));
   }
 
   private playBeat(time: number, bpm: number) {
@@ -80,24 +80,21 @@ export class AudioPlayerService {
     gain.gain.linearRampToValueAtTime(0, time + duration);
   }
 
-  private playSample(sample: Sample, attackAt: number, releaseAt: number, pan: number = 0, next: AudioNode) {
+  private playSample(sample: Sample, attackAt: number, releaseAt: number, next: AudioNode) {
     if (!sample) {
       return;
     }
     const src = this.audioCtx.createBufferSource();
     const gain = this.audioCtx.createGain();
-    const panner = this.audioCtx.createStereoPanner();
 
     src.buffer = sample.buffer;
     gain.gain.value = 1;
     gain.gain.setValueAtTime(0, attackAt);
     gain.gain.linearRampToValueAtTime(1, attackAt + 0.003);
     gain.gain.setTargetAtTime(0, releaseAt, 0.3);
-    panner.pan.value = pan;
 
     src.connect(gain);
-    gain.connect(panner);
-    panner.connect(next);
+    gain.connect(next);
 
     src.start(attackAt, sample.startPosition);
     src.stop(attackAt + (sample.endPosition - sample.startPosition));
@@ -108,14 +105,17 @@ export class AudioPlayerService {
     node.connect(this.convolver);
   }
 
-  private createOrUpdatePlayerGain(player: Player, gainAdjust: number) {
-    if (!this.playerGains.has(player)) {
-      const newGain = this.audioCtx.createGain();
-      this.connect(newGain);
-      this.playerGains = this.playerGains.set(player, newGain);
+  private createOrUpdatePlayerPipeline(player: Player, gainAdjust: number, panVal: number) {
+    if (!this.playerPipelines.has(player)) {
+      const gain = this.audioCtx.createGain();
+      const pan = this.audioCtx.createStereoPanner();
+      gain.connect(pan);
+      this.connect(pan);
+      this.playerPipelines = this.playerPipelines.set(player, {gain, pan});
     }
-    const gain = this.playerGains.get(player);
+    const {gain, pan} = this.playerPipelines.get(player);
     gain.gain.value = player.baseGain * gainAdjust;
+    pan.pan.value = panVal;
     return gain;
   }
 

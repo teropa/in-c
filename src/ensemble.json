@@ -1,37 +1,30 @@
 [
   {
     "instrument": "synthetic-marimba",
-    "position": 0.5,
     "gain": 1
   },
   {
     "instrument": "synthetic-marimba-low",
-    "position": -0.5,
     "gain": 1
   },
   {
     "instrument": "gnarly-trance-pluck",
-    "position": 0.75,
     "gain": 0.5
   },
   {
     "instrument": "gnarly-trance-pluck-high",
-    "position": -0.75,
     "gain": 0.5
   },
   {
     "instrument": "tight-synth-bass",
-    "position": 0,
     "gain": 1
   },
   {
     "instrument": "rising-waves",
-    "position": 0.3,
     "gain": 1
   },
   {
     "instrument": "rising-waves-low",
-    "position": -0.3,
     "gain": 1
   }
 ]

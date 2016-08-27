@@ -20,6 +20,7 @@ import {
 
 export const PULSE = 'PULSE';
 export const ADJUST_GAIN = 'ADJUST_GAIN';
+export const ADJUST_PAN = 'ADJUST_PAN';
 
 const GRACENOTE_DURATION = 0.15;
 
@@ -149,7 +150,7 @@ function adjustGain(playerState: PlayerStateRecord, amount: number) {
 }
 
 const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
-  .map((p: Player) => playerStateFactory({player: playerFactory(p)}))
+  .map((p: Player) => playerStateFactory({player: playerFactory(p), pan: 0}))
 );
 const initialState = appStateFactory({
   score: readScore(require('json!../score.json')),
@@ -170,6 +171,11 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
         .findIndex(p => p.player.instrument === action.payload.instrument);
       return state
         .updateIn(['players', playerIdx], p => adjustGain(p, action.payload.amount));
+    case ADJUST_PAN:
+      const playerIdxForPan = state.players
+        .findIndex(p => p.player.instrument === action.payload.instrument);
+      return state
+        .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)));
     default:
       return state;
   }

@@ -5,6 +5,7 @@ import {
   ElementRef,
   Input,
   OnChanges,
+  OnDestroy,
   SimpleChanges,
   ViewChild,
   animate,
@@ -18,7 +19,7 @@ import { List } from 'immutable';
 import * as Hammer from 'hammerjs';
 
 import { AppState, PlaylistItem } from './models';
-import { ADJUST_GAIN, MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from './app.reducer';
+import { ADJUST_GAIN, ADJUST_PAN, MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from './app.reducer';
 import { TimeService } from './time.service';
 
 const MAX_RADIUS = 500;
@@ -54,17 +55,19 @@ const MIN_RADIUS = 10;
 export class PlayerComponent implements OnChanges, AfterViewInit {
   @Input() instrument: string;
   @Input() nowPlaying: List<PlaylistItem>;
-  @Input() position: number;
+  @Input() pan: number;
   @Input() gainAdjust: number;
   @Input() screenWidth: number;
   @ViewChild('circle') circle: ElementRef;
   notesPlayed = 0;
+  panOffset = 0;
+  hammer: HammerManager;
 
   constructor(private time: TimeService, private store: Store<AppState>) {
   }
 
   getX() {
-    const relativeX = (this.position + 1) / 2;
+    const relativeX = (this.pan + 1) / 2;
     return relativeX * this.screenWidth;
   }
 
@@ -76,9 +79,9 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    const hammer = new Hammer(this.circle.nativeElement);
-    hammer.get('pinch').set({ enable: true });
-    hammer.on('pinch', () => console.log('pnch'));
+    this.hammer = new Hammer(this.circle.nativeElement);
+    this.hammer.on('panstart', evt => this.onPanStart(evt));
+    this.hammer.on('panmove', evt => this.onPanMove(evt));
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -90,9 +93,22 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
     }
   }
 
+  ngOnDestroy() {
+    this.hammer.destroy();
+  }
+
   onWheel(evt: WheelEvent) {
     this.store.dispatch({type: ADJUST_GAIN, payload: {instrument: this.instrument, amount: evt.deltaY}});
     evt.preventDefault();
+  }
+
+  onPanStart(evt: HammerInput) {
+    this.panOffset = evt.center.x - this.getX();
+  }
+
+  onPanMove(evt: HammerInput) {
+    const newPan = ((evt.center.x - this.panOffset) / this.screenWidth) * 2 - 1;
+    this.store.dispatch({type: ADJUST_PAN, payload: {instrument: this.instrument, pan: newPan}});
   }
 
 }

@@ -19,13 +19,13 @@ import {
 } from './models';
 
 export const PULSE = 'PULSE';
-export const ADJUST_SIZE = 'ADJUST_SIZE';
+export const ADJUST_GAIN = 'ADJUST_GAIN';
 
 const GRACENOTE_DURATION = 0.15;
 
-export const MIN_SIZE_GAIN = 0.1;
-export const MAX_SIZE_GAIN = 2;
-const SIZE_GAIN_STEP = 0.01;
+export const MIN_GAIN_ADJUST = 0.1;
+export const MAX_GAIN_ADJUST = 2;
+const GAIN_ADJUST_STEP = 0.01;
 
 interface PlayerStats {
   minModuleIndex: number;
@@ -45,26 +45,22 @@ function getPulsesUntilStart(score: List<NoteRecord>, noteIdx: number) {
     .reduce((sum, note) => sum + note.duration, 0);
 }
 
-function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRecord>, bpm: number, startTime: number, sizeGain: number, player: PlayerRecord) {
+function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRecord>, bpm: number, startTime: number) {
   const pulseDuration = 60 / bpm;
   let items = List.of();
   if (note.note) {
     const attackAt = startTime + getPulsesUntilStart(score, noteIdx) * pulseDuration;
     const releaseAt = attackAt + pulseDuration * note.duration;
     items = items.push(playlistItemFactory({
-      player,
       note: note.note,
       attackAt,
-      releaseAt,
-      gain: player.gain * sizeGain
+      releaseAt
     }));
     if (note.gracenote) {
       items = items.push(playlistItemFactory({
-        player,
         note: note.gracenote,
         attackAt: attackAt - pulseDuration * GRACENOTE_DURATION,
-        releaseAt: attackAt,
-        gain: player.gain * sizeGain
+        releaseAt: attackAt
       }))
     }
   }
@@ -74,7 +70,7 @@ function makePlaylistItems(note: NoteRecord, noteIdx: number, score: List<NoteRe
 function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTime: number, beat: number, bpm: number) {
   const pulseDuration = 60 / bpm;
   const items = mod.score.reduce((playlist, note, idx) => {
-    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(note, idx, mod.score, bpm, startTime, playerState.sizeGain, playerState.player));
+    return <List<PlaylistItemRecord>>playlist.concat(makePlaylistItems(note, idx, mod.score, bpm, startTime));
   }, playerState.playlist ? playerState.playlist.items : <List<PlaylistItemRecord>>List.of());
   const duration = mod.score.reduce((sum, note) => sum + note.duration, 0);
   return playlistFactory({
@@ -147,6 +143,11 @@ function collectPlayerStats(players: List<PlayerStateRecord>): PlayerStats {
   };
 }
 
+function adjustGain(playerState: PlayerStateRecord, amount: number) {
+  const newGainAdjust = Math.max(MIN_GAIN_ADJUST, Math.min(MAX_GAIN_ADJUST, playerState.gainAdjust + amount * GAIN_ADJUST_STEP));
+  return playerState.set('gainAdjust', newGainAdjust);
+}
+
 const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
   .map((p: Player) => playerStateFactory({player: playerFactory(p)}))
 );
@@ -164,11 +165,11 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
       return state
         .set('beat', nextBeat)
         .update('players', players => players.map((player: PlayerStateRecord) => playNext(nextBeat, player, state.score, action.payload.time, action.payload.bpm, playerStats)));
-    case ADJUST_SIZE:
-      const playerIdx = state.players.findIndex(p => p.player.instrument === action.payload.instrument);
+    case ADJUST_GAIN:
+      const playerIdx = state.players
+        .findIndex(p => p.player.instrument === action.payload.instrument);
       return state
-        .updateIn(['players', playerIdx], (p: PlayerStateRecord) =>
-          p.update('sizeGain', (s: number) => Math.max(MIN_SIZE_GAIN, Math.min(MAX_SIZE_GAIN, s + action.payload.amount * SIZE_GAIN_STEP))));
+        .updateIn(['players', playerIdx], p => adjustGain(p, action.payload.amount));
     default:
       return state;
   }

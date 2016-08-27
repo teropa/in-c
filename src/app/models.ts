@@ -21,7 +21,7 @@ export interface Note {
 export interface Player {
   instrument: string,
   position: number,
-  gain: number
+  baseGain: number
 }
 
 export interface PlayerState {
@@ -30,7 +30,7 @@ export interface PlayerState {
   timeSpentOnModule?: number;
   playlist?: PlaylistRecord;
   nowPlaying?: List<PlaylistItemRecord>;
-  sizeGain?: number
+  gainAdjust?: number
 }
 
 export interface Playlist {
@@ -42,9 +42,7 @@ export interface Playlist {
 export interface PlaylistItem {
   note: string,
   attackAt: number,
-  releaseAt: number,
-  gain: number,
-  player: PlayerRecord
+  releaseAt: number
 }
 
 
@@ -72,16 +70,14 @@ export interface PlaylistItemRecord extends TypedRecord<PlaylistItemRecord>, Pla
 export const playlistItemFactory = makeTypedFactory<PlaylistItem, PlaylistItemRecord>({
   note: null,
   attackAt: 0,
-  releaseAt: 0,
-  gain: 1,
-  player: null
+  releaseAt: 0
 });
 
 export interface PlayerRecord extends TypedRecord<PlayerRecord>, Player {}
 export const playerFactory = makeTypedFactory<Player, PlayerRecord>({
   instrument: null,
   position: 0,
-  gain: 1
+  baseGain: 1
 });
 
 export interface PlayerStateRecord extends TypedRecord<PlayerStateRecord>, PlayerState {}
@@ -91,7 +87,7 @@ export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecor
   timeSpentOnModule: 0,
   playlist: null,
   nowPlaying: <List<PlaylistItemRecord>>List.of(),
-  sizeGain: 1
+  gainAdjust: 1
 });
 
 export interface AppStateRecord extends TypedRecord<AppStateRecord>, AppState {}

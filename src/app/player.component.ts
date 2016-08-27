@@ -18,7 +18,7 @@ import { List } from 'immutable';
 import * as Hammer from 'hammerjs';
 
 import { AppState, PlaylistItem } from './models';
-import { ADJUST_SIZE, MIN_SIZE_GAIN, MAX_SIZE_GAIN } from './app.reducer';
+import { ADJUST_GAIN, MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from './app.reducer';
 import { TimeService } from './time.service';
 
 const MAX_RADIUS = 500;
@@ -55,7 +55,7 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   @Input() instrument: string;
   @Input() nowPlaying: List<PlaylistItem>;
   @Input() position: number;
-  @Input() sizeGain: number;
+  @Input() gainAdjust: number;
   @Input() screenWidth: number;
   @ViewChild('circle') circle: ElementRef;
   notesPlayed = 0;
@@ -70,8 +70,8 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
 
   getRadius() {
     const radiusRange = MAX_RADIUS - MIN_RADIUS;
-    const gainRange = MAX_SIZE_GAIN - MIN_SIZE_GAIN;
-    const relativeGain = (this.sizeGain - MIN_SIZE_GAIN) / gainRange;
+    const gainRange = MAX_GAIN_ADJUST - MIN_GAIN_ADJUST;
+    const relativeGain = (this.gainAdjust - MIN_GAIN_ADJUST) / gainRange;
     return MIN_RADIUS + radiusRange * relativeGain;
   }
 
@@ -91,7 +91,7 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   }
 
   onWheel(evt: WheelEvent) {
-    this.store.dispatch({type: ADJUST_SIZE, payload: {instrument: this.instrument, amount: evt.deltaY}});
+    this.store.dispatch({type: ADJUST_GAIN, payload: {instrument: this.instrument, amount: evt.deltaY}});
     evt.preventDefault();
   }
 

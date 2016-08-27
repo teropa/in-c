@@ -13,11 +13,16 @@ import {
   transition,
   trigger
 } from '@angular/core';
+import { Store } from '@ngrx/store'; 
 import { List } from 'immutable';
 import * as Hammer from 'hammerjs';
 
-import { PlaylistItem } from './models';
+import { AppState, PlaylistItem } from './models';
+import { ADJUST_SIZE, MIN_SIZE_GAIN, MAX_SIZE_GAIN } from './app.reducer';
 import { TimeService } from './time.service';
+
+const MAX_RADIUS = 500;
+const MIN_RADIUS = 10;
 
 @Component({
   selector: '[in-c-player]',
@@ -25,7 +30,8 @@ import { TimeService } from './time.service';
     <svg:circle #circle
                 [attr.cx]="getX()"
                 cy="100"
-                r="50"
+                [attr.r]="getRadius()"
+                (wheel)="onWheel($event)"
                 [@flash]="notesPlayed">
     </svg:circle>
   `,
@@ -46,18 +52,27 @@ import { TimeService } from './time.service';
   ]
 })
 export class PlayerComponent implements OnChanges, AfterViewInit {
+  @Input() instrument: string;
   @Input() nowPlaying: List<PlaylistItem>;
   @Input() position: number;
+  @Input() sizeGain: number;
   @Input() screenWidth: number;
   @ViewChild('circle') circle: ElementRef;
   notesPlayed = 0;
 
-  constructor(private time: TimeService) {
+  constructor(private time: TimeService, private store: Store<AppState>) {
   }
 
   getX() {
     const relativeX = (this.position + 1) / 2;
     return relativeX * this.screenWidth;
+  }
+
+  getRadius() {
+    const radiusRange = MAX_RADIUS - MIN_RADIUS;
+    const gainRange = MAX_SIZE_GAIN - MIN_SIZE_GAIN;
+    const relativeGain = (this.sizeGain - MIN_SIZE_GAIN) / gainRange;
+    return MIN_RADIUS + radiusRange * relativeGain;
   }
 
   ngAfterViewInit() {
@@ -73,6 +88,11 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
         setTimeout(() => this.notesPlayed++, playAfter);
       });
     }
+  }
+
+  onWheel(evt: WheelEvent) {
+    this.store.dispatch({type: ADJUST_SIZE, payload: {instrument: this.instrument, amount: evt.deltaY}});
+    evt.preventDefault();
   }
 
 }

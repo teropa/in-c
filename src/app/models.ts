@@ -25,11 +25,12 @@ export interface Player {
 }
 
 export interface PlayerState {
-  player: PlayerRecord,
+  player: PlayerRecord;
   moduleIndex?: number;
   timeSpentOnModule?: number;
-  playlist?: PlaylistRecord,
-  nowPlaying?: List<PlaylistItemRecord>
+  playlist?: PlaylistRecord;
+  nowPlaying?: List<PlaylistItemRecord>;
+  sizeGain?: number
 }
 
 export interface Playlist {
@@ -42,6 +43,7 @@ export interface PlaylistItem {
   note: string,
   attackAt: number,
   releaseAt: number,
+  gain: number,
   player: PlayerRecord
 }
 
@@ -71,6 +73,7 @@ export const playlistItemFactory = makeTypedFactory<PlaylistItem, PlaylistItemRe
   note: null,
   attackAt: 0,
   releaseAt: 0,
+  gain: 1,
   player: null
 });
 
@@ -87,7 +90,8 @@ export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecor
   moduleIndex: null,
   timeSpentOnModule: 0,
   playlist: null,
-  nowPlaying: <List<PlaylistItemRecord>>List.of()
+  nowPlaying: <List<PlaylistItemRecord>>List.of(),
+  sizeGain: 1
 });
 
 export interface AppStateRecord extends TypedRecord<AppStateRecord>, AppState {}

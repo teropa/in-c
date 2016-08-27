@@ -38,7 +38,7 @@ export class AudioPlayerService {
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
     state.players.forEach(player => {
-      player.nowPlaying.forEach(({note, attackAt, releaseAt, player: {instrument, position, gain}}) => {
+      player.nowPlaying.forEach(({note, attackAt, releaseAt, gain, player: {instrument, position}}) => {
         const sample = this.samples.getSample(instrument, note);
         this.playSample(sample, attackAt, releaseAt, position, gain);
       });

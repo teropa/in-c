@@ -11,7 +11,9 @@ import { PulseService } from './pulse.service';
     <svg [attr.viewBox]="getViewBox()">
       <g in-c-player
              *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
+             [instrument]=playerState.player.instrument
              [position]=playerState.player.position
+             [sizeGain]=playerState.sizeGain
              [nowPlaying]=playerState.nowPlaying
              [screenWidth]=width>
       </g>

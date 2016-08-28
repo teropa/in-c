@@ -29,16 +29,25 @@ const MIN_RADIUS = 10;
 @Component({
   selector: '[in-c-player]',
   template: `
+    <svg:polygon #poly
+                 [attr.points]="getPolyPoints()">
+    </svg:polygon>
     <svg:circle #circle
-                [attr.cx]="getX()"
-                [attr.cy]="getY()"
+                [attr.cx]="getCenterX()"
+                [attr.cy]="getCenterY()"
                 [attr.r]="getRadius()"
                 (wheel)="onWheel($event)">
     </svg:circle>
   `,
   styles: [`
     circle {
-      fill: hsla(0, 100%, 100%, 0.5);
+      fill: rgba(0, 0, 0, 0.8);
+      cursor: move;
+    }
+    polygon {
+      fill: none;
+      stroke: black;
+      stroke-width: 4;
     }
   `]/*,
   animations: [
@@ -57,9 +66,11 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   @Input() pan: number;
   @Input() y: number;
   @Input() gainAdjust: number;
+  @Input() polygon: Array<{x: number, y: number}[]>;
   @Input() screenWidth: number;
   @Input() screenHeight: number;
   @ViewChild('circle') circle: ElementRef;
+  @ViewChild('poly') poly: ElementRef;
   notesPlayed = 0;
   panOffset = [0, 0];
   hammer: HammerManager;
@@ -69,21 +80,20 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
               private store: Store<AppState>) {
   }
 
-  getX() {
-    const relativeX = (this.pan + 1) / 2;
-    return relativeX * this.screenWidth;
+  getCenterX() {
+    return this.getX(this.pan);
   }
 
-  getY() {
-    const relativeY = (this.y + 1) / 2;
-    return relativeY * this.screenHeight;
+  getCenterY() {
+    return this.getY(this.y);
   }
 
   getRadius() {
-    const radiusRange = MAX_RADIUS - MIN_RADIUS;
-    const gainRange = MAX_GAIN_ADJUST - MIN_GAIN_ADJUST;
-    const relativeGain = (this.gainAdjust - MIN_GAIN_ADJUST) / gainRange;
-    return MIN_RADIUS + radiusRange * relativeGain;
+    return 30;
+  }
+
+  getPolyPoints() {
+    return this.polygon.map(([sp, ep]) => `${this.getX(sp.x)},${this.getY(sp.y)} ${this.getX(ep.x)},${this.getY(ep.y)}`).join(' ');
   }
 
   ngAfterViewInit() {
@@ -101,27 +111,23 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
           const hue = item.hue;
           const brightness = this.colors.getNoteBrightness(item.note);
           const beginSaturation = 100;
-          const endSaturation = 50;
-          this.circle.nativeElement.animate([
-            {fill: `hsla(${hue}, ${beginSaturation}%, ${brightness}%, 0.9)`},
-            {fill: `hsla(${hue}, ${endSaturation}%, ${brightness}%, 0.2)`}
+          const endSaturation = 25;
+          this.poly.nativeElement.animate([
+            {fill: `hsl(${hue}, ${beginSaturation}%, ${brightness}%)`},
+            {fill: `hsl(${hue}, ${endSaturation}%, ${brightness}%)`}
           ], {
             duration: 2000,
             easing: 'ease-out',
             fill: 'forwards'
           });
-          /*this.circle.nativeElement.animate([
-            {r: this.getRadius() * (1 + 0.0150)},
-            {r: this.getRadius() * (1 - 0.0125)},
-            {r: this.getRadius() * (1 + 0.0100)},
-            {r: this.getRadius() * (1 - 0.0075)},
-            {r: this.getRadius() * (1 + 0.0050)},
-            {r: this.getRadius() * (1 - 0.0025)},
-            {r: this.getRadius() * (1 + 0.0000)}
+          this.circle.nativeElement.animate([
+            {r: this.getRadius() * 1.1},
+            {r: this.getRadius() * 0.95},
+            {r: this.getRadius()}
           ], {
             duration: 500,
             easing: 'ease-out'
-          });*/
+          });
         }, playAfter);
       });
     }
@@ -137,13 +143,23 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   }
 
   onPanStart(evt: HammerInput) {
-    this.panOffset = [evt.center.x - this.getX(), evt.center.y - this.getY()];
+    this.panOffset = [evt.center.x - this.getCenterX(), evt.center.y - this.getCenterY()];
   }
 
   onPanMove(evt: HammerInput) {
     const newPan = ((evt.center.x - this.panOffset[0]) / this.screenWidth) * 2 - 1;
     const newY = ((evt.center.y - this.panOffset[1]) / this.screenHeight) * 2 - 1;
     this.store.dispatch({type: ADJUST_PAN, payload: {instrument: this.instrument, pan: newPan, y: newY}});
+  }
+
+  private getX(x: number) {
+    const relativeX = (x + 1) / 2;
+    return relativeX * this.screenWidth;
+  }
+
+  getY(y: number ) {
+    const relativeY = (y + 1) / 2;
+    return relativeY * this.screenHeight;
   }
 
 }

@@ -18,6 +18,8 @@ import {
   playlistItemFactory
 } from './models';
 
+const Voronoi = require('voronoi');
+
 export const PULSE = 'PULSE';
 export const ADJUST_GAIN = 'ADJUST_GAIN';
 export const ADJUST_PAN = 'ADJUST_PAN';
@@ -45,7 +47,7 @@ function generateHues(score: ModuleRecord[]) {
       if (mod.changeHue) {
         hue = wrapHue(hues[hues.length - 1] - direction * Math.floor(256 / 3));
       } else {
-        hue = wrapHue(hues[hues.length - 1] - direction * 5);
+        hue = wrapHue(hues[hues.length - 1] - direction * 10);
       }
     } else {
       hue = 227;
@@ -178,6 +180,19 @@ function adjustGain(playerState: PlayerStateRecord, amount: number) {
   return playerState.set('gainAdjust', newGainAdjust);
 }
 
+function assignVoronois(playerStates: List<PlayerStateRecord>) {
+  const voronoi = new Voronoi();
+  const bbox = {xl: -1, xr: 1, yt: -1, yb: 1};
+  const sites = playerStates.map(s => ({x: s.pan, y: s.y, voronoiId: null})).toArray();
+  const diagram = voronoi.compute(sites, bbox);
+  return <List<PlayerStateRecord>>playerStates.map((state, index) => {
+    const site = sites[index];
+    const cell = diagram.cells[site.voronoiId];
+    const pts = cell.halfedges.map((he: any) => [he.getStartpoint(), he.getEndpoint()]);
+    return state.set('polygon', pts);
+  });
+}
+
 const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
   .map((p: Player) => playerStateFactory({
     player: playerFactory(p),
@@ -189,7 +204,7 @@ const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
 const initialState = appStateFactory({
   score: readScore(require('json!../score.json')),
   beat: 0,
-  players: initialPlayerStates
+  players: assignVoronois(initialPlayerStates)
 });
 
 export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, action: Action) => {
@@ -211,7 +226,8 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
       // Todo: could use mergeIn but there's a bug in immutable typescript definitions 
       return state
         .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)))
-        .setIn(['players', playerIdxForPan, 'y'], action.payload.y);
+        .setIn(['players', playerIdxForPan, 'y'], action.payload.y)
+        .update('players', assignVoronois);
     default:
       return state;
   }

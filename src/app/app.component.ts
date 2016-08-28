@@ -16,14 +16,7 @@ import { PulseService } from './pulse.service';
              [y]=playerState.y
              [gainAdjust]=playerState.gainAdjust
              [nowPlaying]=playerState.nowPlaying
-             [screenWidth]=width
-             [screenHeight]=height>
-      </g>
-      <g in-c-player-outline
-             *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
-             [pan]=playerState.pan
-             [y]=playerState.y
-             [gainAdjust]=playerState.gainAdjust
+             [polygon]=playerState.polygon
              [screenWidth]=width
              [screenHeight]=height>
       </g>

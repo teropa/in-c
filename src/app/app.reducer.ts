@@ -29,8 +29,11 @@ export const MAX_GAIN_ADJUST = 2;
 const GAIN_ADJUST_STEP = 0.01;
 
 interface PlayerStats {
+  allPlaying: boolean;
   minModuleIndex: number;
   maxModuleIndex: number;
+  minTimeToLastBeat: number;
+  maxTimeToLastBeat: number;
 }
 
 function readScore(fullScore: ModuleRecord[]): List<ModuleRecord> {
@@ -94,7 +97,7 @@ function moveToNext(playerState: PlayerStateRecord, playerStats: PlayerStats) {
 
 function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number, playerStats: PlayerStats) {
   if (!playerState.playlist) {
-    if (moveToNext(playerState, playerStats)) {
+    if (playerStats.maxTimeToLastBeat <= 1 && moveToNext(playerState, playerStats)) {
       return playerState.merge({
         moduleIndex: 0,
         timeSpentOnModule: 0,
@@ -105,7 +108,7 @@ function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>,
     }
   } else if (Math.floor(playerState.playlist.lastBeat) <= beat) {
     const nextModuleIdx = playerState.moduleIndex + 1;
-    if (nextModuleIdx < score.size && moveToNext(playerState, playerStats)) {
+    if (nextModuleIdx < score.size && playerStats.allPlaying && moveToNext(playerState, playerStats)) {
       return playerState.merge({
         moduleIndex: nextModuleIdx,
         timeSpentOnModule: 0,
@@ -139,11 +142,15 @@ function playNext(beat: number, player: PlayerStateRecord, score: List<ModuleRec
   return assignNowPlaying(assignModule(player, score, time, beat, bpm, playerStats), time, bpm);
 }
 
-function collectPlayerStats(players: List<PlayerStateRecord>): PlayerStats {
+function collectPlayerStats(players: List<PlayerStateRecord>, beat: number): PlayerStats {
   const mods = players.map(p => p.moduleIndex);
+  const timesToLastBeat = players.map(p => p.playlist ? p.playlist.lastBeat - beat : 0);
   return {
+    allPlaying: players.every(p => typeof p.moduleIndex === 'number'),
     minModuleIndex: mods.min(),
-    maxModuleIndex: mods.max()
+    maxModuleIndex: mods.max(),
+    minTimeToLastBeat: timesToLastBeat.min(),
+    maxTimeToLastBeat: timesToLastBeat.max()
   };
 }
 
@@ -165,7 +172,7 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
   switch (action.type) {
     case PULSE:
       const nextBeat = state.beat + 1;
-      const playerStats = collectPlayerStats(state.players);
+      const playerStats = collectPlayerStats(state.players, state.beat);
       return state
         .set('beat', nextBeat)
         .update('players', players => players.map((player: PlayerStateRecord) => playNext(nextBeat, player, state.score, action.payload.time, action.payload.bpm, playerStats)));

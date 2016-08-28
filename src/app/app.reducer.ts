@@ -36,11 +36,30 @@ interface PlayerStats {
   maxTimeToLastBeat: number;
 }
 
+function generateHues(score: ModuleRecord[]) {
+  const wrapHue = (n: number) => n % 256;
+  return score.reduce((hues, mod) => {
+    const direction = Math.random() < 0.5 ? -1 : 1;
+    let hue: number;
+    if (hues.length) {
+      if (mod.changeHue) {
+        hue = wrapHue(hues[hues.length - 1] - direction * Math.floor(256 / 3));
+      } else {
+        hue = wrapHue(hues[hues.length - 1] - direction * 5);
+      }
+    } else {
+      hue = 227;
+    }
+    return hues.concat(hue);
+  }, []);
+}
+
 function readScore(fullScore: ModuleRecord[]): List<ModuleRecord> {
-  return List(fullScore.map(({number, score, hue}) => moduleFactory({
+  const hues = generateHues(fullScore);
+  return List(fullScore.map(({number, score}, idx) => moduleFactory({
     number,
     score: <List<NoteRecord>>List(score.map(noteFactory)),
-    hue
+    hue: hues[idx]
   })));
 }
 

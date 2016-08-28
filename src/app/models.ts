@@ -10,6 +10,7 @@ export interface AppState {
 export interface Module {
   number: number,
   score: List<NoteRecord>,
+  changeHue?: boolean,
   hue: number
 }
 

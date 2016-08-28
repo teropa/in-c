@@ -5,7 +5,7 @@ import {
 
 import { MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from './app.reducer';
 
-const MAX_RADIUS = 500;
+const MAX_RADIUS = 100;
 const MIN_RADIUS = 10;
 
 @Component({
@@ -29,6 +29,7 @@ export class PlayerOutlineComponent {
   @Input() pan: number;
   @Input() gainAdjust: number;
   @Input() screenWidth: number;
+  @Input() screenHeight: number;
   @Input() y: number;
 
   getX() {
@@ -37,7 +38,8 @@ export class PlayerOutlineComponent {
   }
 
   getY() {
-    return this.y;
+    const relativeY = (this.y + 1) / 2;
+    return relativeY * this.screenHeight;
   }
 
   getRadius() {

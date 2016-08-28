@@ -179,8 +179,13 @@ function adjustGain(playerState: PlayerStateRecord, amount: number) {
 }
 
 const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
-  .map((p: Player) => playerStateFactory({player: playerFactory(p), pan: 0, y: 100}))
+  .map((p: Player) => playerStateFactory({
+    player: playerFactory(p),
+    pan: Math.random() * 2 - 1,
+    y: Math.random() * 2 - 1
+  }))
 );
+
 const initialState = appStateFactory({
   score: readScore(require('json!../score.json')),
   beat: 0,

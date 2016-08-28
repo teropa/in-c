@@ -23,7 +23,7 @@ import { ADJUST_GAIN, ADJUST_PAN, MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from './app
 import { TimeService } from './time.service';
 import { ColorService } from './color.service';
 
-const MAX_RADIUS = 500;
+const MAX_RADIUS = 100;
 const MIN_RADIUS = 10;
 
 @Component({
@@ -58,6 +58,7 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   @Input() y: number;
   @Input() gainAdjust: number;
   @Input() screenWidth: number;
+  @Input() screenHeight: number;
   @ViewChild('circle') circle: ElementRef;
   notesPlayed = 0;
   panOffset = [0, 0];
@@ -74,7 +75,8 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   }
 
   getY() {
-    return this.y;
+    const relativeY = (this.y + 1) / 2;
+    return relativeY * this.screenHeight;
   }
 
   getRadius() {
@@ -140,7 +142,7 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
 
   onPanMove(evt: HammerInput) {
     const newPan = ((evt.center.x - this.panOffset[0]) / this.screenWidth) * 2 - 1;
-    const newY = evt.center.y - this.panOffset[1];;
+    const newY = ((evt.center.y - this.panOffset[1]) / this.screenHeight) * 2 - 1;
     this.store.dispatch({type: ADJUST_PAN, payload: {instrument: this.instrument, pan: newPan, y: newY}});
   }
 

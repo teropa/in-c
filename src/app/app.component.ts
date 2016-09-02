@@ -3,12 +3,13 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
 import { AppState, PlayerState } from './models';
+import { AudioPlayerService } from './audio-player.service';
 import { PulseService } from './pulse.service';
 
 @Component({
   selector: 'in-c-app',
   template: `
-    <svg [attr.viewBox]="getViewBox()">
+    <svg [attr.viewBox]="getViewBox()" (click)="audioPlayer.enableAudioContext()">
       <g in-c-player
              *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
              [instrument]=playerState.player.instrument
@@ -40,6 +41,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(private store: Store<AppState>,
               private pulse: PulseService,
+              private audioPlayer: AudioPlayerService,
               private elRef: ElementRef) {
   }
 

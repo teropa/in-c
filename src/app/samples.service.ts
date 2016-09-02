@@ -13,7 +13,7 @@ export interface Sample {
 }
 
 
-const NOTE_OFFSETS = {
+export const NOTES = {
   'G3': [0, 4],
   'C4': [4, 8],
   'E4': [8, 12],
@@ -31,7 +31,8 @@ const NOTE_OFFSETS = {
   'G5': [56, 60],
   'A5': [60, 64],
   'B5': [64, 68]
-}
+};
+
 const SOUNDFONT_URLS = {
   'gnarly-trance-pluck': require('../soundfonts/gnarly-trance-pluck.mp3'),
   'gnarly-trance-pluck-high': require('../soundfonts/gnarly-trance-pluck-high.mp3'),
@@ -58,8 +59,8 @@ export class SamplesService {
     if (soundfont) {
       return {
         buffer: soundfont,
-        startPosition: NOTE_OFFSETS[noteAndOctave][0],
-        endPosition: NOTE_OFFSETS[noteAndOctave][1]
+        startPosition: NOTES[noteAndOctave][0],
+        endPosition: NOTES[noteAndOctave][1]
       };
     }
   }

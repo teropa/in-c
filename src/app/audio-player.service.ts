@@ -42,6 +42,14 @@ export class AudioPlayerService {
     .do(update => this.updatePlayerPipelines(update.state))
     .ignoreElements();
 
+  enableAudioContext() {
+    const buffer = this.audioCtx.createBuffer(1, 1, 44100);
+    const bufferSource = this.audioCtx.createBufferSource();
+    bufferSource.buffer = buffer;
+    bufferSource.connect(this.audioCtx.destination);
+    bufferSource.start();
+  }
+
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
     state.players.forEach(({player, nowPlaying, gainAdjust, pan}) => {

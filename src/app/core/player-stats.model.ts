@@ -6,6 +6,7 @@ export interface PlayerStats {
   maxModuleIndex: number;
   minTimeToLastBeat: number;
   maxTimeToLastBeat: number;
+  playerCount: number;
 }
 
 export interface PlayerStatsRecord extends TypedRecord<PlayerStatsRecord>, PlayerStats {}
@@ -13,5 +14,6 @@ export const playerStatsFactory = makeTypedFactory<PlayerStats, PlayerStatsRecor
   minModuleIndex: null,
   maxModuleIndex: null,
   minTimeToLastBeat: null,
-  maxTimeToLastBeat: null
+  maxTimeToLastBeat: null,
+  playerCount: 0
 });

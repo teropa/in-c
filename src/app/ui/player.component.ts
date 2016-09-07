@@ -25,9 +25,6 @@ import { ADVANCE, ADJUST_PAN } from '../core/actions';
 import { TimeService } from '../core/time.service';
 import { ColorService } from './color.service';
 
-const MIN_RADIUS = 40;
-const MAX_RADIUS = 60;
-
 @Component({
   selector: 'in-c-player',
   template: `
@@ -37,6 +34,7 @@ const MAX_RADIUS = 60;
          [style.top.px]="getCenterY() - getRadius()"
          [style.width.px]="getRadius() * 2"
          [style.height.px]="getRadius() * 2"
+         [style.transform]="getTransform()"
          [style.backgroundColor]="getColor()"
          (click)="advance()">
     </div>
@@ -46,6 +44,7 @@ const MAX_RADIUS = 60;
       position: absolute;
       cursor: move;
       border-radius: 50%;
+      transition: transform 1s;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -73,13 +72,11 @@ export class PlayerComponent implements AfterViewInit {
   }
 
   getRadius() {
-    const moduleRange = this.playerStats.maxModuleIndex - this.playerStats.minModuleIndex;
-    if (moduleRange === 0) {
-      return MIN_RADIUS;
-    } else {
-      const radiusRange = MAX_RADIUS - MIN_RADIUS;
-      return MIN_RADIUS + radiusRange * (this.playerState.moduleIndex - this.playerStats.minModuleIndex) * moduleRange;
-    }
+    return 60;
+  }
+
+  getTransform() {
+    return `scale(${this.playerState.advanceFactor})`;
   }
 
   getColor() {

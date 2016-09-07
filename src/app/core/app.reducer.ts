@@ -11,7 +11,7 @@ import { PlayerStatsRecord, playerStatsFactory } from './player-stats.model';
 import { PULSE, ADVANCE, ADJUST_PAN } from './actions';
 
 const GRACENOTE_DURATION = 0.15;
-
+const ADVANCEMENT_DECAY_FACTORY = 0.95;
 
 function generateHues(score: ModuleRecord[]) {
   const wrapHue = (n: number) => n % 256;
@@ -99,11 +99,17 @@ function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>,
   if (shouldAdvance(playerState, score, beat, playerStats)) {
     return playerState.merge({
       moduleIndex: playerState.moduleIndex + 1,
+      advanceFactor: playerState.advanceFactor * 1 / Math.pow(ADVANCEMENT_DECAY_FACTORY, playerStats.playerCount),
       advanceRequested: false
     });
   } else {
     return playerState;
   }
+}
+
+function assignAdvancementFactor(playerState: PlayerStateRecord, numberOfAdvancingPlayers: number) {
+  const advanceFactor = playerState.advanceFactor * Math.pow(ADVANCEMENT_DECAY_FACTORY, numberOfAdvancingPlayers);
+  return playerState.merge({advanceFactor});
 }
 
 function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number) {
@@ -132,18 +138,15 @@ function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) 
   }
 }
 
-function playNext(beat: number, player: PlayerStateRecord, score: List<ModuleRecord>, time: number, bpm: number, playerStats: PlayerStatsRecord) {
-  return assignNowPlaying(
-    assignPlaylist(
-      assignModule(player, score, beat, playerStats),
-      score,
-      time,
-      beat,
-      bpm
-    ),
-    time,
-    bpm
-  );
+function advancePlayers(state: AppStateRecord, time: number, bpm: number) {
+  const {score, beat, stats} = state;
+  const numberOfAdvancingPlayers = state.players.filter(player => shouldAdvance(player, score, beat, stats)).size;
+  const players = state.players
+    .map(player => assignModule(player, score, beat, stats))
+    .map(player => assignAdvancementFactor(player, numberOfAdvancingPlayers))
+    .map(player => assignPlaylist(player, score, time, beat, bpm))
+    .map(player => assignNowPlaying(player, time, bpm))
+  return state.merge({players});
 }
 
 function updatePlayerStats(state: AppStateRecord) {
@@ -155,12 +158,6 @@ function updatePlayerStats(state: AppStateRecord) {
     minTimeToLastBeat: timesToLastBeat.min(),
     maxTimeToLastBeat: timesToLastBeat.max()
   });
-}
-
-function advancePlayers(state: AppStateRecord, time: number, bpm: number) {
-  return state.update('players', players =>
-    players.map((player: PlayerStateRecord) => playNext(state.beat, player, state.score, time, bpm, state.stats))
-  );
 }
 
 const initialPlayerStates = List((<Player[]>require('json!../../ensemble.json'))
@@ -178,7 +175,7 @@ const initialState = appStateFactory({
   score: readScore(require('json!../../score.json')),
   beat: 0,
   players: initialPlayerStates,
-  stats: playerStatsFactory()
+  stats: playerStatsFactory().merge({playerCount: initialPlayerStates.size})
 });
 
 export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, action: Action) => {

@@ -13,11 +13,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
   template: `
     <div #container class="container" (click)="audioPlayer.enableAudioContext()">
       <in-c-player *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
-                   [instrument]=playerState.player.instrument
-                   [pan]=playerState.pan
-                   [y]=playerState.y
-                   [gainAdjust]=playerState.gainAdjust
-                   [nowPlaying]=playerState.nowPlaying
+                   [playerState]="playerState"
                    [screenWidth]=width
                    [screenHeight]=height>
       </in-c-player>

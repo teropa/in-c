@@ -19,8 +19,9 @@ import { List } from 'immutable';
 import * as Hammer from 'hammerjs';
 
 import { AppState } from '../core/app-state.model';
+import { PlayerState } from '../core/player-state.model';
 import { PlaylistItem } from '../Core/playlist-item.model';
-import { ADJUST_GAIN, ADJUST_PAN } from '../core/actions';
+import { ADVANCE, ADJUST_GAIN, ADJUST_PAN } from '../core/actions';
 import { MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from '../core/app.reducer';
 import { TimeService } from '../core/time.service';
 import { ColorService } from './color.service';
@@ -37,14 +38,15 @@ const MIN_RADIUS = 10;
          [style.top.px]="getCenterY() - getRadius()"
          [style.width.px]="getRadius() * 2"
          [style.height.px]="getRadius() * 2"
+         [style.backgroundColor]="getColor()"
          [@flash]="notesPlayed"
+         (click)="advance()"
          (wheel)="onWheel($event)">
     </div>
   `,
   styles: [`
     .circle {
       position: absolute;
-      background-color: rgba(0, 0, 0, 0.8);
       cursor: move;
       border-radius: 50%;
     }
@@ -60,11 +62,7 @@ const MIN_RADIUS = 10;
   ]
 })
 export class PlayerComponent implements OnChanges, AfterViewInit {
-  @Input() instrument: string;
-  @Input() nowPlaying: List<PlaylistItem>;
-  @Input() pan: number;
-  @Input() y: number;
-  @Input() gainAdjust: number;
+  @Input() playerState: PlayerState;
   @Input() screenWidth: number;
   @Input() screenHeight: number;
   @ViewChild('circle') circle: ElementRef;
@@ -78,15 +76,19 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   }
 
   getCenterX() {
-    return this.getX(this.pan);
+    return this.getX(this.playerState.pan);
   }
 
   getCenterY() {
-    return this.getY(this.y);
+    return this.getY(this.playerState.y);
   }
 
   getRadius() {
     return 60;
+  }
+
+  getColor() {
+    return this.playerState.advanceRequested ? 'red' : 'black';
   }
 
   ngAfterViewInit() {
@@ -97,7 +99,7 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['nowPlaying']) {
-      this.nowPlaying.forEach(item => {
+      this.playerState.nowPlaying.forEach(item => {
         const playAfter = this.time.getMillisecondsTo(item.attackAt);
         setTimeout(() => {
           this.notesPlayed++;
@@ -110,8 +112,12 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
     this.hammer.destroy();
   }
 
+  advance() {
+    this.store.dispatch({type: ADVANCE, payload: this.playerState.player.instrument});
+  }
+
   onWheel(evt: WheelEvent) {
-    this.store.dispatch({type: ADJUST_GAIN, payload: {instrument: this.instrument, amount: evt.deltaY}});
+    this.store.dispatch({type: ADJUST_GAIN, payload: {instrument: this.playerState.player.instrument, amount: evt.deltaY}});
     evt.preventDefault();
   }
 
@@ -122,7 +128,7 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   onPanMove(evt: HammerInput) {
     const newPan = ((evt.center.x - this.panOffset[0]) / this.screenWidth) * 2 - 1;
     const newY = ((evt.center.y - this.panOffset[1]) / this.screenHeight) * 2 - 1;
-    this.store.dispatch({type: ADJUST_PAN, payload: {instrument: this.instrument, pan: newPan, y: newY}});
+    this.store.dispatch({type: ADJUST_PAN, payload: {instrument: this.playerState.player.instrument, pan: newPan, y: newY}});
   }
 
   private getX(x: number) {

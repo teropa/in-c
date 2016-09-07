@@ -7,7 +7,7 @@ import { Player, PlayerRecord, playerFactory } from './player.model';
 import { PlayerStateRecord, playerStateFactory} from './player-state.model';
 import { PlaylistRecord, playlistFactory} from './playlist.model';
 import { PlaylistItemRecord, playlistItemFactory } from './playlist-item.model';
-import { PULSE, ADJUST_GAIN, ADJUST_PAN } from './actions';
+import { PULSE, ADVANCE, ADJUST_GAIN, ADJUST_PAN } from './actions';
 
 const GRACENOTE_DURATION = 0.15;
 
@@ -93,41 +93,32 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTi
   });
 }
 
-function moveToNext(playerState: PlayerStateRecord, playerStats: PlayerStats) {
-  const definitelyMoveByBeat = 500;
-  const moveProbability = playerState.timeSpentOnModule / definitelyMoveByBeat;
-  const limiter = Math.max(0, playerState.moduleIndex - playerStats.minModuleIndex - 1);
-  const limitedMoveProbability = moveProbability / Math.pow(10, limiter);
-  return Math.random() < limitedMoveProbability;
-}
-
 function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number, playerStats: PlayerStats) {
   if (!playerState.playlist) {
-    if (playerStats.maxTimeToLastBeat <= 1 && moveToNext(playerState, playerStats)) {
+    if (playerStats.maxTimeToLastBeat <= 1 && playerState.advanceRequested) {
       return playerState.merge({
         moduleIndex: 0,
-        timeSpentOnModule: 0,
-        playlist: makePlaylist(playerState, score.get(0), time, beat, bpm)
+        playlist: makePlaylist(playerState, score.get(0), time, beat, bpm),
+        advanceRequested: false
       });
     } else {
-      return playerState.update('timeSpentOnModule', t => t + 1);
+      return playerState;
     }
   } else if (Math.floor(playerState.playlist.lastBeat) <= beat) {
     const nextModuleIdx = playerState.moduleIndex + 1;
-    if (nextModuleIdx < score.size && playerStats.allPlaying && moveToNext(playerState, playerStats)) {
+    if (nextModuleIdx < score.size && playerStats.allPlaying && playerState.advanceRequested) {
       return playerState.merge({
         moduleIndex: nextModuleIdx,
-        timeSpentOnModule: 0,
-        playlist: makePlaylist(playerState, score.get(nextModuleIdx), time, playerState.playlist.lastBeat, bpm)
+        playlist: makePlaylist(playerState, score.get(nextModuleIdx), time, playerState.playlist.lastBeat, bpm),
+        advanceRequested: false
       });
     } else {
       return playerState.merge({
-        playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), time, playerState.playlist.lastBeat, bpm),
-        timeSpentOnModule: playerState.timeSpentOnModule + 1
+        playlist: makePlaylist(playerState, score.get(playerState.moduleIndex), time, playerState.playlist.lastBeat, bpm)
       });
     }
   }
-  return playerState.update('timeSpentOnModule', t => t + 1);
+  return playerState;
 }
 
 function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) {
@@ -169,7 +160,8 @@ const initialPlayerStates = List((<Player[]>require('json!../../ensemble.json'))
   .map((p: Player) => playerStateFactory({
     player: playerFactory(p),
     pan: Math.random() * 2 - 1,
-    y: Math.random() * 2 - 1
+    y: Math.random() * 2 - 1,
+    advanceRequested: false
   }))
 );
 
@@ -187,6 +179,10 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
       return state
         .set('beat', nextBeat)
         .update('players', players => players.map((player: PlayerStateRecord) => playNext(nextBeat, player, state.score, action.payload.time, action.payload.bpm, playerStats)));
+    case ADVANCE:
+      const playerIdxForAdvance = state.players
+        .findIndex(p => p.player.instrument === action.payload);
+      return state.setIn(['players', playerIdxForAdvance, 'advanceRequested'], true);
     case ADJUST_GAIN:
       const playerIdx = state.players
         .findIndex(p => p.player.instrument === action.payload.instrument);

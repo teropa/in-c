@@ -7,13 +7,9 @@ import { Player, PlayerRecord, playerFactory } from './player.model';
 import { PlayerStateRecord, playerStateFactory} from './player-state.model';
 import { PlaylistRecord, playlistFactory} from './playlist.model';
 import { PlaylistItemRecord, playlistItemFactory } from './playlist-item.model';
-import { PULSE, ADVANCE, ADJUST_GAIN, ADJUST_PAN } from './actions';
+import { PULSE, ADVANCE, ADJUST_PAN } from './actions';
 
 const GRACENOTE_DURATION = 0.15;
-
-export const MIN_GAIN_ADJUST = 0.1;
-export const MAX_GAIN_ADJUST = 2;
-const GAIN_ADJUST_STEP = 0.01;
 
 interface PlayerStats {
   allPlaying: boolean;
@@ -151,10 +147,6 @@ function collectPlayerStats(players: List<PlayerStateRecord>, beat: number): Pla
   };
 }
 
-function adjustGain(playerState: PlayerStateRecord, amount: number) {
-  const newGainAdjust = Math.max(MIN_GAIN_ADJUST, Math.min(MAX_GAIN_ADJUST, playerState.gainAdjust + amount * GAIN_ADJUST_STEP));
-  return playerState.set('gainAdjust', newGainAdjust);
-}
 
 const initialPlayerStates = List((<Player[]>require('json!../../ensemble.json'))
   .map((p: Player) => playerStateFactory({
@@ -183,11 +175,6 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
       const playerIdxForAdvance = state.players
         .findIndex(p => p.player.instrument === action.payload);
       return state.setIn(['players', playerIdxForAdvance, 'advanceRequested'], true);
-    case ADJUST_GAIN:
-      const playerIdx = state.players
-        .findIndex(p => p.player.instrument === action.payload.instrument);
-      return state
-        .updateIn(['players', playerIdx], p => adjustGain(p, action.payload.amount));
     case ADJUST_PAN:
       const playerIdxForPan = state.players
         .findIndex(p => p.player.instrument === action.payload.instrument);

@@ -14,8 +14,8 @@ import { AudioPlayerService } from './audio/audio-player.service';
     <div #container class="container" (click)="audioPlayer.enableAudioContext()">
       <in-c-player *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
                    [playerState]="playerState"
-                   [screenWidth]=width
-                   [screenHeight]=height>
+                   [screenWidth]="width"
+                   [screenHeight]="height">
       </in-c-player>
     </div>
   `,
@@ -35,6 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
   @ViewChild('container') containerRef: ElementRef;
   width = 0;
   height = 0;
+
   constructor(private store: Store<AppState>,
               private pulse: PulseService,
               private audioPlayer: AudioPlayerService) {

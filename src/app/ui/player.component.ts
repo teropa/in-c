@@ -21,13 +21,9 @@ import * as Hammer from 'hammerjs';
 import { AppState } from '../core/app-state.model';
 import { PlayerState } from '../core/player-state.model';
 import { PlaylistItem } from '../Core/playlist-item.model';
-import { ADVANCE, ADJUST_GAIN, ADJUST_PAN } from '../core/actions';
-import { MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from '../core/app.reducer';
+import { ADVANCE, ADJUST_PAN } from '../core/actions';
 import { TimeService } from '../core/time.service';
 import { ColorService } from './color.service';
-
-const MAX_RADIUS = 100;
-const MIN_RADIUS = 10;
 
 @Component({
   selector: 'in-c-player',
@@ -40,8 +36,7 @@ const MIN_RADIUS = 10;
          [style.height.px]="getRadius() * 2"
          [style.backgroundColor]="getColor()"
          [@flash]="notesPlayed"
-         (click)="advance()"
-         (wheel)="onWheel($event)">
+         (click)="advance()">
     </div>
   `,
   styles: [`
@@ -114,11 +109,6 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
 
   advance() {
     this.store.dispatch({type: ADVANCE, payload: this.playerState.player.instrument});
-  }
-
-  onWheel(evt: WheelEvent) {
-    this.store.dispatch({type: ADJUST_GAIN, payload: {instrument: this.playerState.player.instrument, amount: evt.deltaY}});
-    evt.preventDefault();
   }
 
   onPanStart(evt: HammerInput) {

@@ -11,7 +11,6 @@ export interface PlayerState {
   advanceRequested: boolean;
   playlist?: PlaylistRecord;
   nowPlaying?: List<PlaylistItemRecord>;
-  gainAdjust?: number;
   pan: number;
   y: number;
 }
@@ -23,7 +22,6 @@ export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecor
   advanceRequested: false,
   playlist: null,
   nowPlaying: <List<PlaylistItemRecord>>List.of(),
-  gainAdjust: 1,
   pan: 0,
   y: 100
 });

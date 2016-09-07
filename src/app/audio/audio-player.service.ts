@@ -62,17 +62,17 @@ export class AudioPlayerService implements OnDestroy {
   
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
-    state.players.forEach(({player, nowPlaying, gainAdjust, pan}) => {
+    state.players.forEach(({player, nowPlaying, pan}) => {
       nowPlaying.forEach(({note, attackAt, releaseAt}) => {
         const sample = this.samples.getSample(player.instrument, note);
-        const pipelineNode = this.createOrUpdatePlayerPipeline(player, gainAdjust, pan);
+        const pipelineNode = this.createOrUpdatePlayerPipeline(player, pan);
         this.playSample(sample, attackAt, releaseAt, pipelineNode);
       });
     });
   }
 
   private updatePlayerPipelines(state: AppState) {
-    state.players.forEach(p => this.createOrUpdatePlayerPipeline(p.player, p.gainAdjust, p.pan));
+    state.players.forEach(p => this.createOrUpdatePlayerPipeline(p.player, p.pan));
   }
 
   private playBeat(time: number, bpm: number) {
@@ -123,7 +123,7 @@ export class AudioPlayerService implements OnDestroy {
     node.connect(this.convolver);
   }
 
-  private createOrUpdatePlayerPipeline(player: Player, gainAdjust: number, panVal: number) {
+  private createOrUpdatePlayerPipeline(player: Player, panVal: number) {
     if (!this.playerPipelines.has(player)) {
       const gain = this.audioCtx.createGain();
       const pan = this.audioCtx.createStereoPanner();
@@ -132,7 +132,7 @@ export class AudioPlayerService implements OnDestroy {
       this.playerPipelines = this.playerPipelines.set(player, {gain, pan});
     }
     const {gain, pan} = this.playerPipelines.get(player);
-    gain.gain.value = player.baseGain * gainAdjust;
+    gain.gain.value = player.baseGain;
     pan.pan.value = panVal;
     return gain;
   }

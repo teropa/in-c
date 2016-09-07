@@ -14,6 +14,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
     <div #container class="container" (click)="audioPlayer.enableAudioContext()">
       <in-c-player *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
                    [playerState]="playerState"
+                   [playerStats]="stats$ | async"
                    [screenWidth]="width"
                    [screenHeight]="height">
       </in-c-player>
@@ -32,6 +33,8 @@ import { AudioPlayerService } from './audio/audio-player.service';
 export class AppComponent implements OnInit, OnDestroy {
 
   players$ = this.store.select('players');
+  stats$ = this.store.select('stats');
+
   @ViewChild('container') containerRef: ElementRef;
   width = 0;
   height = 0;

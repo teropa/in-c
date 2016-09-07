@@ -7,7 +7,7 @@ import { Map } from 'immutable';
 import { AppState } from '../core/app-state.model';
 import { Player } from '../core/player.model';
 import { PlayerState } from '../core/player-state.model';
-import { PULSE, ADJUST_GAIN, ADJUST_PAN } from '../core/actions';
+import { PULSE, ADJUST_PAN } from '../core/actions';
 import { SamplesService, Sample } from './samples.service';
 
 const GRACENOTE_OFFSET = 0.07;
@@ -44,7 +44,7 @@ export class AudioPlayerService implements OnDestroy {
     .do(([action, state]) => this.playState(state, action.payload));
 
   @Effect({dispatch: false}) gainAdjust$ = this.actions$
-    .ofType(ADJUST_GAIN, ADJUST_PAN)
+    .ofType(ADJUST_PAN)
     .withLatestFrom(this.store$)
     .do(([_, state]) => this.updatePlayerPipelines(state));
 

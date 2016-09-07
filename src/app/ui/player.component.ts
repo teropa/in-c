@@ -4,7 +4,6 @@ import {
   Component,
   ElementRef,
   Input,
-  OnChanges,
   OnDestroy,
   SimpleChanges,
   ViewChild,
@@ -20,10 +19,14 @@ import * as Hammer from 'hammerjs';
 
 import { AppState } from '../core/app-state.model';
 import { PlayerState } from '../core/player-state.model';
-import { PlaylistItem } from '../Core/playlist-item.model';
+import { PlaylistItem } from '../core/playlist-item.model';
+import { PlayerStats } from '../core/player-stats.model';
 import { ADVANCE, ADJUST_PAN } from '../core/actions';
 import { TimeService } from '../core/time.service';
 import { ColorService } from './color.service';
+
+const MIN_RADIUS = 40;
+const MAX_RADIUS = 60;
 
 @Component({
   selector: 'in-c-player',
@@ -35,7 +38,6 @@ import { ColorService } from './color.service';
          [style.width.px]="getRadius() * 2"
          [style.height.px]="getRadius() * 2"
          [style.backgroundColor]="getColor()"
-         [@flash]="notesPlayed"
          (click)="advance()">
     </div>
   `,
@@ -46,22 +48,14 @@ import { ColorService } from './color.service';
       border-radius: 50%;
     }
   `],
-  animations: [
-    trigger('flash', [
-      transition('* => *', animate('500ms ease-out', keyframes([
-        style({transform: 'scale(1.1)', offset: 0}),
-        style({transform: 'scale(0.95)', offset: 0.2}),
-        style({transform: 'scale(1)', offset: 1})
-      ])))
-    ])
-  ]
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayerComponent implements OnChanges, AfterViewInit {
+export class PlayerComponent implements AfterViewInit {
   @Input() playerState: PlayerState;
+  @Input() playerStats: PlayerStats;
   @Input() screenWidth: number;
   @Input() screenHeight: number;
   @ViewChild('circle') circle: ElementRef;
-  notesPlayed = 0;
   panOffset = [0, 0];
   hammer: HammerManager;
 
@@ -79,7 +73,13 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   }
 
   getRadius() {
-    return 60;
+    const moduleRange = this.playerStats.maxModuleIndex - this.playerStats.minModuleIndex;
+    if (moduleRange === 0) {
+      return MIN_RADIUS;
+    } else {
+      const radiusRange = MAX_RADIUS - MIN_RADIUS;
+      return MIN_RADIUS + radiusRange * (this.playerState.moduleIndex - this.playerStats.minModuleIndex) * moduleRange;
+    }
   }
 
   getColor() {
@@ -90,17 +90,6 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
     this.hammer = new Hammer(this.circle.nativeElement);
     this.hammer.on('panstart', evt => this.onPanStart(evt));
     this.hammer.on('panmove', evt => this.onPanMove(evt));
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['nowPlaying']) {
-      this.playerState.nowPlaying.forEach(item => {
-        const playAfter = this.time.getMillisecondsTo(item.attackAt);
-        setTimeout(() => {
-          this.notesPlayed++;
-        }, playAfter);
-      });
-    }
   }
 
   ngOnDestroy() {

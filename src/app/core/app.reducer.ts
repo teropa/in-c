@@ -83,33 +83,26 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, startTi
   });
 }
 
-function shouldAdvance(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, playerStats: PlayerStatsRecord) {
+function canAdvance(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, playerStats: PlayerStatsRecord) {
   if (!playerState.playlist) {
     const isEveryoneAtLastBeat = playerStats.maxTimeToLastBeat <= 1; // First module played in unison
-    return playerState.advanceRequested && isEveryoneAtLastBeat;
-  } else if (Math.floor(playerState.playlist.lastBeat) <= beat) {
+    return isEveryoneAtLastBeat;
+  } else {
     const hasMoreModules = playerState.moduleIndex + 1 < score.size;
     const hasEveryoneStarted = playerStats.minModuleIndex >= 0;
-    return playerState.advanceRequested && hasMoreModules && hasEveryoneStarted;
+    return hasMoreModules && hasEveryoneStarted;
   }
-  return false;
 }
 
 function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, playerStats: PlayerStatsRecord) {
-  if (shouldAdvance(playerState, score, beat, playerStats)) {
+  if (canAdvance(playerState, score, beat, playerStats)) {
     return playerState.merge({
       moduleIndex: playerState.moduleIndex + 1,
-      advanceFactor: playerState.advanceFactor * 1 / Math.pow(ADVANCEMENT_DECAY_FACTORY, playerStats.playerCount),
-      advanceRequested: false
+      advanceFactor: playerState.advanceFactor * 1 / Math.pow(ADVANCEMENT_DECAY_FACTORY, playerStats.playerCount)
     });
   } else {
     return playerState;
   }
-}
-
-function assignAdvancementFactor(playerState: PlayerStateRecord, numberOfAdvancingPlayers: number) {
-  const advanceFactor = playerState.advanceFactor * Math.pow(ADVANCEMENT_DECAY_FACTORY, numberOfAdvancingPlayers);
-  return playerState.merge({advanceFactor});
 }
 
 function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number) {
@@ -138,12 +131,9 @@ function assignNowPlaying(player: PlayerStateRecord, time: number, bpm: number) 
   }
 }
 
-function advancePlayers(state: AppStateRecord, time: number, bpm: number) {
-  const {score, beat, stats} = state;
-  const numberOfAdvancingPlayers = state.players.filter(player => shouldAdvance(player, score, beat, stats)).size;
+function updatePlaylists(state: AppStateRecord, time: number, bpm: number) {
+  const {score, beat} = state;
   const players = state.players
-    .map(player => assignModule(player, score, beat, stats))
-    .map(player => assignAdvancementFactor(player, numberOfAdvancingPlayers))
     .map(player => assignPlaylist(player, score, time, beat, bpm))
     .map(player => assignNowPlaying(player, time, bpm))
   return state.merge({players});
@@ -160,14 +150,31 @@ function updatePlayerStats(state: AppStateRecord) {
   });
 }
 
+function advancePlayer(state: AppStateRecord, instrument: string) {
+  const playerIdx = state.players.findIndex(p => p.player.instrument === instrument);
+  const {score, beat, stats} = state;
+  if (canAdvance(state.players.get(playerIdx), score, beat, state.stats)) {
+    const players = state.players
+      .update(playerIdx, player => assignModule(player, score, beat, stats))
+      .map(player => decayAdvancementFactor(player));
+    return state.merge({players});
+  } else {
+    return state;
+  }
+}
+
+function decayAdvancementFactor(playerState: PlayerStateRecord) {
+  const advanceFactor = playerState.advanceFactor * ADVANCEMENT_DECAY_FACTORY;
+  return playerState.merge({advanceFactor});
+}
+
 const initialPlayerStates = List((<Player[]>require('json!../../ensemble.json'))
   .map((p: Player) => playerStateFactory({
     player: playerFactory(p),
     moduleIndex: -1,
     advanceFactor: 1,
     pan: Math.random() * 2 - 1,
-    y: Math.random() * 2 - 1,
-    advanceRequested: false
+    y: Math.random() * 2 - 1
   }))
 );
 
@@ -182,11 +189,9 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
   switch (action.type) {
     case PULSE:
       const nextBeat = state.beat + 1;
-      return updatePlayerStats(advancePlayers(state.set('beat', nextBeat), action.payload.time, action.payload.bpm));
+      return updatePlayerStats(updatePlaylists(state.set('beat', nextBeat), action.payload.time, action.payload.bpm));
     case ADVANCE:
-      const playerIdxForAdvance = state.players
-        .findIndex(p => p.player.instrument === action.payload);
-      return state.setIn(['players', playerIdxForAdvance, 'advanceRequested'], true);
+      return advancePlayer(state, action.payload);
     case ADJUST_PAN:
       const playerIdxForPan = state.players
         .findIndex(p => p.player.instrument === action.payload.instrument);

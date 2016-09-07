@@ -80,7 +80,7 @@ export class PlayerComponent implements AfterViewInit {
   }
 
   getColor() {
-    return this.playerState.advanceRequested ? 'red' : 'black';
+    return 'black';
   }
 
   ngAfterViewInit() {

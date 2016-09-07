@@ -9,7 +9,6 @@ export interface PlayerState {
   player: PlayerRecord;
   moduleIndex?: number;
   advanceFactor: number;
-  advanceRequested: boolean;
   playlist?: PlaylistRecord;
   nowPlaying?: List<PlaylistItemRecord>;
   pan: number;
@@ -22,7 +21,6 @@ export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecor
   player: playerFactory(),
   moduleIndex: null,
   advanceFactor: 1,
-  advanceRequested: false,
   playlist: null,
   nowPlaying: <List<PlaylistItemRecord>>List.of(),
   pan: 0,

@@ -1,7 +1,7 @@
 import { NgModule, ApplicationRef } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
-import { runEffects } from '@ngrx/effects';
+import { EffectsModule } from '@ngrx/effects';
 
 import { provideHotStoreModule } from './hot_store';
 import { AppComponent } from './app/app.component';
@@ -18,11 +18,12 @@ require('./main.css');
 @NgModule({
   imports: [
     BrowserModule,
-    provideHotStoreModule(appReducer)
+    provideHotStoreModule(appReducer),
+    EffectsModule
   ],
   providers: [
-    runEffects(AudioPlayerService),
     {provide: 'bpm', useValue: 180},
+    AudioPlayerService,
     SamplesService,
     TimeService,
     PulseService,

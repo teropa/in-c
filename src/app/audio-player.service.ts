@@ -1,6 +1,7 @@
-import { Injectable, Inject } from '@angular/core';
+import { Injectable, Inject, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
-import { Effect, StateUpdates } from '@ngrx/effects';
+import { Effect, Actions, mergeEffects } from '@ngrx/effects';
 import { Map } from 'immutable';
 import { AppState, Player, PlayerState } from './models';
 import { PULSE, ADJUST_GAIN, ADJUST_PAN } from './app.reducer';
@@ -9,14 +10,15 @@ import { SamplesService, Sample } from './samples.service';
 const GRACENOTE_OFFSET = 0.07;
 
 @Injectable()
-export class AudioPlayerService {
-
+export class AudioPlayerService implements OnDestroy {
+  private subscription: Subscription;
   private convolver: ConvolverNode;
   private convolverDry: GainNode;
   private convolverWet: GainNode;
   private playerPipelines: Map<Player, {gain: GainNode, pan: StereoPannerNode}> = Map.of();
 
-  constructor(private updates$: StateUpdates<AppState>,
+  constructor(private actions$: Actions,
+              private store$: Store<AppState>,
               private samples: SamplesService,
               @Inject('audioCtx') private audioCtx: AudioContext) {
     this.convolver = audioCtx.createConvolver();
@@ -30,17 +32,18 @@ export class AudioPlayerService {
     samples.loadSample('york-minster', require('../samples/minster1_000_ortf_48k.wav')).then(buf => {
       this.convolver.buffer = buf;
     });
+    this.subscription = mergeEffects(this).subscribe(store$);
   }
 
-  @Effect() play$ = this.updates$
-    .whenAction(PULSE)
-    .do(update => this.playState(update.state, update.action.payload))
-    .ignoreElements();
+  @Effect({dispatch: false}) play$ = this.actions$
+    .ofType(PULSE)
+    .withLatestFrom(this.store$)
+    .do(([action, state]) => this.playState(state, action.payload));
 
-  @Effect() gainAdjust$ = this.updates$
-    .whenAction(ADJUST_GAIN, ADJUST_PAN)
-    .do(update => this.updatePlayerPipelines(update.state))
-    .ignoreElements();
+  @Effect({dispatch: false}) gainAdjust$ = this.actions$
+    .ofType(ADJUST_GAIN, ADJUST_PAN)
+    .withLatestFrom(this.store$)
+    .do(([_, state]) => this.updatePlayerPipelines(state));
 
   enableAudioContext() {
     const buffer = this.audioCtx.createBuffer(1, 1, 44100);
@@ -50,6 +53,10 @@ export class AudioPlayerService {
     bufferSource.start();
   }
 
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
+  
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
     state.players.forEach(({player, nowPlaying, gainAdjust, pan}) => {

@@ -27,38 +27,35 @@ const MAX_RADIUS = 100;
 const MIN_RADIUS = 10;
 
 @Component({
-  selector: '[in-c-player]',
+  selector: 'in-c-player',
   template: `
-    <svg:polygon #poly
-                 [attr.points]="getPolyPoints()">
-    </svg:polygon>
-    <svg:circle #circle
-                [attr.cx]="getCenterX()"
-                [attr.cy]="getCenterY()"
-                [attr.r]="getRadius()"
-                (wheel)="onWheel($event)">
-    </svg:circle>
+    <div #circle
+         class="circle"
+         [style.left.px]="getCenterX() - getRadius()"
+         [style.top.px]="getCenterY() - getRadius()"
+         [style.width.px]="getRadius() * 2"
+         [style.height.px]="getRadius() * 2"
+         [@flash]="notesPlayed"
+         (wheel)="onWheel($event)">
+    </div>
   `,
   styles: [`
-    circle {
-      fill: rgba(0, 0, 0, 0.8);
+    .circle {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
       cursor: move;
+      border-radius: 50%;
     }
-    polygon {
-      fill: none;
-      stroke: black;
-      stroke-width: 4;
-    }
-  `]/*,
+  `],
   animations: [
     trigger('flash', [
       transition('* => *', animate('500ms ease-out', keyframes([
-        style({opacity: 0.5, offset: 0}),
-        style({opacity: 1, offset: 0.2}),
-        style({opacity: 0.5, offset: 1})
+        style({transform: 'scale(1.1)', offset: 0}),
+        style({transform: 'scale(0.95)', offset: 0.2}),
+        style({transform: 'scale(1)', offset: 1})
       ])))
     ])
-  ]*/
+  ]
 })
 export class PlayerComponent implements OnChanges, AfterViewInit {
   @Input() instrument: string;
@@ -66,11 +63,9 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   @Input() pan: number;
   @Input() y: number;
   @Input() gainAdjust: number;
-  @Input() polygon: Array<{x: number, y: number}[]>;
   @Input() screenWidth: number;
   @Input() screenHeight: number;
   @ViewChild('circle') circle: ElementRef;
-  @ViewChild('poly') poly: ElementRef;
   notesPlayed = 0;
   panOffset = [0, 0];
   hammer: HammerManager;
@@ -89,11 +84,7 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
   }
 
   getRadius() {
-    return 30;
-  }
-
-  getPolyPoints() {
-    return this.polygon.map(([sp, ep]) => `${this.getX(sp.x)},${this.getY(sp.y)} ${this.getX(ep.x)},${this.getY(ep.y)}`).join(' ');
+    return 60;
   }
 
   ngAfterViewInit() {
@@ -108,26 +99,6 @@ export class PlayerComponent implements OnChanges, AfterViewInit {
         const playAfter = this.time.getMillisecondsTo(item.attackAt);
         setTimeout(() => {
           this.notesPlayed++;
-          const hue = item.hue;
-          const brightness = this.colors.getNoteBrightness(item.note);
-          const beginSaturation = 100;
-          const endSaturation = 25;
-          this.poly.nativeElement.animate([
-            {fill: `hsl(${hue}, ${beginSaturation}%, ${brightness}%)`},
-            {fill: `hsl(${hue}, ${endSaturation}%, ${brightness}%)`}
-          ], {
-            duration: 2000,
-            easing: 'ease-out',
-            fill: 'forwards'
-          });
-          this.circle.nativeElement.animate([
-            {r: this.getRadius() * 1.1},
-            {r: this.getRadius() * 0.95},
-            {r: this.getRadius()}
-          ], {
-            duration: 500,
-            easing: 'ease-out'
-          });
         }, playAfter);
       });
     }

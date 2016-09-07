@@ -34,7 +34,6 @@ export interface PlayerState {
   gainAdjust?: number;
   pan: number;
   y: number;
-  polygon?: any;
 }
 
 export interface Playlist {
@@ -95,8 +94,7 @@ export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecor
   nowPlaying: <List<PlaylistItemRecord>>List.of(),
   gainAdjust: 1,
   pan: 0,
-  y: 100,
-  polygon: null
+  y: 100
 });
 
 export interface AppStateRecord extends TypedRecord<AppStateRecord>, AppState {}

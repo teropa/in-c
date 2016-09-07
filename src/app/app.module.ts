@@ -3,17 +3,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Store, StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 
-import { provideHotStoreModule } from './hot_store';
-import { AppComponent } from './app/app.component';
-import { PlayerComponent } from './app/player.component';
-import { appReducer } from './app/app.reducer';
-import { PulseService } from './app/pulse.service';
-import { AudioPlayerService } from './app/audio-player.service';
-import { SamplesService } from './app/samples.service';
-import { TimeService } from './app/time.service';
-import { ColorService } from './app/color.service';
-
-require('./main.css');
+import { provideHotStoreModule } from '../hot_store';
+import { AppComponent } from './app.component';
+import { PlayerComponent } from './ui/player.component';
+import { appReducer } from './core/app.reducer';
+import { PulseService } from './core/pulse.service';
+import { TimeService } from './core/time.service';
+import { AudioPlayerService } from './audio/audio-player.service';
+import { SamplesService } from './audio/samples.service';
+import { ColorService } from './ui/color.service';
 
 @NgModule({
   imports: [

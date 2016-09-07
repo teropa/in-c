@@ -18,9 +18,11 @@ import { Store } from '@ngrx/store';
 import { List } from 'immutable';
 import * as Hammer from 'hammerjs';
 
-import { AppState, PlaylistItem } from './models';
-import { ADJUST_GAIN, ADJUST_PAN, MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from './app.reducer';
-import { TimeService } from './time.service';
+import { AppState } from '../core/app-state.model';
+import { PlaylistItem } from '../Core/playlist-item.model';
+import { ADJUST_GAIN, ADJUST_PAN } from '../core/actions';
+import { MIN_GAIN_ADJUST, MAX_GAIN_ADJUST } from '../core/app.reducer';
+import { TimeService } from '../core/time.service';
 import { ColorService } from './color.service';
 
 const MAX_RADIUS = 100;

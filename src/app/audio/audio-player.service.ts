@@ -3,8 +3,11 @@ import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 import { Effect, Actions, mergeEffects } from '@ngrx/effects';
 import { Map } from 'immutable';
-import { AppState, Player, PlayerState } from './models';
-import { PULSE, ADJUST_GAIN, ADJUST_PAN } from './app.reducer';
+
+import { AppState } from '../core/app-state.model';
+import { Player } from '../core/player.model';
+import { PlayerState } from '../core/player-state.model';
+import { PULSE, ADJUST_GAIN, ADJUST_PAN } from '../core/actions';
 import { SamplesService, Sample } from './samples.service';
 
 const GRACENOTE_OFFSET = 0.07;
@@ -29,7 +32,7 @@ export class AudioPlayerService implements OnDestroy {
     this.convolver.connect(this.convolverWet);
     this.convolverDry.connect(audioCtx.destination);
     this.convolverWet.connect(audioCtx.destination);
-    samples.loadSample('york-minster', require('../samples/minster1_000_ortf_48k.wav')).then(buf => {
+    samples.loadSample('york-minster', require('../../samples/minster1_000_ortf_48k.wav')).then(buf => {
       this.convolver.buffer = buf;
     });
     this.subscription = mergeEffects(this).subscribe(store$);

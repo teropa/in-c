@@ -1,26 +1,13 @@
 import { ActionReducer, Action } from '@ngrx/store';
 import { List, Map, Repeat } from 'immutable';
-import {
-  AppStateRecord,
-  appStateFactory,
-  ModuleRecord,
-  moduleFactory,
-  NoteRecord,
-  noteFactory,
-  Player,
-  PlayerRecord,
-  playerFactory,
-  PlayerStateRecord,
-  playerStateFactory,
-  PlaylistRecord,
-  playlistFactory,
-  PlaylistItemRecord,
-  playlistItemFactory
-} from './models';
-
-export const PULSE = 'PULSE';
-export const ADJUST_GAIN = 'ADJUST_GAIN';
-export const ADJUST_PAN = 'ADJUST_PAN';
+import { AppStateRecord, appStateFactory } from './app-state.model';
+import { ModuleRecord, moduleFactory } from './module.model';
+import { NoteRecord, noteFactory } from './note.model';
+import { Player, PlayerRecord, playerFactory } from './player.model';
+import { PlayerStateRecord, playerStateFactory} from './player-state.model';
+import { PlaylistRecord, playlistFactory} from './playlist.model';
+import { PlaylistItemRecord, playlistItemFactory } from './playlist-item.model';
+import { PULSE, ADJUST_GAIN, ADJUST_PAN } from './actions';
 
 const GRACENOTE_DURATION = 0.15;
 
@@ -178,7 +165,7 @@ function adjustGain(playerState: PlayerStateRecord, amount: number) {
   return playerState.set('gainAdjust', newGainAdjust);
 }
 
-const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
+const initialPlayerStates = List((<Player[]>require('json!../../ensemble.json'))
   .map((p: Player) => playerStateFactory({
     player: playerFactory(p),
     pan: Math.random() * 2 - 1,
@@ -187,7 +174,7 @@ const initialPlayerStates = List((<Player[]>require('json!../ensemble.json'))
 );
 
 const initialState = appStateFactory({
-  score: readScore(require('json!../score.json')),
+  score: readScore(require('json!../../score.json')),
   beat: 0,
   players: initialPlayerStates
 });

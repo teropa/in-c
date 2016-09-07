@@ -2,9 +2,11 @@ import { Component, OnInit, OnDestroy, HostListener, ElementRef, ViewChild } fro
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
-import { AppState, PlayerState } from './models';
-import { AudioPlayerService } from './audio-player.service';
-import { PulseService } from './pulse.service';
+
+import { AppState } from './core/app-state.model';
+import { PlayerState } from './core/player-state.model';
+import { PulseService } from './core/pulse.service';
+import { AudioPlayerService } from './audio/audio-player.service';
 
 @Component({
   selector: 'in-c-app',

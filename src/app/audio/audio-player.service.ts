@@ -18,7 +18,7 @@ export class AudioPlayerService implements OnDestroy {
   private convolver: ConvolverNode;
   private convolverDry: GainNode;
   private convolverWet: GainNode;
-  private playerPipelines: Map<Player, {gain: GainNode, pan: StereoPannerNode}> = Map.of();
+  private playerPipelines: Map<string, {gain: GainNode, pan: StereoPannerNode}> = Map.of();
 
   constructor(private actions$: Actions,
               private store$: Store<AppState>,
@@ -62,17 +62,15 @@ export class AudioPlayerService implements OnDestroy {
   
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
-    state.players.forEach(({player, nowPlaying, pan}) => {
-      nowPlaying.forEach(({note, attackAt, releaseAt}) => {
-        const sample = this.samples.getSample(player.instrument, note);
-        const pipelineNode = this.createOrUpdatePlayerPipeline(player, pan);
-        this.playSample(sample, attackAt, releaseAt, pipelineNode);
-      });
+    state.nowPlaying.forEach(({instrument, note, gain, pan, attackAt, releaseAt}) => {
+      const sample = this.samples.getSample(instrument, note);
+      const pipelineNode = this.createOrUpdatePlayerPipeline(instrument, gain, pan);
+      this.playSample(sample, attackAt, releaseAt, pipelineNode);
     });
   }
 
   private updatePlayerPipelines(state: AppState) {
-    state.players.forEach(p => this.createOrUpdatePlayerPipeline(p.player, p.pan));
+    state.players.forEach(p => this.createOrUpdatePlayerPipeline(p.player.instrument, p.player.baseGain, p.pan));
   }
 
   private playBeat(time: number, bpm: number) {
@@ -123,16 +121,16 @@ export class AudioPlayerService implements OnDestroy {
     node.connect(this.convolver);
   }
 
-  private createOrUpdatePlayerPipeline(player: Player, panVal: number) {
-    if (!this.playerPipelines.has(player)) {
+  private createOrUpdatePlayerPipeline(instrument: string, gainVal: number, panVal: number) {
+    if (!this.playerPipelines.has(instrument)) {
       const gain = this.audioCtx.createGain();
       const pan = this.audioCtx.createStereoPanner();
       gain.connect(pan);
       this.connect(pan);
-      this.playerPipelines = this.playerPipelines.set(player, {gain, pan});
+      this.playerPipelines = this.playerPipelines.set(instrument, {gain, pan});
     }
-    const {gain, pan} = this.playerPipelines.get(player);
-    gain.gain.value = player.baseGain;
+    const {gain, pan} = this.playerPipelines.get(instrument);
+    gain.gain.value = gainVal;
     pan.pan.value = panVal;
     return gain;
   }

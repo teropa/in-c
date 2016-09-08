@@ -55,7 +55,7 @@ export class PlayerComponent implements AfterViewInit {
   @Input() screenWidth: number;
   @Input() screenHeight: number;
   @ViewChild('circle') circle: ElementRef;
-  panningFrom = [0, 0];
+  panningFrom: number[] = null;
   hammer: HammerManager;
 
   constructor(private time: TimeService,
@@ -101,6 +101,7 @@ export class PlayerComponent implements AfterViewInit {
   }
 
   onPanStart(evt: HammerInput) {
+    console.log('pan start');
     this.panningFrom = [evt.center.x - this.getCenterX(), evt.center.y - this.getCenterY()];
   }
 

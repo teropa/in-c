@@ -421,6 +421,9 @@
     "score": [
       {"note": "F4", "duration": 0.5},
       {"note": "G4", "duration": 0.5},
+      {"note": "B4", "duration": 0.5},
+      {"note": "F4", "duration": 0.5},
+      {"note": "G4", "duration": 0.5},
       {"note": "B4", "duration": 0.5}
     ]
   },
@@ -549,6 +552,9 @@
   {
     "number": 51,
     "score": [
+      {"note": "F4", "duration": 0.5},
+      {"note": "G4", "duration": 0.5},
+      {"note": "Bb4", "duration": 0.5},
       {"note": "F4", "duration": 0.5},
       {"note": "G4", "duration": 0.5},
       {"note": "Bb4", "duration": 0.5}

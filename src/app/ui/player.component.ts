@@ -101,7 +101,6 @@ export class PlayerComponent implements AfterViewInit {
   }
 
   onPanStart(evt: HammerInput) {
-    console.log('pan start');
     this.panningFrom = [evt.center.x - this.getCenterX(), evt.center.y - this.getCenterY()];
   }
 

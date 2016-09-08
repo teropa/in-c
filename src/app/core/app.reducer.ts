@@ -75,8 +75,7 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, fromBea
 
 function canAdvance(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, playerStats: PlayerStatsRecord) {
   if (!playerState.playlist) {
-    const isEveryoneAtLastBeat = playerStats.maxTimeToLastBeat <= 1; // First module played in unison
-    return isEveryoneAtLastBeat;
+    return true;
   } else {
     const hasMoreModules = playerState.moduleIndex + 1 < score.size;
     const hasEveryoneStarted = playerStats.minModuleIndex >= 0;
@@ -99,7 +98,10 @@ function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord
   const shouldBePlaying = playerState.moduleIndex >= 0;
   const hasNothingToPlay = !playerState.playlist || playerState.playlist.lastBeat <= beat;
   if (shouldBePlaying && hasNothingToPlay) {
-    const startPlaylistAfterBeat = playerState.playlist ? playerState.playlist.lastBeat : beat;
+    const moduleScoreLength = score.get(playerState.moduleIndex).score.size;
+    const startPlaylistAfterBeat = playerState.playlist ?
+      playerState.playlist.lastBeat :
+      beat + (moduleScoreLength - beat % moduleScoreLength); // Quantize first module to force unison
     const playlist = makePlaylist(playerState, score.get(playerState.moduleIndex), startPlaylistAfterBeat);
     return playerState.merge({playlist});
   } else {

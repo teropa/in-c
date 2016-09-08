@@ -13,6 +13,8 @@ import { List, OrderedSet } from 'immutable';
 import { Sound } from '../core/sound.model';
 import { TimeService } from '../core/time.service';
 
+const RIPPLE_DURATION = 1;
+
 @Component({
   selector: 'in-c-background',
   template: `
@@ -53,7 +55,7 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
     if (changes['nowPlaying']) {
       this.nowPlaying.forEach(sound => {
         const attackDelay = (sound.attackAt - this.time.now()) * 1000;
-        const releaseDelay = (sound.releaseAt - this.time.now()) * 1000;
+        const releaseDelay = attackDelay + RIPPLE_DURATION * 1000;
         setTimeout(() => this.sounds = this.sounds.add(sound), attackDelay);
         setTimeout(() => this.sounds = this.sounds.remove(sound), releaseDelay);
       });
@@ -73,15 +75,18 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
     }
     this.context.clearRect(0, 0, this.screenWidth, this.screenHeight);
     this.sounds.forEach(sound => {
+      const fromRadius = 60 * sound.playerState.advanceFactor;
+      const toRadius = fromRadius * 3;
       const age = this.time.now() - sound.attackAt;
+      const relativeAge = age / RIPPLE_DURATION;
       if (age < 0) {
         return;
       }
       const x = this.getX(sound.pan);
       const y = this.getY(sound.playerState.y);
-      const radius = 100 * age;
+      const radius = fromRadius + (toRadius - fromRadius) * Math.sqrt(relativeAge);
       this.context.beginPath();
-      this.context.arc(x, y, radius * 2, 0, Math.PI * 2);
+      this.context.arc(x, y, radius, 0, Math.PI * 2);
       this.context.stroke();
     });
     requestAnimationFrame(() => this.draw());

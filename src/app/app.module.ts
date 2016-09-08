@@ -5,6 +5,7 @@ import { EffectsModule } from '@ngrx/effects';
 
 import { provideHotStoreModule } from '../hot_store';
 import { AppComponent } from './app.component';
+import { BackgroundComponent } from './ui/background.component';
 import { PlayerComponent } from './ui/player.component';
 import { appReducer } from './core/app.reducer';
 import { PulseService } from './core/pulse.service';
@@ -27,7 +28,7 @@ import { ColorService } from './ui/color.service';
     PulseService,
     ColorService
   ],
-  declarations: [AppComponent, PlayerComponent],
+  declarations: [AppComponent, BackgroundComponent, PlayerComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule {

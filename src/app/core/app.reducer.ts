@@ -107,26 +107,27 @@ function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord
   }
 }
 
-function getNowPlaying(player: PlayerStateRecord, beat: number, time: number, bpm: number) {
+function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: number, bpm: number) {
   const pulseDuration = 60 / bpm;
   
   function makeSound(note: string, fromOffset: number, toOffset: number) {
     return soundFactory({
-      instrument: player.player.instrument,
+      instrument: playerState.player.instrument,
       note: note,
-      gain: player.player.baseGain,
-      pan: player.pan,
-      attackAt: time + fromOffset + player.playlist.imperfectionDelay,
-      releaseAt: time + toOffset * pulseDuration
+      gain: playerState.player.baseGain,
+      pan: playerState.pan,
+      attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
+      releaseAt: time + toOffset,
+      playerState
     })
   }
 
-  return player.playlist && player.playlist.items
+  return playerState.playlist && playerState.playlist.items
     .skipWhile(itm => itm.fromBeat < beat)
     .takeWhile(itm => itm.fromBeat < beat + 1)
     .flatMap(itm => {
       const fromOffset = (itm.fromBeat - beat) * pulseDuration;
-      const toOffset = (itm.toBeat - itm.fromBeat - beat) * pulseDuration;
+      const toOffset = (itm.toBeat - beat) * pulseDuration;
       const sound = makeSound(itm.note, fromOffset, toOffset);
       if (itm.gracenote) {
         return [

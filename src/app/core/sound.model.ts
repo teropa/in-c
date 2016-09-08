@@ -1,13 +1,16 @@
 import { List } from 'immutable';
 import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
 
+import { PlayerStateRecord } from './player-state.model';
+
 export interface Sound {
   instrument: string,
   note: string,
   attackAt: number,
   releaseAt: number,
   pan: number,
-  gain: number
+  gain: number,
+  playerState: PlayerStateRecord
 }
 
 export interface SoundRecord extends TypedRecord<SoundRecord>, Sound {}
@@ -17,5 +20,6 @@ export const soundFactory = makeTypedFactory<Sound, SoundRecord>({
   attackAt: 0,
   releaseAt: 0,
   pan: 0,
-  gain: 1
+  gain: 1,
+  playerState: null
 });

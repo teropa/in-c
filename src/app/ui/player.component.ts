@@ -55,7 +55,7 @@ export class PlayerComponent implements AfterViewInit {
   @Input() screenWidth: number;
   @Input() screenHeight: number;
   @ViewChild('circle') circle: ElementRef;
-  panOffset = [0, 0];
+  panningFrom = [0, 0];
   hammer: HammerManager;
 
   constructor(private time: TimeService,
@@ -84,9 +84,10 @@ export class PlayerComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.hammer = new Hammer(this.circle.nativeElement);
+    this.hammer = new Hammer(this.circle.nativeElement, {domEvents: true});
     this.hammer.on('panstart', evt => this.onPanStart(evt));
     this.hammer.on('panmove', evt => this.onPanMove(evt));
+    this.hammer.on('panend', evt => this.onPanEnd(evt));
   }
 
   ngOnDestroy() {
@@ -94,17 +95,27 @@ export class PlayerComponent implements AfterViewInit {
   }
 
   advance() {
-    this.store.dispatch({type: ADVANCE, payload: this.playerState.player.instrument});
+    if (!this.panningFrom) {
+      this.store.dispatch({type: ADVANCE, payload: this.playerState.player.instrument});
+    }
   }
 
   onPanStart(evt: HammerInput) {
-    this.panOffset = [evt.center.x - this.getCenterX(), evt.center.y - this.getCenterY()];
+    this.panningFrom = [evt.center.x - this.getCenterX(), evt.center.y - this.getCenterY()];
   }
 
   onPanMove(evt: HammerInput) {
-    const newPan = ((evt.center.x - this.panOffset[0]) / this.screenWidth) * 2 - 1;
-    const newY = ((evt.center.y - this.panOffset[1]) / this.screenHeight) * 2 - 1;
+    const newPan = ((evt.center.x - this.panningFrom[0]) / this.screenWidth) * 2 - 1;
+    const newY = ((evt.center.y - this.panningFrom[1]) / this.screenHeight) * 2 - 1;
     this.store.dispatch({type: ADJUST_PAN, payload: {instrument: this.playerState.player.instrument, pan: newPan, y: newY}});
+  }
+
+  onPanEnd(evt: HammerInput) {
+    // Not sure why but pan end always fires a click event right after on Chrome.
+    // Need to hack around it by delaying.
+    setTimeout(() => {
+      this.panningFrom = null
+    });
   }
 
   private getX(x: number) {

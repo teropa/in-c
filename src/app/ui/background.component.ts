@@ -87,7 +87,7 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
       const fromRadius = 60 * sound.playerState.advanceFactor;
       const toRadius = fromRadius * 5;
       const radius = fromRadius + (toRadius - fromRadius) * Math.sqrt(relativeAge);
-      const rippleWidth = 50 * Math.sqrt(relativeAge);
+      const rippleWidth = 200 * Math.sqrt(relativeAge);
       const alpha = Math.max(0, 1 - Math.sqrt(relativeAge));
       const brighness = this.colors.getNoteBrightness(sound.note);
 

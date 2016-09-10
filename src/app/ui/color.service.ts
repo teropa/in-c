@@ -6,16 +6,23 @@ const MIN_BRIGHTNESS = 33;
 const MAX_BRIGHTNESS = 66;
 
 export class ColorService {
+  private brightnessCache = new Map<string, number>();
 
   getNoteBrightness(noteAndOctave: string) {
-    const [, note, octave] = /^(\w[b\#]?)(\d)$/.exec(noteAndOctave);
-    const value = this.noteValue(note, parseInt(octave, 10));
-    const minValue = this.noteValue(OCTAVE[0], MIN_OCTAVE);
-    const maxValue = this.noteValue(OCTAVE[OCTAVE.length - 1], MAX_OCTAVE);
-    const valueRange = maxValue - minValue;
-    const relativeValue = (value - minValue) / valueRange;
-    const brightnessRange = MAX_BRIGHTNESS - MIN_BRIGHTNESS;
-    return MIN_BRIGHTNESS + brightnessRange * relativeValue;
+    if (this.brightnessCache.has(noteAndOctave)) {
+      return this.brightnessCache.get(noteAndOctave);
+    } else {
+      const [, note, octave] = /^(\w[b\#]?)(\d)$/.exec(noteAndOctave);
+      const value = this.noteValue(note, parseInt(octave, 10));
+      const minValue = this.noteValue(OCTAVE[0], MIN_OCTAVE);
+      const maxValue = this.noteValue(OCTAVE[OCTAVE.length - 1], MAX_OCTAVE);
+      const valueRange = maxValue - minValue;
+      const relativeValue = (value - minValue) / valueRange;
+      const brightnessRange = MAX_BRIGHTNESS - MIN_BRIGHTNESS;
+      const brightness = MIN_BRIGHTNESS + brightnessRange * relativeValue;
+      this.brightnessCache.set(noteAndOctave, brightness);
+      return brightness;
+    }
   }
 
   private noteValue(note: string, octave: number) {

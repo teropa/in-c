@@ -98,7 +98,10 @@ function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord
   const shouldBePlaying = playerState.moduleIndex >= 0;
   const hasNothingToPlay = !playerState.playlist || playerState.playlist.lastBeat <= beat;
   if (shouldBePlaying && hasNothingToPlay) {
-    const moduleScoreLength = score.get(playerState.moduleIndex).score.size;
+    const moduleScoreLength = score
+      .get(playerState.moduleIndex)
+      .score
+      .reduce((sum, n) => sum + n.duration, 0);
     const startPlaylistAfterBeat = playerState.playlist ?
       playerState.playlist.lastBeat :
       beat + (moduleScoreLength - beat % moduleScoreLength); // Quantize first module to force unison
@@ -112,7 +115,7 @@ function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord
 function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: number, bpm: number) {
   const pulseDuration = 60 / bpm;
   
-  function makeSound(note: string, fromOffset: number, toOffset: number) {
+  function makeSound(note: string, fromOffset: number, toOffset: number, hue: number) {
     return soundFactory({
       instrument: playerState.player.instrument,
       note: note,
@@ -120,6 +123,7 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
       pan: playerState.pan,
       attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
       releaseAt: time + toOffset,
+      hue,
       playerState
     })
   }
@@ -130,10 +134,10 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
     .flatMap(itm => {
       const fromOffset = (itm.fromBeat - beat) * pulseDuration;
       const toOffset = (itm.toBeat - beat) * pulseDuration;
-      const sound = makeSound(itm.note, fromOffset, toOffset);
+      const sound = makeSound(itm.note, fromOffset, toOffset, itm.hue);
       if (itm.gracenote) {
         return [
-          makeSound(itm.gracenote, fromOffset - GRACENOTE_DURATION * pulseDuration, fromOffset),
+          makeSound(itm.gracenote, fromOffset - GRACENOTE_DURATION * pulseDuration, fromOffset, itm.hue),
           sound
         ];
       } else {

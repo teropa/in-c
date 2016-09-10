@@ -11,9 +11,10 @@ import {
 } from '@angular/core';
 import { List, OrderedSet } from 'immutable';
 import { Sound } from '../core/sound.model';
+import { ColorService } from './color.service';
 import { TimeService } from '../core/time.service';
 
-const RIPPLE_DURATION = 1;
+const RIPPLE_DURATION = 1.5;
 
 @Component({
   selector: 'in-c-background',
@@ -31,7 +32,7 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
   private sounds = OrderedSet<Sound>();
   private animating = false;
 
-  constructor(private time: TimeService) {
+  constructor(private time: TimeService, private colors: ColorService) {
   }
 
   @ViewChild('cnvs') set canvasRef(ref: ElementRef) {
@@ -76,7 +77,7 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
     this.context.clearRect(0, 0, this.screenWidth, this.screenHeight);
     this.sounds.forEach(sound => {
       const fromRadius = 60 * sound.playerState.advanceFactor;
-      const toRadius = fromRadius * 3;
+      const toRadius = fromRadius * 5;
       const age = this.time.now() - sound.attackAt;
       const relativeAge = age / RIPPLE_DURATION;
       if (age < 0) {
@@ -85,8 +86,15 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
       const x = this.getX(sound.pan);
       const y = this.getY(sound.playerState.y);
       const radius = fromRadius + (toRadius - fromRadius) * Math.sqrt(relativeAge);
+      const rippleWidth = 50 * Math.sqrt(relativeAge);
+      const alpha = Math.max(0, 1 - Math.sqrt(relativeAge));
+      const brighness = this.colors.getNoteBrightness(sound.note);
+
+      this.context.lineWidth = Math.floor(rippleWidth);
+      this.context.strokeStyle = `hsla(${sound.hue}, 50%, ${brighness}%, ${alpha})`;
+
       this.context.beginPath();
-      this.context.arc(x, y, radius, 0, Math.PI * 2);
+      this.context.arc(Math.floor(x), Math.floor(y), Math.floor(radius), 0, Math.PI * 2);
       this.context.stroke();
     });
     requestAnimationFrame(() => this.draw());

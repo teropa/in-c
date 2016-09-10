@@ -44,6 +44,7 @@ import { ColorService } from './color.service';
       position: absolute;
       cursor: move;
       border-radius: 50%;
+      box-shadow: 10px 10px 41px -14px rgba(100,100,100,1);
       transition: transform 1s;
     }
   `],
@@ -80,7 +81,7 @@ export class PlayerComponent implements AfterViewInit {
   }
 
   getColor() {
-    return 'black';
+    return 'rgba(0, 0, 0, 0.9)';
   }
 
   ngAfterViewInit() {

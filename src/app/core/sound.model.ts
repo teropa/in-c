@@ -10,6 +10,7 @@ export interface Sound {
   releaseAt: number,
   pan: number,
   gain: number,
+  hue: number,
   playerState: PlayerStateRecord
 }
 
@@ -21,5 +22,6 @@ export const soundFactory = makeTypedFactory<Sound, SoundRecord>({
   releaseAt: 0,
   pan: 0,
   gain: 1,
+  hue: 0,
   playerState: null
 });

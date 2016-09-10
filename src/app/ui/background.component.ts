@@ -9,12 +9,13 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { List, OrderedSet } from 'immutable';
+import { List } from 'immutable';
 import { Sound } from '../core/sound.model';
 import { ColorService } from './color.service';
 import { TimeService } from '../core/time.service';
 
 const RIPPLE_DURATION = 1.5;
+const CLEANUP_INTERVAL = 10 * 1000;
 
 @Component({
   selector: 'in-c-background',
@@ -29,8 +30,9 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
   @Input() nowPlaying: List<Sound>;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private sounds = OrderedSet<Sound>();
+  private sounds = new Set<Sound>();
   private animating = false;
+  private cleanupInterval: NodeJS.Timer; // weird type but ok...
 
   constructor(private time: TimeService, private colors: ColorService) {
   }
@@ -43,10 +45,12 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
   ngOnInit() {
     this.animating = true;
     this.draw();
+    this.cleanupInterval = setInterval(() => this.cleanUp(), CLEANUP_INTERVAL);
   }
 
   ngOnDestroy() {
     this.animating = false;
+    clearInterval(this.cleanupInterval);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -55,10 +59,7 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
     }
     if (changes['nowPlaying']) {
       this.nowPlaying.forEach(sound => {
-        const attackDelay = (sound.attackAt - this.time.now()) * 1000;
-        const releaseDelay = attackDelay + RIPPLE_DURATION * 1000;
-        setTimeout(() => this.sounds = this.sounds.add(sound), attackDelay);
-        setTimeout(() => this.sounds = this.sounds.remove(sound), releaseDelay);
+        this.sounds.add(sound);
       });
     }
   }
@@ -76,15 +77,15 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
     }
     this.context.clearRect(0, 0, this.screenWidth, this.screenHeight);
     this.sounds.forEach(sound => {
-      const fromRadius = 60 * sound.playerState.advanceFactor;
-      const toRadius = fromRadius * 5;
       const age = this.time.now() - sound.attackAt;
-      const relativeAge = age / RIPPLE_DURATION;
-      if (age < 0) {
+      if (age < 0 || age > RIPPLE_DURATION) {
         return;
       }
+      const relativeAge = age / RIPPLE_DURATION;
       const x = this.getX(sound.pan);
       const y = this.getY(sound.playerState.y);
+      const fromRadius = 60 * sound.playerState.advanceFactor;
+      const toRadius = fromRadius * 5;
       const radius = fromRadius + (toRadius - fromRadius) * Math.sqrt(relativeAge);
       const rippleWidth = 50 * Math.sqrt(relativeAge);
       const alpha = Math.max(0, 1 - Math.sqrt(relativeAge));
@@ -110,4 +111,13 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
     return relY * this.screenHeight;
   }
   
+  private cleanUp() {
+    this.sounds.forEach(sound => {
+      const age = this.time.now() - sound.attackAt;
+      if (age > RIPPLE_DURATION) {
+        this.sounds.delete(sound);
+      }
+    });
+  }
+
 }

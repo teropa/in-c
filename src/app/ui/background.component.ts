@@ -32,7 +32,7 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
   private context: CanvasRenderingContext2D;
   private sounds = new Set<Sound>();
   private animating = false;
-  private cleanupInterval: NodeJS.Timer; // weird type but ok...
+  private cleanupInterval: number;
 
   constructor(private time: TimeService, private colors: ColorService) {
   }
@@ -45,12 +45,12 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
   ngOnInit() {
     this.animating = true;
     this.draw();
-    this.cleanupInterval = setInterval(() => this.cleanUp(), CLEANUP_INTERVAL);
+    this.cleanupInterval = window.setInterval(() => this.cleanUp(), CLEANUP_INTERVAL);
   }
 
   ngOnDestroy() {
     this.animating = false;
-    clearInterval(this.cleanupInterval);
+    window.clearInterval(this.cleanupInterval);
   }
 
   ngOnChanges(changes: SimpleChanges) {

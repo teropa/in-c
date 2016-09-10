@@ -32,7 +32,7 @@ export class AudioPlayerService implements OnDestroy {
     this.convolver.connect(this.convolverWet);
     this.convolverDry.connect(audioCtx.destination);
     this.convolverWet.connect(audioCtx.destination);
-    samples.loadSample('york-minster', require('../../samples/minster1_000_ortf_48k.wav')).then(buf => {
+    samples.loadSample(require('../../samples/minster1_000_ortf_48k.wav')).then(buf => {
       this.convolver.buffer = buf;
     });
     this.subscription = mergeEffects(this).subscribe(store$);

@@ -21,11 +21,11 @@ export class PulseService {
   onInit() {
     this.startTime = this.time.now();
     this.metronome = new MetronomeWorker();
+    this.metronome.onmessage = (evt => this.zone.run(() => this.makePulses()));
     this.metronome.postMessage({
       command: 'start',
       interval: this.getBeatInterval() * 1000
     });
-    this.metronome.onmessage = (evt => this.zone.run(() => this.makePulses()));
   }
 
   onDestroy() {

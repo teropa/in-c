@@ -7,6 +7,8 @@ import { provideHotStoreModule } from '../hot_store';
 import { AppComponent } from './app.component';
 import { BackgroundComponent } from './ui/background.component';
 import { PlayerComponent } from './ui/player.component';
+import { TopBarComponent } from './ui/top-bar.component';
+
 import { appReducer } from './core/app.reducer';
 import { PulseService } from './core/pulse.service';
 import { TimeService } from './core/time.service';
@@ -28,7 +30,12 @@ import { ColorService } from './ui/color.service';
     PulseService,
     ColorService
   ],
-  declarations: [AppComponent, BackgroundComponent, PlayerComponent],
+  declarations: [
+    AppComponent,
+    BackgroundComponent,
+    PlayerComponent,
+    TopBarComponent
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {

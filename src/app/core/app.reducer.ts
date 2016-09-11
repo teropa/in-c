@@ -9,7 +9,7 @@ import { PlaylistRecord, playlistFactory} from './playlist.model';
 import { PlaylistItemRecord, playlistItemFactory } from './playlist-item.model';
 import { PlayerStatsRecord, playerStatsFactory } from './player-stats.model';
 import { SoundRecord, soundFactory } from './sound.model';
-import { PULSE, ADVANCE, ADJUST_PAN } from './actions';
+import { PULSE, ADVANCE, ADJUST_PAN, PAUSE, RESUME } from './actions';
 
 const GRACENOTE_DURATION = 0.15;
 const ADVANCEMENT_DECAY_FACTORY = 0.95;
@@ -208,7 +208,8 @@ const initialState = appStateFactory({
   beat: 0,
   players: initialPlayerStates,
   stats: playerStatsFactory().merge({playerCount: initialPlayerStates.size}),
-  nowPlaying: <List<SoundRecord>>List.of()
+  nowPlaying: <List<SoundRecord>>List.of(),
+  paused: false
 });
 
 export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, action: Action) => {
@@ -224,6 +225,10 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
       return state
         .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)))
         .setIn(['players', playerIdxForPan, 'y'], action.payload.y);
+    case PAUSE:
+      return state.merge({paused: true});
+    case RESUME:
+      return state.merge({paused: false});
     default:
       return state;
   }

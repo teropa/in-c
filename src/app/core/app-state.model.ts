@@ -11,7 +11,8 @@ export interface AppState {
   beat: number;
   players: List<PlayerStateRecord>,
   stats: PlayerStatsRecord,
-  nowPlaying: List<SoundRecord>
+  nowPlaying: List<SoundRecord>,
+  paused: boolean
 }
 
 export interface AppStateRecord extends TypedRecord<AppStateRecord>, AppState {}
@@ -20,6 +21,7 @@ export const appStateFactory = makeTypedFactory<AppState, AppStateRecord>({
   beat: -1,
   players: null,
   stats: null,
-  nowPlaying: <List<SoundRecord>>List.of()
+  nowPlaying: <List<SoundRecord>>List.of(),
+  paused: false
 });
 

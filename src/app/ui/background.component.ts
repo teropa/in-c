@@ -14,7 +14,7 @@ import { Sound } from '../core/sound.model';
 import { ColorService } from './color.service';
 import { TimeService } from '../core/time.service';
 
-const RIPPLE_DURATION = 1.5;
+const RIPPLE_DURATION = 4;
 const CLEANUP_INTERVAL = 10 * 1000;
 
 @Component({
@@ -75,19 +75,21 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
     if (!this.animating) {
       return;
     }
-    this.context.clearRect(0, 0, this.screenWidth, this.screenHeight);
+    this.context.fillStyle = 'rgba(255, 255 ,255, 0.9)';
+    this.context.fillRect(0, 0, this.screenWidth, this.screenHeight);
     this.sounds.forEach(sound => {
       const age = this.time.now() - sound.attackAt;
       if (age < 0 || age > RIPPLE_DURATION) {
         return;
       }
       const relativeAge = age / RIPPLE_DURATION;
+      const noteDuration = sound.releaseAt - sound.attackAt;
       const x = this.getX(sound.pan);
       const y = this.getY(sound.playerState.y);
-      const fromRadius = 60 * sound.playerState.advanceFactor;
-      const toRadius = fromRadius * 5;
-      const radius = fromRadius + (toRadius - fromRadius) * Math.sqrt(relativeAge);
-      const rippleWidth = 200 * Math.sqrt(relativeAge);
+      const fromRadius = 0;
+      const toRadius = 300 * sound.playerState.advanceFactor;
+      const radius = fromRadius + (toRadius - fromRadius) * Math.pow(relativeAge, 1/3);
+      const rippleWidth = 200 * Math.sqrt(relativeAge) * noteDuration;
       const alpha = Math.max(0, 1 - Math.sqrt(relativeAge));
       const brighness = this.colors.getNoteBrightness(sound.note);
 

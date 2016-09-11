@@ -91,7 +91,6 @@ export class AudioPlayerService implements OnDestroy {
     osc.start(time);
     osc.stop(time + duration);
 
-    gain.gain.value = maxGain;
     gain.gain.setValueAtTime(maxGain, time);
     gain.gain.linearRampToValueAtTime(0, time + duration);
   }

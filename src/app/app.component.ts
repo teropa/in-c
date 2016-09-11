@@ -13,16 +13,23 @@ import { AudioPlayerService } from './audio/audio-player.service';
   selector: 'in-c-app',
   template: `
     <div #container class="container" (click)="audioPlayer.enableAudioContext()">
-      <in-c-background [nowPlaying]="nowPlaying$ | async"
-                      [screenWidth]="width"
-                      [screenHeight]="height">
+      <in-c-background class="background"
+                       [nowPlaying]="nowPlaying$ | async"
+                       [screenWidth]="width"
+                       [screenHeight]="height">
       </in-c-background>
-      <in-c-player *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
-                  [playerState]="playerState"
-                  [playerStats]="stats$ | async"
-                  [screenWidth]="width"
-                  [screenHeight]="height">
-      </in-c-player>
+      <svg class="foreground"
+           [attr.width]="width"
+           [attr.height]="height"
+           [attr.viewBox]="'0 0 ' + width + ' ' + height">
+        <svg:g in-c-player
+               *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
+               [playerState]="playerState"
+               [playerStats]="stats$ | async"
+               [screenWidth]="width"
+               [screenHeight]="height">
+        </svg:g>
+      </svg>
     </div>
     <in-c-top-bar [paused]="paused$ | async"
                   (pause)="pause()"
@@ -30,7 +37,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
     </in-c-top-bar>
   `,
   styles: [`
-    .container {
+    .container, .background, .foreground {
       position: fixed;
       left: 0;
       right: 0;

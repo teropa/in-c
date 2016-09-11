@@ -26,26 +26,21 @@ import { TimeService } from '../core/time.service';
 import { ColorService } from './color.service';
 
 @Component({
-  selector: 'in-c-player',
+  selector: '[in-c-player]',
   template: `
-    <div #circle
-         class="circle"
-         [style.left.px]="getCenterX() - getRadius()"
-         [style.top.px]="getCenterY() - getRadius()"
-         [style.width.px]="getRadius() * 2"
-         [style.height.px]="getRadius() * 2"
-         [style.transform]="getTransform()"
-         [style.backgroundColor]="getColor()"
-         (click)="advance()">
-    </div>
+    <svg:circle #circle
+                class="circle"
+                [attr.cx]="getCenterX()"
+                [attr.cy]="getCenterY()"
+                [attr.r]="getRadius()"
+                [attr.fill]="getColor()"
+                (click)="advance()">
+    </svg:circle>
   `,
   styles: [`
     .circle {
-      position: absolute;
       cursor: move;
-      border-radius: 50%;
-      box-shadow: 10px 10px 41px -14px rgba(100,100,100,1);
-      transition: transform 1s;
+      transition: r 1s;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -73,11 +68,7 @@ export class PlayerComponent implements AfterViewInit {
   }
 
   getRadius() {
-    return 60;
-  }
-
-  getTransform() {
-    return `scale(${this.playerState.advanceFactor})`;
+    return 60 * this.playerState.advanceFactor;
   }
 
   getColor() {

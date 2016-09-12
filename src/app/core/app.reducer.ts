@@ -47,12 +47,13 @@ function getBeatsUntilStart(score: List<NoteRecord>, noteIdx: number) {
     .reduce((sum, note) => sum + note.duration, 0);
 }
 
-function makePlaylistItem(note: NoteRecord, noteIdx: number, score: List<NoteRecord>, startBeat: number, hue: number) {
+function makePlaylistItem(note: NoteRecord, index: number, score: List<NoteRecord>, startBeat: number, hue: number) {
   if (note.note) {
-    const fromBeat = startBeat + getBeatsUntilStart(score, noteIdx);
+    const fromBeat = startBeat + getBeatsUntilStart(score, index);
     const toBeat = fromBeat + note.duration;
     return playlistItemFactory({
       note: note.note,
+      velocity: note.velocity,
       gracenote: note.gracenote,
       fromBeat,
       toBeat,
@@ -74,13 +75,14 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, fromBea
 }
 
 function canAdvance(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, playerStats: PlayerStatsRecord) {
-  if (!playerState.playlist) {
+  /*if (!playerState.playlist) {
     return true;
   } else {
     const hasMoreModules = playerState.moduleIndex + 1 < score.size;
     const hasEveryoneStarted = playerStats.minModuleIndex >= 0;
     return hasMoreModules && hasEveryoneStarted;
-  }
+  }*/
+  return true;
 }
 
 function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, playerStats: PlayerStatsRecord) {
@@ -114,11 +116,12 @@ function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord
 
 function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: number, bpm: number) {
   const pulseDuration = 60 / bpm;
-  
-  function makeSound(note: string, fromOffset: number, toOffset: number, hue: number) {
+
+  function makeSound(note: string, velocity: string, fromOffset: number, toOffset: number, hue: number) {
     return soundFactory({
       instrument: playerState.player.instrument,
-      note: note,
+      note,
+      velocity,
       gain: playerState.player.baseGain,
       pan: playerState.pan,
       attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
@@ -134,10 +137,10 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
     .flatMap(itm => {
       const fromOffset = (itm.fromBeat - beat) * pulseDuration;
       const toOffset = (itm.toBeat - beat) * pulseDuration;
-      const sound = makeSound(itm.note, fromOffset, toOffset, itm.hue);
+      const sound = makeSound(itm.note, itm.velocity, fromOffset, toOffset, itm.hue);
       if (itm.gracenote) {
         return [
-          makeSound(itm.gracenote, fromOffset - GRACENOTE_DURATION * pulseDuration, fromOffset, itm.hue),
+          makeSound(itm.gracenote, 'low', fromOffset - GRACENOTE_DURATION * pulseDuration, fromOffset, itm.hue),
           sound
         ];
       } else {

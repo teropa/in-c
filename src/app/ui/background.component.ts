@@ -58,9 +58,9 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
       this.setCanvasSize();
     }
     if (changes['nowPlaying']) {
-      this.nowPlaying.forEach(sound => {
-        this.sounds.add(sound);
-      });
+      this.nowPlaying
+        .filterNot(sound => sound.velocity === 'low')
+        .forEach(sound => this.sounds.add(sound));
     }
   }
 

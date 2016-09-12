@@ -2,51 +2,51 @@
   {
     "number": 1,
     "score": [
-      {"note": "E4", "duration": 2, "gracenote": "C4"},
-      {"note": "E4", "duration": 2, "gracenote": "C4"},
-      {"note": "E4", "duration": 2, "gracenote": "C4"}
+      {"note": "E4", "velocity": "high", "duration": 2, "gracenote": "C4"},
+      {"note": "E4", "velocity": "high", "duration": 2, "gracenote": "C4"},
+      {"note": "E4", "velocity": "high", "duration": 2, "gracenote": "C4"}
     ]
   },
   {
     "number": 2,
     "score": [
-      {"note": "E4", "duration": 1, "gracenote": "C4"},
-      {"note": "F4", "duration": 1},
-      {"note": "E4", "duration": 2}
+      {"note": "E4", "velocity": "high", "duration": 1, "gracenote": "C4"},
+      {"note": "F4", "velocity": "low", "duration": 1},
+      {"note": "E4", "velocity": "medium", "duration": 2}
     ]
   },
   {
     "number": 3,
     "score": [
       {"duration": 1},
-      {"note": "E4", "duration": 1},
-      {"note": "F4", "duration": 1},
-      {"note": "E4", "duration": 1}
+      {"note": "E4", "velocity": "low", "duration": 1},
+      {"note": "F4", "velocity": "medium", "duration": 1},
+      {"note": "E4", "velocity": "low", "duration": 1}
     ]
   },
   {
     "number": 4,
     "score": [
       {"duration": 1},
-      {"note": "E4", "duration": 1},
-      {"note": "F4", "duration": 1},
-      {"note": "G4", "duration": 1}
+      {"note": "E4", "velocity": "low", "duration": 1},
+      {"note": "F4", "velocity": "medium", "duration": 1},
+      {"note": "G4", "velocity": "low", "duration": 1}
     ]
   },
   {
     "number": 5,
     "score": [
-      {"note": "E4", "duration": 1},
-      {"note": "F4", "duration": 1},
-      {"note": "G4", "duration": 1},
+      {"note": "E4", "velocity": "high", "duration": 1},
+      {"note": "F4", "velocity": "low", "duration": 1},
+      {"note": "G4", "velocity": "medium", "duration": 1},
       {"duration": 1}
     ]
   },
   {
     "number": 6,
     "score": [
-      {"note": "C5", "duration": 8},
-      {"note": "C5", "duration": 8}
+      {"note": "C5", "velocity": "high", "duration": 8},
+      {"note": "C5", "velocity": "high", "duration": 8}
     ],
     "changeHue": true
   },
@@ -57,9 +57,9 @@
       {"duration": 2},
       {"duration": 2},
       {"duration": 1},
-      {"note": "C4", "duration": 0.5},
-      {"note": "C4", "duration": 0.5},
-      {"note": "C4", "duration": 1},
+      {"note": "C4", "velocity": "high", "duration": 0.5},
+      {"note": "C4", "velocity": "low", "duration": 0.5},
+      {"note": "C4", "velocity": "low", "duration": 1},
       {"duration": 1},
       {"duration": 2},
       {"duration": 2},
@@ -70,16 +70,16 @@
   {
     "number": 8,
     "score": [
-      {"note": "G4", "duration": 12},
-      {"note": "F4", "duration": 8},
-      {"note": "F4", "duration": 8}
+      {"note": "G4", "velocity": "high", "duration": 12},
+      {"note": "F4", "velocity": "medium", "duration": 8},
+      {"note": "F4", "velocity": "medium", "duration": 8}
     ]
   },
   {
     "number": 9,
     "score": [
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
+      {"note": "B4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
       {"duration": 1},
       {"duration": 2},
       {"duration": 2},
@@ -90,57 +90,57 @@
   {
     "number": 10,
     "score": [
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5}
+      {"note": "B4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 11,
     "score": [
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5}
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 12,
     "score": [
-      {"note": "F4", "duration": 1},
-      {"note": "G4", "duration": 1},
-      {"note": "B4", "duration": 8},
-      {"note": "C5", "duration": 2}
+      {"note": "F4", "velocity": "high", "duration": 1},
+      {"note": "G4", "velocity": "low", "duration": 1},
+      {"note": "B4", "velocity": "medium", "duration": 8},
+      {"note": "C5", "velocity": "high", "duration": 2}
     ]
   },
   {
     "number": 13,
     "score": [
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 1.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 1},
+      {"note": "B4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 1.5},
+      {"note": "G4", "velocity": "medium", "duration": 0.5},
+      {"note": "F4", "velocity": "low", "duration": 0.5},
+      {"note": "G4", "velocity": "medium", "duration": 1},
       {"duration": 1.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "G4", "duration": 6}
+      {"note": "G4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 6}
     ]
   },
   {
     "number": 14,
     "score": [
-      {"note": "C5", "duration": 8},
-      {"note": "B4", "duration": 8},
-      {"note": "G4", "duration": 8},
-      {"note": "F#4", "duration": 8}
+      {"note": "C5", "velocity": "high", "duration": 8},
+      {"note": "B4", "velocity": "medium", "duration": 8},
+      {"note": "G4", "velocity": "medium", "duration": 8},
+      {"note": "F#4", "velocity": "medium", "duration": 8}
     ],
     "changeHue": true
   },
   {
     "number": 15,
     "score": [
-      {"note": "G4", "duration": 0.5},
+      {"note": "G4", "velocity": "high",  "duration": 0.5},
       {"duration": 1.5},
       {"duration": 2},
       {"duration": 2},
@@ -150,32 +150,32 @@
   {
     "number": 16,
     "score": [
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "C5", "duration": 0.5},
-      {"note": "B4", "duration": 0.5}
+      {"note": "G4", "velocity": "high", "duration": 0.5},
+      {"note": "B4", "velocity": "low", "duration": 0.5},
+      {"note": "C5", "velocity": "medium", "duration": 0.5},
+      {"note": "B4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 17,
     "score": [
-      {"note": "B4", "duration": 0.5},
-      {"note": "C5", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "C5", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
+      {"note": "B4", "velocity": "high", "duration": 0.5},
+      {"note": "C5", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "C5", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
       {"duration": 0.5}
     ]
   },
   {
     "number": 18,
     "score": [
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 1.5},
-      {"note": "E4", "duration": 0.5}
+      {"note": "E4", "velocity": "high", "duration": 0.5},
+      {"note": "F#4", "velocity": "low", "duration": 0.5},
+      {"note": "E4", "velocity": "medium", "duration": 0.5},
+      {"note": "F#4", "velocity": "low", "duration": 0.5},
+      {"note": "E4", "velocity": "medium", "duration": 1.5},
+      {"note": "E4", "velocity": "low", "duration": 0.5}
     ],
     "changeHue": true
   },
@@ -183,395 +183,395 @@
     "number": 19,
     "score": [
       {"duration": 3},
-      {"note": "G5", "duration": 3}
+      {"note": "G5", "velocity": "high", "duration": 3}
     ]
   },
   {
     "number": 20,
     "score": [
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "G3", "duration": 1.5},
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 0.5}
+      {"note": "E4", "velocity": "high", "duration": 0.5},
+      {"note": "F#4", "velocity": "low", "duration": 0.5},
+      {"note": "E4", "velocity": "medium", "duration": 0.5},
+      {"note": "F#4", "velocity": "low", "duration": 0.5},
+      {"note": "G3", "velocity": "high", "duration": 1.5},
+      {"note": "E4", "velocity": "low", "duration": 0.5},
+      {"note": "F#4", "velocity": "medium", "duration": 0.5},
+      {"note": "E4", "velocity": "low", "duration": 0.5},
+      {"note": "F#4", "velocity": "medium", "duration": 0.5},
+      {"note": "E4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 21,
     "score": [
-      {"note": "F#4", "duration": 6}
+      {"note": "F#4", "velocity": "high", "duration": 6}
     ]
   },
   {
     "number": 22,
     "score": [
-      {"note": "E4", "duration": 3},
-      {"note": "E4", "duration": 3},
-      {"note": "E4", "duration": 3},
-      {"note": "E4", "duration": 3},
-      {"note": "E4", "duration": 3},
-      {"note": "F#4", "duration": 3},
-      {"note": "G4", "duration": 3},
-      {"note": "A4", "duration": 3},
-      {"note": "B4", "duration": 1}
+      {"note": "E4", "velocity": "high", "duration": 3},
+      {"note": "E4", "velocity": "medium", "duration": 3},
+      {"note": "E4", "velocity": "medium", "duration": 3},
+      {"note": "E4", "velocity": "medium", "duration": 3},
+      {"note": "E4", "velocity": "medium", "duration": 3},
+      {"note": "F#4", "velocity": "medium", "duration": 3},
+      {"note": "G4", "velocity": "medium", "duration": 3},
+      {"note": "A4", "velocity": "medium", "duration": 3},
+      {"note": "B4", "velocty": "low", "duration": 1}
     ],
     "changeHue": true
   },
   {
     "number": 23,
     "score": [
-      {"note": "E4", "duration": 1},
-      {"note": "F#4", "duration": 3},
-      {"note": "F#4", "duration": 3},
-      {"note": "F#4", "duration": 3},
-      {"note": "F#4", "duration": 3},
-      {"note": "F#4", "duration": 3},
-      {"note": "G4", "duration": 3},
-      {"note": "A4", "duration": 3},
-      {"note": "B4", "duration": 2}
+      {"note": "E4", "velocity": "low", "duration": 1},
+      {"note": "F#4", "velocity": "high", "duration": 3},
+      {"note": "F#4", "velocity": "medium", "duration": 3},
+      {"note": "F#4", "velocity": "medium", "duration": 3},
+      {"note": "F#4", "velocity": "medium", "duration": 3},
+      {"note": "F#4", "velocity": "medium", "duration": 3},
+      {"note": "G4", "velocity": "medium", "duration": 3},
+      {"note": "A4", "velocity": "medium", "duration": 3},
+      {"note": "B4", "velocity": "medium", "duration": 2}
     ]
   },
   {
     "number": 24,
     "score": [
-      {"note": "E4", "duration": 1},
-      {"note": "F#4", "duration": 1},
-      {"note": "G4", "duration": 3},
-      {"note": "G4", "duration": 3},
-      {"note": "G4", "duration": 3},
-      {"note": "G4", "duration": 3},
-      {"note": "G4", "duration": 3},
-      {"note": "A4", "duration": 3},
-      {"note": "B4", "duration": 1}
+      {"note": "E4", "velocity": "low", "duration": 1},
+      {"note": "F#4", "velocity": "low", "duration": 1},
+      {"note": "G4", "velocity": "high", "duration": 3},
+      {"note": "G4", "velocity" :"medium", "duration": 3},
+      {"note": "G4", "velocity": "medium", "duration": 3},
+      {"note": "G4", "velocity": "medium", "duration": 3},
+      {"note": "G4", "velocity": "medium", "duration": 3},
+      {"note": "A4", "velocity": "medium", "duration": 3},
+      {"note": "B4", "velocity": "low", "duration": 1}
     ]
   },
   {
     "number": 25,
     "score": [
-      {"note": "E4", "duration": 1},
-      {"note": "F#4", "duration": 1},
-      {"note": "G4", "duration": 1},
-      {"note": "A4", "duration": 3},
-      {"note": "A4", "duration": 3},
-      {"note": "A4", "duration": 3},
-      {"note": "A4", "duration": 3},
-      {"note": "A4", "duration": 3},
-      {"note": "B4", "duration": 3}
+      {"note": "E4", "velocity": "low", "duration": 1},
+      {"note": "F#4", "velocity": "low", "duration": 1},
+      {"note": "G4", "velocity": "low", "duration": 1},
+      {"note": "A4", "velocity": "high", "duration": 3},
+      {"note": "A4", "velocity": "medium", "duration": 3},
+      {"note": "A4", "velocity": "medium", "duration": 3},
+      {"note": "A4", "velocity": "medium", "duration": 3},
+      {"note": "A4", "velocity": "medium", "duration": 3},
+      {"note": "B4", "velocity": "medium", "duration": 3}
     ]
   },
   {
     "number": 26,
     "score": [
-      {"note": "E4", "duration": 1},
-      {"note": "F#4", "duration": 1},
-      {"note": "G4", "duration": 1},
-      {"note": "A4", "duration": 1},
-      {"note": "B4", "duration": 3},
-      {"note": "B4", "duration": 3},
-      {"note": "B4", "duration": 3},
-      {"note": "B4", "duration": 3},
-      {"note": "B4", "duration": 3}
+      {"note": "E4", "velocity": "low", "duration": 1},
+      {"note": "F#4", "velocity": "low", "duration": 1},
+      {"note": "G4", "velocity": "low", "duration": 1},
+      {"note": "A4", "velocity": "low", "duration": 1},
+      {"note": "B4", "velocity": "high", "duration": 3},
+      {"note": "B4", "velocity": "medium", "duration": 3},
+      {"note": "B4", "velocity": "medium", "duration": 3},
+      {"note": "B4", "velocity": "medium", "duration": 3},
+      {"note": "B4", "velocity": "medium", "duration": 3}
     ]
   },
   {
     "number": 27,
     "score": [
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "G4", "duration": 1},
-      {"note": "E4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 0.5}
+      {"note": "E4", "velocity": "high", "duration": 0.5},
+      {"note": "F#4", "velocity": "low", "duration": 0.5},
+      {"note": "E4", "velocity": "medium", "duration": 0.5},
+      {"note": "F#4", "velocity": "low", "duration": 0.5},
+      {"note": "G4", "velocity": "high", "duration": 1},
+      {"note": "E4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "F#4", "velocity": "medium", "duration": 0.5},
+      {"note": "E4", "velocity": "low", "duration": 0.5},
+      {"note": "F#4", "velocity": "medium", "duration": 0.5},
+      {"note": "E4", "velocity": "low", "duration": 0.5}
     ],
     "changeHue": true
   },
   {
     "number": 28,
     "score": [
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 0.5},
-      {"note": "F#4", "duration": 0.5},
-      {"note": "E4", "duration": 1.5},
-      {"note": "E4", "duration": 0.5}
+      {"note": "E4", "velocity": "high", "duration": 0.5},
+      {"note": "F#4", "velocity": "low", "duration": 0.5},
+      {"note": "E4", "velocity": "medium", "duration": 0.5},
+      {"note": "F#4", "velocity": "low", "duration": 0.5},
+      {"note": "E4", "velocity": "high", "duration": 1.5},
+      {"note": "E4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 29,
     "score": [
-      {"note": "E4", "duration": 6},
-      {"note": "G4", "duration": 6},
-      {"note": "C5", "duration": 6}
+      {"note": "E4", "velocity": "high", "duration": 6},
+      {"note": "G4", "velocity": "medium", "duration": 6},
+      {"note": "C5", "velocity": "medium", "duration": 6}
     ],
     "changeHue": true
   },
   {
     "number": 30,
     "score": [
-      {"note": "C5", "duration": 12}
+      {"note": "C5", "velocity": "high", "duration": 12}
     ]
   },
   {
     "number": 31,
     "score": [
-      {"note": "G4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5}
+      {"note": "G4", "velocity": "high", "duration": 0.5},
+      {"note": "F4", "velocity": "low", "duration": 0.5},
+      {"note": "G4", "velocity": "medium", "duration": 0.5},
+      {"note": "B4", "velocity": "low", "duration": 0.5},
+      {"note": "G4", "velocity": "medium", "duration": 0.5},
+      {"note": "B4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 32,
     "score": [
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5},
-      {"note": "F4", "duration": 6},
-      {"note": "G4", "duration": 3}
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "F4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "high", "duration": 0.5},
+      {"note": "F4", "velocity": "low", "duration": 0.5},
+      {"note": "F4", "velocity": "medium", "duration": 6},
+      {"note": "G4", "velocity": "medium", "duration": 3}
     ]
   },
   {
     "number": 33,
     "score": [
-      {"note": "G4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5},
+      {"note": "G4", "velocity": "high", "duration": 0.5},
+      {"note": "F4", "velocity": "low", "duration": 0.5},
       {"duration": 1}
     ]
   },
   {
     "number": 34,
     "score": [
-      {"note": "G4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5}
+      {"note": "G4", "velocity": "high", "duration": 0.5},
+      {"note": "F4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 35,
     "score": [
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
       {"duration": 1},
       {"duration": 2},
       {"duration": 2},
       {"duration": 2},
-      {"note": "Bb4", "duration": 2},
-      {"note": "G5", "duration": 6},
-      {"note": "A5", "duration": 1},
-      {"note": "G5", "duration": 1},
-      {"note": "G5", "duration": 1},
-      {"note": "B5", "duration": 1},
-      {"note": "A5", "duration": 3},
-      {"note": "G5", "duration": 1},
-      {"note": "E5", "duration": 6},
-      {"note": "G5", "duration": 1},
-      {"note": "F#5", "duration": 1},
-      {"note": "F#5", "duration": 6},
+      {"note": "Bb4", "velocity": "high", "duration": 2},
+      {"note": "G5", "velocity": "medium", "duration": 6},
+      {"note": "A5", "velocity": "high", "duration": 1},
+      {"note": "G5", "velocity": "low", "duration": 1},
+      {"note": "G5", "velocity": "medium", "duration": 1},
+      {"note": "B5", "velocity": "low", "duration": 1},
+      {"note": "A5", "velocity": "medium", "duration": 3},
+      {"note": "G5", "velocity": "low", "duration": 1},
+      {"note": "E5", "velocity": "medium", "duration": 6},
+      {"note": "G5", "velocity": "high", "duration": 1},
+      {"note": "F#5", "velocity": "low", "duration": 1},
+      {"note": "F#5", "velocity": "low", "duration": 6},
       {"duration": 2},
       {"duration": 2},
       {"duration": 1},
-      {"note": "E5", "duration": 1},
-      {"note": "E5", "duration": 4},
-      {"note": "F5", "duration": 12}
+      {"note": "E5", "velocity": "low", "duration": 1},
+      {"note": "E5", "velocity": "high", "duration": 4},
+      {"note": "F5", "velocity": "medium", "duration": 12}
     ],
     "changeHue": true
   },
   {
     "number": 36,
     "score": [
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5}
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 37,
     "score": [
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5}
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 38,
     "score": [
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5}
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5}
     ]
   },
   {
     "number": 39,
     "score": [
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "B4", "duration": 0.5},
-      {"note": "C5", "duration": 0.5}
+      {"note": "B4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "F4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "B4", "velocity": "medium", "duration": 0.5},
+      {"note": "C5", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 40,
     "score": [
-      {"note": "B4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5}
+      {"note": "B4", "velocity": "high", "duration": 0.5},
+      {"note": "F4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 41,
     "score": [
-      {"note": "B4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5}
+      {"note": "B4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 42,
     "score": [
-      {"note": "C5", "duration": 8},
-      {"note": "B4", "duration": 8},
-      {"note": "A4", "duration": 8},
-      {"note": "C5", "duration": 8}
+      {"note": "C5", "velocity": "high", "duration": 8},
+      {"note": "B4", "velocity": "high", "duration": 8},
+      {"note": "A4", "velocity": "high", "duration": 8},
+      {"note": "C5", "velocity": "high", "duration": 8}
     ],
     "changeHue": true
   },
   {
     "number": 43,
     "score": [
-      {"note": "F5", "duration": 0.5},
-      {"note": "E5", "duration": 0.5},
-      {"note": "F5", "duration": 0.5},
-      {"note": "E5", "duration": 0.5},
-      {"note": "E5", "duration": 1},
-      {"note": "E5", "duration": 1},
-      {"note": "E5", "duration": 1},
-      {"note": "F5", "duration": 0.5},
-      {"note": "E5", "duration": 0.5}
+      {"note": "F5", "velocity": "high", "duration": 0.5},
+      {"note": "E5", "velocity": "low", "duration": 0.5},
+      {"note": "F5", "velocity": "medium", "duration": 0.5},
+      {"note": "E5", "velocity": "low", "duration": 0.5},
+      {"note": "E5", "velocity": "high", "duration": 1},
+      {"note": "E5", "velocity": "medium", "duration": 1},
+      {"note": "E5", "velocity": "medium", "duration": 1},
+      {"note": "F5", "velocity": "medium", "duration": 0.5},
+      {"note": "E5", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 44,
     "score": [
-      {"note": "F5", "duration": 1},
-      {"note": "E5", "duration": 1},
-      {"note": "E5", "duration": 1},
-      {"note": "E5", "duration": 1},
-      {"note": "C5", "duration": 2}
+      {"note": "F5", "velocity": "high", "duration": 1},
+      {"note": "E5", "velocity": "medium", "duration": 1},
+      {"note": "E5", "velocity": "medium", "duration": 1},
+      {"note": "E5", "velocity": "medium", "duration": 1},
+      {"note": "C5", "velocity": "high", "duration": 2}
     ]
   },
   {
     "number": 45,
     "score": [
-      {"note": "D5", "duration": 2},
-      {"note": "D5", "duration": 2},
-      {"note": "G4", "duration": 2}
+      {"note": "D5", "velocity": "high", "duration": 2},
+      {"note": "D5", "velocity": "medium", "duration": 2},
+      {"note": "G4", "velocity": "medium", "duration": 2}
     ]
   },
   {
     "number": 46,
     "score": [
-      {"note": "G4", "duration": 0.5},
-      {"note": "D5", "duration": 0.5},
-      {"note": "E5", "duration": 0.5},
-      {"note": "D5", "duration": 0.5},
+      {"note": "G4", "velocity": "high", "duration": 0.5},
+      {"note": "D5", "velocity": "low", "duration": 0.5},
+      {"note": "E5", "velocity": "medium", "duration": 0.5},
+      {"note": "D5", "velocity": "low", "duration": 0.5},
       {"duration": 1},
-      {"note": "G4", "duration": 1},
+      {"note": "G4", "velocity": "medium", "duration": 1},
       {"duration": 1},
-      {"note": "G4", "duration": 1},
+      {"note": "G4", "velocity": "medium", "duration": 1},
       {"duration": 1},
-      {"note": "G4", "duration": 1},
-      {"note": "G4", "duration": 0.5},
-      {"note": "D5", "duration": 0.5},
-      {"note": "E5", "duration": 0.5},
-      {"note": "D5", "duration": 0.5}
+      {"note": "G4", "velocity": "medium", "duration": 1},
+      {"note": "G4", "velocity": "high", "duration": 0.5},
+      {"note": "D5", "velocity": "low", "duration": 0.5},
+      {"note": "E5", "velocity": "medium", "duration": 0.5},
+      {"note": "D5", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 47,
     "score": [
-      {"note": "D5", "duration": 0.5},
-      {"note": "E5", "duration": 0.5},
-      {"note": "D5", "duration": 1}
+      {"note": "D5", "velocity": "high", "duration": 0.5},
+      {"note": "E5", "velocity": "low", "duration": 0.5},
+      {"note": "D5", "velocity": "medium", "duration": 1}
     ]
   },
   {
     "number": 48,
     "score": [
-      {"note": "G4", "duration": 12},
-      {"note": "G4", "duration": 8},
-      {"note": "F4", "duration": 8},
-      {"note": "F4", "duration": 2}
+      {"note": "G4", "velocity": "high", "duration": 12},
+      {"note": "G4", "velocity": "high", "duration": 8},
+      {"note": "F4", "velocity": "high", "duration": 8},
+      {"note": "F4", "velocity": "medium", "duration": 2}
     ]
   },
   {
     "number": 49,
     "score": [
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "Bb4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "Bb4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5}
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "Bb4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "Bb4", "velocity": "medium", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5}
     ],
     "changeHue": true
   },
   {
     "number": 50,
     "score": [
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5}
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 51,
     "score": [
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "Bb4", "duration": 0.5},
-      {"note": "F4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5},
-      {"note": "Bb4", "duration": 0.5}
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "Bb4", "velocity": "medium", "duration": 0.5},
+      {"note": "F4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5},
+      {"note": "Bb4", "velocity": "medium", "duration": 0.5}
     ]
   },
   {
     "number": 52,
     "score": [
-      {"note": "G4", "duration": 0.5},
-      {"note": "Bb4", "duration": 0.5}
+      {"note": "G4", "velocity": "high", "duration": 0.5},
+      {"note": "Bb4", "velocity": "low", "duration": 0.5}
     ]
   },
   {
     "number": 53,
     "score": [
-      {"note": "Bb4", "duration": 0.5},
-      {"note": "G4", "duration": 0.5}
+      {"note": "Bb4", "velocity": "high", "duration": 0.5},
+      {"note": "G4", "velocity": "low", "duration": 0.5}
     ]
   }
   

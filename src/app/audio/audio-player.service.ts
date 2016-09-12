@@ -62,8 +62,8 @@ export class AudioPlayerService implements OnDestroy {
   
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
-    state.nowPlaying.forEach(({instrument, note, gain, pan, attackAt, releaseAt}) => {
-      const sample = this.samples.getSample(instrument, note);
+    state.nowPlaying.forEach(({instrument, note, velocity, gain, pan, attackAt, releaseAt}) => {
+      const sample = this.samples.getSample(instrument, note, velocity);
       const pipelineNode = this.createOrUpdatePlayerPipeline(instrument, gain, pan);
       this.playSample(sample, attackAt, releaseAt, pipelineNode);
     });

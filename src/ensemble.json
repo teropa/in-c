@@ -1,13 +1,5 @@
 [
   {
-    "instrument": "synthetic-marimba",
-    "gain": 1
-  },
-  {
-    "instrument": "synthetic-marimba-low",
-    "gain": 1
-  },
-  {
     "instrument": "gnarly-trance-pluck",
     "gain": 0.5
   },
@@ -16,15 +8,19 @@
     "gain": 0.5
   },
   {
+    "instrument": "synthetic-marimba",
+    "gain": 1
+  },
+  {
+    "instrument": "synthetic-marimba-high",
+    "gain": 1
+  },
+  {
     "instrument": "tight-synth-bass",
     "gain": 1
   },
   {
-    "instrument": "rising-waves",
-    "gain": 1
-  },
-  {
-    "instrument": "rising-waves-low",
+    "instrument": "classic-rock-organ",
     "gain": 1
   }
 ]

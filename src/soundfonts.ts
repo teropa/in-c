@@ -8,14 +8,17 @@ interface FixedAudioContext extends AudioContext {
 }
 
 const SOUNDFONT_URLS = {
-  'gnarly-trance-pluck': require('./soundfonts/gnarly-trance-pluck.mp3'),
-  'gnarly-trance-pluck-high': require('./soundfonts/gnarly-trance-pluck-high.mp3'),
-  'hard-tech-bass': require('./soundfonts/hard-tech-bass-mono.mp3'),
-  'rising-waves': require('./soundfonts/rising-waves-mono.mp3'),
-  'rising-waves-low': require('./soundfonts/rising-waves-low-mono.mp3'),
-  'synthetic-marimba': require('./soundfonts/synthetic-marimba-mono.mp3'),
-  'synthetic-marimba-low': require('./soundfonts/synthetic-marimba-low-mono.mp3'),
-  'tight-synth-bass': require('./soundfonts/tight-synth-bass-mono.mp3')
+  'gnarly-trance-pluck': require('./soundfonts/gnarly-trance-pluck-velocities.mp3'),
+  'gnarly-trance-pluck-high': require('./soundfonts/gnarly-trance-pluck-velocities-high.mp3'),
+  //'hard-tech-bass': require('./soundfonts/hard-tech-bass-mono.mp3'),
+  //'rising-waves': require('./soundfonts/rising-waves-mono.mp3'),
+  //'rising-waves-low': require('./soundfonts/rising-waves-low-mono.mp3'),
+  'synthetic-marimba': require('./soundfonts/synthetic-marimba-velocities-mono.mp3'),
+  'synthetic-marimba-high': require('./soundfonts/synthetic-marimba-velocities-high-mono.mp3'),
+  'tight-synth-bass': require('./soundfonts/tight-synth-bass-velocities-mono.mp3'),
+  'classic-rock-organ': require('./soundfonts/classic-rock-organ-velocities-mono.mp3'),
+  'classic-rock-organ-high': require('./soundfonts/classic-rock-organ-velocities-high-mono.mp3')
+
 };
 
 console.log('loading samples');

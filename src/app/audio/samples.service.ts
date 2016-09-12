@@ -25,6 +25,11 @@ export const NOTES = {
   'A5': [60, 64],
   'B5': [64, 68]
 };
+export const VELOCITY_OFFSETS = {
+  'low': 0,
+  'medium': 68,
+  'high': 136
+};
 
 
 @Injectable()
@@ -34,13 +39,13 @@ export class SamplesService {
               @Inject('soundFonts') private soundFonts: Map<string, AudioBuffer>) {
   }
 
-  getSample(instrument: string, noteAndOctave: string): Sample {
+  getSample(instrument: string, noteAndOctave: string, velocity = 'medium'): Sample {
     let soundfont = this.soundFonts.get(instrument);
     if (soundfont) {
       return {
         buffer: soundfont,
-        startPosition: NOTES[noteAndOctave][0],
-        endPosition: NOTES[noteAndOctave][1]
+        startPosition: VELOCITY_OFFSETS[velocity] + NOTES[noteAndOctave][0],
+        endPosition: VELOCITY_OFFSETS[velocity] + NOTES[noteAndOctave][1]
       };
     }
   }

@@ -10,6 +10,7 @@ export interface PlayerState {
   player: PlayerRecord;
   moduleIndex?: number;
   progress?: number;
+  canAdvance: boolean;
   playlist?: PlaylistRecord;
   nowPlaying: List<SoundRecord>;
   pan: number;
@@ -22,6 +23,7 @@ export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecor
   player: playerFactory(),
   moduleIndex: null,
   progress: 0,
+  canAdvance: true,
   playlist: null,
   nowPlaying: <List<SoundRecord>>List.of(),
   pan: 0,

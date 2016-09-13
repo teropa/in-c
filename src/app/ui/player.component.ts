@@ -21,7 +21,7 @@ import { ColorService } from './color.service';
     <h3>{{ playerState.player.instrumentName }}</h3>
     <md-progress-circle mode="determinate" [value]="playerState.progress">
     </md-progress-circle>
-    <button (click)="advance()">Forward</button>
+    <button (click)="advance()" [disabled]="!playerState.canAdvance">Forward</button>
     <md-slider [formControl]="panControl" min="-1" max="1" step="0.01" class="pan-slider">
     </md-slider>
     <md-slider [formControl]="gainControl" min="0" max="1" step="0.005" class="gain-slider">

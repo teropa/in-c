@@ -9,7 +9,7 @@ import { PlaylistRecord, playlistFactory} from './playlist.model';
 import { PlaylistItemRecord, playlistItemFactory } from './playlist-item.model';
 import { PlayerStatsRecord, playerStatsFactory } from './player-stats.model';
 import { SoundRecord, soundFactory } from './sound.model';
-import { PULSE, ADVANCE, ADJUST_PAN, PAUSE, RESUME } from './actions';
+import { PULSE, ADVANCE, ADJUST_PAN, ADJUST_GAIN, PAUSE, RESUME } from './actions';
 
 const GRACENOTE_DURATION = 0.15;
 const ADVANCEMENT_DECAY_FACTORY = 0.95;
@@ -89,6 +89,7 @@ function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>,
   if (canAdvance(playerState, score, beat, playerStats)) {
     return playerState.merge({
       moduleIndex: playerState.moduleIndex + 1,
+      progress: (playerState.moduleIndex + 2) / score.size * 100,
       advanceFactor: playerState.advanceFactor * 1 / Math.pow(ADVANCEMENT_DECAY_FACTORY, playerStats.playerCount)
     });
   } else {
@@ -122,8 +123,6 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
       instrument: playerState.player.instrument,
       note,
       velocity,
-      gain: playerState.player.baseGain,
-      pan: playerState.pan,
       attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
       releaseAt: time + toOffset,
       hue,
@@ -200,9 +199,10 @@ const initialPlayerStates = List((<Player[]>require('json!../../ensemble.json'))
   .map((p: Player) => playerStateFactory({
     player: playerFactory(p),
     moduleIndex: -1,
+    progress: 0,
     advanceFactor: 1,
-    pan: Math.random() * 2 - 1,
-    y: Math.random() * 2 - 1
+    pan: Math.random() * 1.8 - 0.9,
+    gain: 0.75
   }))
 );
 
@@ -224,10 +224,13 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
     case ADJUST_PAN:
       const playerIdxForPan = state.players
         .findIndex(p => p.player.instrument === action.payload.instrument);
-      // Todo: could use mergeIn but there's a bug in immutable typescript definitions 
       return state
-        .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)))
-        .setIn(['players', playerIdxForPan, 'y'], action.payload.y);
+        .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)));
+    case ADJUST_GAIN:
+      const playerIdxForGain = state.players
+        .findIndex(p => p.player.instrument === action.payload.instrument);
+      return state
+        .setIn(['players', playerIdxForPan, 'gain'], Math.min(1, Math.max(0, action.payload.gain)));
     case PAUSE:
       return state.merge({paused: true});
     case RESUME:

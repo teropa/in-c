@@ -8,10 +8,11 @@ import { PlaylistItemRecord } from './playlist-item.model';
 export interface PlayerState {
   player: PlayerRecord;
   moduleIndex?: number;
+  progress?: number;
   advanceFactor: number;
   playlist?: PlaylistRecord;
   pan: number;
-  y: number;
+  gain: number;
 }
 
 export interface PlayerStateRecord extends TypedRecord<PlayerStateRecord>, PlayerState {}
@@ -19,9 +20,10 @@ export interface PlayerStateRecord extends TypedRecord<PlayerStateRecord>, Playe
 export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecord>({
   player: playerFactory(),
   moduleIndex: null,
+  progress: 0,
   advanceFactor: 1,
   playlist: null,
   pan: 0,
-  y: 100
+  gain: 0.75
 });
 

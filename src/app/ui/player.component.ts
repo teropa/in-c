@@ -22,6 +22,8 @@ import { ColorService } from './color.service';
     <button (click)="advance()">Forward</button>
     <md-slider [formControl]="panControl" min="-1" max="1" step="0.01" class="pan-slider">
     </md-slider>
+    <md-slider [formControl]="gainControl" min="0" max="1" step="0.005" class="gain-slider">
+    </md-slider>
   `,
   styles: [`
     .pan-slider >>> .md-slider-track-fill {
@@ -32,10 +34,12 @@ import { ColorService } from './color.service';
 })
 export class PlayerComponent implements OnChanges {
   panControl = new FormControl(0);
+  gainControl = new FormControl(1);
 
   @Input() playerState: PlayerState;
 
   @Output() panChange = this.panControl.valueChanges;
+  @Output() gainChange = this.gainControl.valueChanges;
 
   constructor(private time: TimeService,
               private colors: ColorService,
@@ -44,6 +48,7 @@ export class PlayerComponent implements OnChanges {
 
   ngOnChanges() {
     this.panControl.setValue(this.playerState.pan, {emitEvent: false});
+    this.gainControl.setValue(this.playerState.gain, {emitEvent: false});
   }
 
   advance() {

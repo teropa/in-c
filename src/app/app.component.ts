@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
 
-import { PAUSE, RESUME, ADJUST_PAN } from './core/actions';
+import { PAUSE, RESUME, ADJUST_PAN, ADJUST_GAIN } from './core/actions';
 import { AppState } from './core/app-state.model';
 import { PlayerState } from './core/player-state.model';
 import { PulseService } from './core/pulse.service';
@@ -16,7 +16,8 @@ import { AudioPlayerService } from './audio/audio-player.service';
       <in-c-player *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
                    class="player"
                    [playerState]="playerState"
-                   (panChange)="panChange(playerState, $event)">
+                   (panChange)="panChange(playerState, $event)"
+                   (gainChange)="gainChange(playerState, $event)">
       </in-c-player>
     </div>
     <in-c-top-bar [paused]="paused$ | async"
@@ -65,6 +66,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   panChange(playerState: PlayerState, pan: number) {
     this.store.dispatch({type: ADJUST_PAN, payload: {instrument: playerState.player.instrument, pan}});
+  }
+
+  gainChange(playerState: PlayerState, gain: number) {
+    this.store.dispatch({type: ADJUST_GAIN, payload: {instrument: playerState.player.instrument, gain}});
   }
 
   pause() {

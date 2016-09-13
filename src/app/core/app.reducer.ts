@@ -230,7 +230,7 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
       const playerIdxForGain = state.players
         .findIndex(p => p.player.instrument === action.payload.instrument);
       return state
-        .setIn(['players', playerIdxForPan, 'gain'], Math.min(1, Math.max(0, action.payload.gain)));
+        .setIn(['players', playerIdxForGain, 'gain'], Math.min(1, Math.max(0, action.payload.gain)));
     case PAUSE:
       return state.merge({paused: true});
     case RESUME:

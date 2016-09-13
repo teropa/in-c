@@ -89,8 +89,7 @@ function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>,
   if (canAdvance(playerState, score, beat, playerStats)) {
     return playerState.merge({
       moduleIndex: playerState.moduleIndex + 1,
-      progress: (playerState.moduleIndex + 2) / score.size * 100,
-      advanceFactor: playerState.advanceFactor * 1 / Math.pow(ADVANCEMENT_DECAY_FACTORY, playerStats.playerCount)
+      progress: (playerState.moduleIndex + 2) / score.size * 100
     });
   } else {
     return playerState;
@@ -125,12 +124,11 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
       velocity,
       attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
       releaseAt: time + toOffset,
-      hue,
-      playerState
+      hue
     })
   }
 
-  return playerState.playlist && playerState.playlist.items
+  return playerState.playlist.items
     .skipWhile(itm => itm.fromBeat < beat)
     .takeWhile(itm => itm.fromBeat < beat + 1)
     .flatMap(itm => {
@@ -156,9 +154,14 @@ function assignPlaylists(state: AppStateRecord, time: number, bpm: number) {
 }
 
 function updateNowPlaying(state: AppStateRecord, time: number, bpm: number) {
-  return state.merge({
-    nowPlaying: state.players.flatMap(player => getNowPlaying(player, state.beat, time, bpm))
+  const players = state.players.map(playerState => {
+    if (playerState.playlist) {
+      return playerState.merge({nowPlaying: getNowPlaying(playerState, state.beat, time, bpm)});
+    } else {
+      return playerState;
+    }
   });
+  return state.merge({players});
 }
 
 function updatePlayerStats(state: AppStateRecord) {
@@ -177,17 +180,11 @@ function advancePlayer(state: AppStateRecord, instrument: string) {
   const {score, beat, stats} = state;
   if (canAdvance(state.players.get(playerIdx), score, beat, state.stats)) {
     const players = state.players
-      .update(playerIdx, player => assignModule(player, score, beat, stats))
-      .map(player => decayAdvancementFactor(player));
+      .update(playerIdx, player => assignModule(player, score, beat, stats));
     return state.merge({players});
   } else {
     return state;
   }
-}
-
-function decayAdvancementFactor(playerState: PlayerStateRecord) {
-  const advanceFactor = playerState.advanceFactor * ADVANCEMENT_DECAY_FACTORY;
-  return playerState.merge({advanceFactor});
 }
 
 function pulse(state: AppStateRecord, time: number, bpm: number) {
@@ -200,7 +197,7 @@ const initialPlayerStates = List((<Player[]>require('json!../../ensemble.json'))
     player: playerFactory(p),
     moduleIndex: -1,
     progress: 0,
-    advanceFactor: 1,
+    nowPlaying: List.of<SoundRecord>(),
     pan: Math.random() * 1.8 - 0.9,
     gain: 0.75
   }))
@@ -211,7 +208,6 @@ const initialState = appStateFactory({
   beat: 0,
   players: initialPlayerStates,
   stats: playerStatsFactory().merge({playerCount: initialPlayerStates.size}),
-  nowPlaying: <List<SoundRecord>>List.of(),
   paused: false
 });
 

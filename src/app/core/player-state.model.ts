@@ -4,13 +4,14 @@ import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
 import { PlayerRecord, playerFactory } from './player.model';
 import { PlaylistRecord } from './playlist.model';
 import { PlaylistItemRecord } from './playlist-item.model';
+import { SoundRecord } from './sound.model';
 
 export interface PlayerState {
   player: PlayerRecord;
   moduleIndex?: number;
   progress?: number;
-  advanceFactor: number;
   playlist?: PlaylistRecord;
+  nowPlaying: List<SoundRecord>;
   pan: number;
   gain: number;
 }
@@ -21,8 +22,8 @@ export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecor
   player: playerFactory(),
   moduleIndex: null,
   progress: 0,
-  advanceFactor: 1,
   playlist: null,
+  nowPlaying: <List<SoundRecord>>List.of(),
   pan: 0,
   gain: 0.75
 });

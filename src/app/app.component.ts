@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, HostListener, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
@@ -12,10 +12,12 @@ import { AudioPlayerService } from './audio/audio-player.service';
 @Component({
   selector: 'in-c-app',
   template: `
-    <div class="container" (click)="audioPlayer.enableAudioContext()">
-      <in-c-player *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
+    <div class="container" #container (click)="audioPlayer.enableAudioContext()">
+      <in-c-player *ngFor="let playerState of players$ | async; let idx = index; trackBy: trackPlayer"
                    class="player"
                    [playerState]="playerState"
+                   [playerIndex]="idx"
+                   [availableWidth]="getPlayerWidth(players$ | async)"
                    (panChange)="panChange(playerState, $event)"
                    (gainChange)="gainChange(playerState, $event)">
       </in-c-player>
@@ -37,6 +39,13 @@ import { AudioPlayerService } from './audio/audio-player.service';
     }
     .player {
       flex: 1;
+
+      box-sizing: border-box;
+      padding: 5px;
+      border-left: 1px solid #ddd;
+    }
+    .player:first-child {
+      border-left-width: 0;
     }
   `]
 })
@@ -47,6 +56,9 @@ export class AppComponent implements OnInit, OnDestroy {
   nowPlaying$ = this.store.select('nowPlaying');
   stats$ = this.store.select('stats');
 
+  @ViewChild('container') container: ElementRef;
+  width = 0;
+
   constructor(private store: Store<AppState>,
               private pulse: PulseService,
               private audioPlayer: AudioPlayerService) {
@@ -54,6 +66,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.pulse.onInit();
+    this.setWidth();
   }
 
   ngOnDestroy() {
@@ -64,6 +77,10 @@ export class AppComponent implements OnInit, OnDestroy {
     return obj.player.instrument;
   }
 
+  getPlayerWidth(players: List<PlayerState>) {
+    return (this.width - players.size * 11) / players.size;
+  }
+
   panChange(playerState: PlayerState, pan: number) {
     this.store.dispatch({type: ADJUST_PAN, payload: {instrument: playerState.player.instrument, pan}});
   }
@@ -71,6 +88,12 @@ export class AppComponent implements OnInit, OnDestroy {
   gainChange(playerState: PlayerState, gain: number) {
     this.store.dispatch({type: ADJUST_GAIN, payload: {instrument: playerState.player.instrument, gain}});
   }
+
+  @HostListener('window:resize')
+  setWidth() {
+    this.width = this.container.nativeElement.offsetWidth;
+  }
+
 
   pause() {
     this.store.dispatch({type: PAUSE});

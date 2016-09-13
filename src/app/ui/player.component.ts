@@ -17,6 +17,8 @@ import { ColorService } from './color.service';
 @Component({
   selector: 'in-c-player',
   template: `
+    <h2>Player {{playerIndex + 1}}</h2>
+    <h3>{{ playerState.player.instrumentName }}</h3>
     <md-progress-circle mode="determinate" [value]="playerState.progress">
     </md-progress-circle>
     <button (click)="advance()">Forward</button>
@@ -24,10 +26,16 @@ import { ColorService } from './color.service';
     </md-slider>
     <md-slider [formControl]="gainControl" min="0" max="1" step="0.005" class="gain-slider">
     </md-slider>
+    <in-c-sound-vis [nowPlaying]="playerState.nowPlaying" [width]="availableWidth - 2" [height]="150">
+    </in-c-sound-vis>
   `,
   styles: [`
     .pan-slider >>> .md-slider-track-fill {
       visibility: hidden;
+    }
+    in-c-sound-vis {
+      display: block;
+      margin: 1px;
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -37,6 +45,8 @@ export class PlayerComponent implements OnChanges {
   gainControl = new FormControl(1);
 
   @Input() playerState: PlayerState;
+  @Input() playerIndex: number;
+  @Input() availableWidth: number;
 
   @Output() panChange = this.panControl.valueChanges;
   @Output() gainChange = this.gainControl.valueChanges;

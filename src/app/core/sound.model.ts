@@ -9,8 +9,7 @@ export interface Sound {
   velocity: string,
   attackAt: number,
   releaseAt: number,
-  hue: number,
-  playerState: PlayerStateRecord
+  hue: number
 }
 
 export interface SoundRecord extends TypedRecord<SoundRecord>, Sound {}
@@ -20,6 +19,5 @@ export const soundFactory = makeTypedFactory<Sound, SoundRecord>({
   velocity: 'medium',
   attackAt: 0,
   releaseAt: 0,
-  hue: 0,
-  playerState: null
+  hue: 0
 });

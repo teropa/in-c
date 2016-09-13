@@ -8,8 +8,8 @@ import { MdSliderModule } from '@angular2-material/slider';
 
 import { provideHotStoreModule } from '../hot_store';
 import { AppComponent } from './app.component';
-import { BackgroundComponent } from './ui/background.component';
 import { PlayerComponent } from './ui/player.component';
+import { SoundVisComponent } from './ui/sound-vis.component';
 import { TopBarComponent } from './ui/top-bar.component';
 
 import { appReducer } from './core/app.reducer';
@@ -38,8 +38,8 @@ import { ColorService } from './ui/color.service';
   ],
   declarations: [
     AppComponent,
-    BackgroundComponent,
     PlayerComponent,
+    SoundVisComponent,
     TopBarComponent
   ],
   bootstrap: [AppComponent]

@@ -18,15 +18,15 @@ const RIPPLE_DURATION = 4;
 const CLEANUP_INTERVAL = 10 * 1000;
 
 @Component({
-  selector: 'in-c-background',
+  selector: 'in-c-sound-vis',
   template: `
     <canvas #cnvs></canvas>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
-  @Input() screenWidth: number;
-  @Input() screenHeight: number;
+export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
+  @Input() width: number;
+  @Input() height: number;
   @Input() nowPlaying: List<Sound>;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
@@ -54,29 +54,29 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['screenWidth'] || changes['screenHeight']) {
+    if (changes['width'] || changes['height']) {
       this.setCanvasSize();
     }
     if (changes['nowPlaying']) {
       this.nowPlaying
-        .filterNot(sound => sound.velocity === 'low')
+        //.filterNot(sound => sound.velocity === 'low')
         .forEach(sound => this.sounds.add(sound));
     }
   }
 
   private setCanvasSize() {
-    this.canvas.width = this.screenWidth;
-    this.canvas.style.width = `${this.screenWidth}px`;
-    this.canvas.height = this.screenHeight;
-    this.canvas.style.height = `${this.screenHeight}px`;
+    this.canvas.width = this.width;
+    this.canvas.style.width = `${this.width}px`;
+    this.canvas.height = this.height;
+    this.canvas.style.height = `${this.height}px`;
   }
 
   private draw() {
     if (!this.animating) {
       return;
     }
-    this.context.fillStyle = 'rgba(255, 255 ,255, 0.9)';
-    this.context.fillRect(0, 0, this.screenWidth, this.screenHeight);
+    this.context.fillStyle = 'rgba(25, 25, 25, 0.9)';
+    this.context.fillRect(0, 0, this.width, this.height);
     this.sounds.forEach(sound => {
       const age = this.time.now() - sound.attackAt;
       if (age < 0 || age > RIPPLE_DURATION) {
@@ -84,17 +84,17 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
       }
       const relativeAge = age / RIPPLE_DURATION;
       const noteDuration = sound.releaseAt - sound.attackAt;
-      const x = this.getX(sound.pan);
-      const y = this.getY(sound.playerState.y);
+      const x = this.getX();
+      const y = this.getY();
       const fromRadius = 0;
-      const toRadius = 300 * sound.playerState.advanceFactor;
+      const toRadius = 100;
       const radius = fromRadius + (toRadius - fromRadius) * Math.pow(relativeAge, 1/3);
       const rippleWidth = 200 * Math.sqrt(relativeAge) * noteDuration;
       const alpha = Math.max(0, 1 - Math.sqrt(relativeAge));
       const brighness = this.colors.getNoteBrightness(sound.note);
 
       this.context.lineWidth = Math.floor(rippleWidth);
-      this.context.strokeStyle = `hsla(${sound.hue}, 50%, ${brighness}%, ${alpha})`;
+      this.context.strokeStyle = `hsla(${sound.hue}, 75%, ${brighness}%, ${alpha})`;
 
       this.context.beginPath();
       this.context.arc(Math.floor(x), Math.floor(y), Math.floor(radius), 0, Math.PI * 2);
@@ -103,14 +103,12 @@ export class BackgroundComponent implements OnChanges, OnInit, OnDestroy {
     requestAnimationFrame(() => this.draw());
   }
   
-  private getX(pan: number) {
-    const relPan = (pan + 1) / 2;
-    return relPan * this.screenWidth;
+  private getX() {
+    return this.width / 2;
   }
 
-  private getY(playerY: number) {
-    const relY = (playerY + 1) / 2;
-    return relY * this.screenHeight;
+  private getY() {
+    return this.height / 2;
   }
   
   private cleanUp() {

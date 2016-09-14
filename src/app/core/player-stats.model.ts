@@ -4,8 +4,6 @@ import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
 export interface PlayerStats {
   minModuleIndex: number;
   maxModuleIndex: number;
-  minTimeToLastBeat: number;
-  maxTimeToLastBeat: number;
   playerCount: number;
 }
 
@@ -13,7 +11,5 @@ export interface PlayerStatsRecord extends TypedRecord<PlayerStatsRecord>, Playe
 export const playerStatsFactory = makeTypedFactory<PlayerStats, PlayerStatsRecord>({
   minModuleIndex: null,
   maxModuleIndex: null,
-  minTimeToLastBeat: null,
-  maxTimeToLastBeat: null,
   playerCount: 0
 });

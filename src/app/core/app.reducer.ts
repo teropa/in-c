@@ -9,7 +9,7 @@ import { PlaylistRecord, playlistFactory} from './playlist.model';
 import { PlaylistItemRecord, playlistItemFactory } from './playlist-item.model';
 import { PlayerStatsRecord, playerStatsFactory } from './player-stats.model';
 import { SoundRecord, soundFactory } from './sound.model';
-import { PULSE, ADVANCE, ADJUST_PAN, PAUSE, RESUME } from './actions';
+import { PULSE, ADVANCE, ADJUST_PAN, ADJUST_GAIN, PAUSE, RESUME } from './actions';
 
 const GRACENOTE_DURATION = 0.15;
 const ADVANCEMENT_DECAY_FACTORY = 0.95;
@@ -74,22 +74,17 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, fromBea
   });
 }
 
-function canAdvance(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, playerStats: PlayerStatsRecord) {
-  /*if (!playerState.playlist) {
-    return true;
-  } else {
-    const hasMoreModules = playerState.moduleIndex + 1 < score.size;
-    const hasEveryoneStarted = playerStats.minModuleIndex >= 0;
-    return hasMoreModules && hasEveryoneStarted;
-  }*/
-  return true;
+function canAdvance(playerState: PlayerStateRecord, score: List<ModuleRecord>, playerStats: PlayerStatsRecord) {
+  const isLast = playerState.moduleIndex === score.size - 1;
+  const isFarAhead = playerState.moduleIndex - playerStats.minModuleIndex >= 2;
+  return !isLast && !isFarAhead;
 }
 
-function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, playerStats: PlayerStatsRecord) {
-  if (canAdvance(playerState, score, beat, playerStats)) {
+function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, playerStats: PlayerStatsRecord) {
+  if (canAdvance(playerState, score, playerStats)) {
     return playerState.merge({
       moduleIndex: playerState.moduleIndex + 1,
-      advanceFactor: playerState.advanceFactor * 1 / Math.pow(ADVANCEMENT_DECAY_FACTORY, playerStats.playerCount)
+      progress: (playerState.moduleIndex + 2) / score.size * 100
     });
   } else {
     return playerState;
@@ -122,16 +117,13 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
       instrument: playerState.player.instrument,
       note,
       velocity,
-      gain: playerState.player.baseGain,
-      pan: playerState.pan,
       attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
       releaseAt: time + toOffset,
-      hue,
-      playerState
+      hue
     })
   }
 
-  return playerState.playlist && playerState.playlist.items
+  return playerState.playlist.items
     .skipWhile(itm => itm.fromBeat < beat)
     .takeWhile(itm => itm.fromBeat < beat + 1)
     .flatMap(itm => {
@@ -157,52 +149,52 @@ function assignPlaylists(state: AppStateRecord, time: number, bpm: number) {
 }
 
 function updateNowPlaying(state: AppStateRecord, time: number, bpm: number) {
-  return state.merge({
-    nowPlaying: state.players.flatMap(player => getNowPlaying(player, state.beat, time, bpm))
+  const players = state.players.map(playerState => {
+    if (playerState.playlist) {
+      return playerState.merge({nowPlaying: getNowPlaying(playerState, state.beat, time, bpm)});
+    } else {
+      return playerState;
+    }
   });
+  return state.merge({players});
 }
 
 function updatePlayerStats(state: AppStateRecord) {
   const mods = state.players.map(p => p.moduleIndex);
-  const timesToLastBeat = state.players.map(p => p.playlist ? p.playlist.lastBeat - state.beat : 0);
-  return state.mergeIn(['stats'], {
+  const stats = state.stats.merge({
     minModuleIndex: mods.min(),
-    maxModuleIndex: mods.max(),
-    minTimeToLastBeat: timesToLastBeat.min(),
-    maxTimeToLastBeat: timesToLastBeat.max()
+    maxModuleIndex: mods.max()
   });
+  const players = state.players.map(p => p.merge({canAdvance: canAdvance(p, state.score, stats)}));
+  return state.merge({stats, players});
 }
 
 function advancePlayer(state: AppStateRecord, instrument: string) {
   const playerIdx = state.players.findIndex(p => p.player.instrument === instrument);
-  const {score, beat, stats} = state;
-  if (canAdvance(state.players.get(playerIdx), score, beat, state.stats)) {
+  const {score, stats} = state;
+  if (canAdvance(state.players.get(playerIdx), score, state.stats)) {
     const players = state.players
-      .update(playerIdx, player => assignModule(player, score, beat, stats))
-      .map(player => decayAdvancementFactor(player));
-    return state.merge({players});
+      .update(playerIdx, player => assignModule(player, score, stats));
+    return updatePlayerStats(state.merge({players}));
   } else {
     return state;
   }
 }
 
-function decayAdvancementFactor(playerState: PlayerStateRecord) {
-  const advanceFactor = playerState.advanceFactor * ADVANCEMENT_DECAY_FACTORY;
-  return playerState.merge({advanceFactor});
-}
-
 function pulse(state: AppStateRecord, time: number, bpm: number) {
   const nextBeat = state.beat + 1;
-  return updatePlayerStats(updateNowPlaying(assignPlaylists(state.set('beat', nextBeat), time, bpm), time, bpm));
+  return updateNowPlaying(assignPlaylists(state.set('beat', nextBeat), time, bpm), time, bpm);
 }
 
 const initialPlayerStates = List((<Player[]>require('json!../../ensemble.json'))
   .map((p: Player) => playerStateFactory({
     player: playerFactory(p),
     moduleIndex: -1,
-    advanceFactor: 1,
-    pan: Math.random() * 2 - 1,
-    y: Math.random() * 2 - 1
+    progress: 0,
+    canAdvance: true,
+    nowPlaying: List.of<SoundRecord>(),
+    pan: Math.random() * 1.8 - 0.9,
+    gain: 0.75
   }))
 );
 
@@ -211,7 +203,6 @@ const initialState = appStateFactory({
   beat: 0,
   players: initialPlayerStates,
   stats: playerStatsFactory().merge({playerCount: initialPlayerStates.size}),
-  nowPlaying: <List<SoundRecord>>List.of(),
   paused: false
 });
 
@@ -224,10 +215,13 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
     case ADJUST_PAN:
       const playerIdxForPan = state.players
         .findIndex(p => p.player.instrument === action.payload.instrument);
-      // Todo: could use mergeIn but there's a bug in immutable typescript definitions 
       return state
-        .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)))
-        .setIn(['players', playerIdxForPan, 'y'], action.payload.y);
+        .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)));
+    case ADJUST_GAIN:
+      const playerIdxForGain = state.players
+        .findIndex(p => p.player.instrument === action.payload.instrument);
+      return state
+        .setIn(['players', playerIdxForGain, 'gain'], Math.min(1, Math.max(0, action.payload.gain)));
     case PAUSE:
       return state.merge({paused: true});
     case RESUME:

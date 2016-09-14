@@ -94,7 +94,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
       const brighness = this.colors.getNoteBrightness(sound.note);
 
       this.context.lineWidth = Math.floor(rippleWidth);
-      this.context.strokeStyle = `hsla(${sound.hue}, 50%, ${brighness}%, ${alpha})`;
+      this.context.strokeStyle = `hsla(${sound.hue}, 75%, ${brighness}%, ${alpha})`;
 
       this.context.beginPath();
       this.context.arc(Math.floor(x), Math.floor(y), Math.floor(radius), 0, Math.PI * 2);

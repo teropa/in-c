@@ -4,12 +4,13 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   selector: 'in-c-top-bar',
   template: `
     <header>
-      <button *ngIf="paused" (click)="resume.next()">
-        Resume
+      <button md-icon-button *ngIf="paused" (click)="resume.next()">
+        <md-icon class="md-24">play_arrow</md-icon>
       </button>
-      <button *ngIf="!paused" (click)="pause.next()">
-        Pause
+      <button md-icon-button *ngIf="!paused" (click)="pause.next()">
+        <md-icon class="md-24">pause</md-icon>
       </button>
+      <h1>In C</h1>
     </header>
   `,
   styles: [`
@@ -18,10 +19,20 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
       top: 0;
       left: 0;
       right: 0;
-      height: 30px;
+      height: 50px;
+
+      padding: 5px;
 
       background-color: black;
       color: white;
+    }
+    h1 {
+      margin: 0;
+      line-height: 50px;
+    }
+    button {
+      float: right;
+      margin-top: 5px;
     }
   `]
 })

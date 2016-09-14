@@ -32,7 +32,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
       position: fixed;
       left: 0;
       right: 0;
-      top: 30px;
+      top: 50px;
       bottom: 0;
 
       display: flex;

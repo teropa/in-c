@@ -1,32 +1,27 @@
 [
   {
-    "instrument": "gnarly-trance-pluck",
-    "instrumentName": "Gnarly Trance Pluck I",
-    "baseGain": 0.5
-  },
-  {
     "instrument": "gnarly-trance-pluck-high",
-    "instrumentName": "Gnarly Trance Pluck II",
-    "baseGain": 0.5
-  },
-  {
-    "instrument": "synthetic-marimba",
-    "instrumentName": "Synthetic Marimba I",
-    "baseGain": 1
-  },
-  {
-    "instrument": "synthetic-marimba-high",
-    "instrumentName": "Synthetic Marimba II",
-    "baseGain": 1
+    "instrumentName": "Gnarly Trance Pluck",
+    "baseGain": 0.1
   },
   {
     "instrument": "tight-synth-bass",
     "instrumentName": "Tight Synth Bass",
-    "baseGain": 1
+    "baseGain": 0.5
   },
   {
-    "instrument": "classic-rock-organ",
-    "instrumentName": "Classic Rock Organ",
-    "baseGain": 1
+    "instrument": "delicate-bells",
+    "instrumentName": "Delicate Bells",
+    "baseGain": 0.2
+  },
+  {
+    "instrument": "glass-string-structures",
+    "instrumentName": "Glass String Structures",
+    "baseGain": 0.5
+  },
+  {
+    "instrument": "synthetic-marimba-high",
+    "instrumentName": "Synthetic Marimba",
+    "baseGain": 0.8
   }
 ]

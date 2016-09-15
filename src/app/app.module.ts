@@ -20,7 +20,7 @@ import { PulseService } from './core/pulse.service';
 import { TimeService } from './core/time.service';
 import { AudioPlayerService } from './audio/audio-player.service';
 import { SamplesService } from './audio/samples.service';
-import { ColorService } from './ui/color.service';
+import { NoteService } from './ui/note.service';
 
 @NgModule({
   imports: [
@@ -40,7 +40,7 @@ import { ColorService } from './ui/color.service';
     SamplesService,
     TimeService,
     PulseService,
-    ColorService
+    NoteService
   ],
   declarations: [
     AppComponent,

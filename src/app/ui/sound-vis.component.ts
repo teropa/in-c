@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { List } from 'immutable';
 import { Sound } from '../core/sound.model';
-import { ColorService } from './color.service';
+import { NoteService } from './note.service';
 import { TimeService } from '../core/time.service';
 
 const RIPPLE_DURATION = 4;
@@ -34,7 +34,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   private animating = false;
   private cleanupInterval: number;
 
-  constructor(private time: TimeService, private colors: ColorService) {
+  constructor(private time: TimeService, private notes: NoteService) {
   }
 
   @ViewChild('cnvs') set canvasRef(ref: ElementRef) {
@@ -91,7 +91,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
       const radius = fromRadius + (toRadius - fromRadius) * Math.pow(relativeAge, 1/3);
       const rippleWidth = 200 * Math.sqrt(relativeAge) * noteDuration;
       const alpha = Math.max(0, 1 - Math.sqrt(relativeAge));
-      const brighness = this.colors.getNoteBrightness(sound.note);
+      const brighness = this.notes.getNoteBrightness(sound.note);
 
       this.context.lineWidth = Math.floor(rippleWidth);
       this.context.strokeStyle = `hsla(${sound.hue}, 75%, ${brighness}%, ${alpha})`;

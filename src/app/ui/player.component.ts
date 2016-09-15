@@ -12,7 +12,6 @@ import { AppState } from '../core/app-state.model';
 import { PlayerState } from '../core/player-state.model';
 import { ADVANCE } from '../core/actions';
 import { TimeService } from '../core/time.service';
-import { ColorService } from './color.service';
 
 @Component({
   selector: 'in-c-player',
@@ -113,7 +112,6 @@ export class PlayerComponent implements OnChanges {
   @Output() gainChange = this.gainControl.valueChanges;
 
   constructor(private time: TimeService,
-              private colors: ColorService,
               private store: Store<AppState>) {
   }
 

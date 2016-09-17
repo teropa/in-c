@@ -119,7 +119,8 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
       velocity,
       attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
       releaseAt: time + toOffset,
-      hue
+      hue,
+      fromModuleIdx: playerState.moduleIndex
     })
   }
 

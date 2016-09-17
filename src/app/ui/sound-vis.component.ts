@@ -14,7 +14,6 @@ import { Sound } from '../core/sound.model';
 import { NoteService } from './note.service';
 import { TimeService } from '../core/time.service';
 
-const RIPPLE_DURATION = 4;
 const CLEANUP_INTERVAL = 10 * 1000;
 
 @Component({
@@ -75,30 +74,36 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     if (!this.animating) {
       return;
     }
-    this.context.fillStyle = 'rgba(25, 25, 25, 0.9)';
+    this.context.fillStyle = 'rgba(25, 25, 25, 0.5)';
     this.context.fillRect(0, 0, this.width, this.height);
+
+    const now = this.time.now();
+
     this.sounds.forEach(sound => {
-      const age = this.time.now() - sound.attackAt;
-      if (age < 0 || age > RIPPLE_DURATION) {
+      const age = now - sound.attackAt;
+      const duration = sound.releaseAt - sound.attackAt;
+      if (age < 0 || age > duration * 2) {
         return;
       }
-      const relativeAge = age / RIPPLE_DURATION;
-      const noteDuration = sound.releaseAt - sound.attackAt;
-      const x = this.getX();
-      const y = this.getY();
-      const fromRadius = 0;
-      const toRadius = 100;
-      const radius = fromRadius + (toRadius - fromRadius) * Math.pow(relativeAge, 1/3);
-      const rippleWidth = 200 * Math.sqrt(relativeAge) * noteDuration;
-      const alpha = Math.max(0, 1 - Math.sqrt(relativeAge));
-      const brighness = this.notes.getNoteBrightness(sound.note);
 
-      this.context.lineWidth = Math.floor(rippleWidth);
-      this.context.strokeStyle = `hsla(${sound.hue}, 75%, ${brighness}%, ${alpha})`;
+      const noteHeight = this.height / this.notes.getScaleSize(sound.fromModuleIdx);
+      const notePos = this.notes.getNotePositionInScale(sound.note, sound.fromModuleIdx);
+      const noteDur = sound.releaseAt - sound.attackAt;
 
+      const y = this.height - notePos * noteHeight - noteHeight;
+      const alpha = 1 - age / duration / 2;
+
+      let brightness = 50;
+      if (sound.velocity === 'medium') {
+        brightness = 60;
+      } else if (sound.velocity === 'high') {
+        brightness = 70;
+      }
+
+      this.context.fillStyle = `hsla(${sound.hue}, 75%, ${brightness}%, ${alpha})`;
       this.context.beginPath();
-      this.context.arc(Math.floor(x), Math.floor(y), Math.floor(radius), 0, Math.PI * 2);
-      this.context.stroke();
+      (<any>this.context).filter = "blur(1px)";
+      this.context.fillRect(0, y, this.width, noteHeight);
     });
     requestAnimationFrame(() => this.draw());
   }
@@ -114,7 +119,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   private cleanUp() {
     this.sounds.forEach(sound => {
       const age = this.time.now() - sound.attackAt;
-      if (age > RIPPLE_DURATION) {
+      if (age > 5) {
         this.sounds.delete(sound);
       }
     });

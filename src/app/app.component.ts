@@ -22,27 +22,26 @@ import { AudioPlayerService } from './audio/audio-player.service';
                    (gainChange)="gainChange(playerState, $event)">
       </in-c-player>
     </div>
-    <in-c-top-bar [paused]="paused$ | async"
+    <!--in-c-top-bar [paused]="paused$ | async"
                   (pause)="pause()"
                   (resume)="resume()">
-    </in-c-top-bar>
+    </in-c-top-bar-->
   `,
   styles: [`
     .container {
       position: fixed;
       left: 0;
       right: 0;
-      top: 50px;
+      top: 0;
       bottom: 0;
 
       display: flex;
+      background-color: rgb(25, 25, 25)
     }
     .player {
       flex: 1;
 
       box-sizing: border-box;
-      padding: 5px;
-      border-left: 1px solid #ddd;
     }
     .player:first-child {
       border-left-width: 0;
@@ -78,7 +77,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   getPlayerWidth(players: List<PlayerState>) {
-    return (this.width - players.size * 11) / players.size;
+    return Math.ceil(this.width / players.size);
   }
 
   panChange(playerState: PlayerState, pan: number) {

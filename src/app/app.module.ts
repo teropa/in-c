@@ -35,7 +35,7 @@ import { NoteService } from './ui/note.service';
     MdSliderModule
   ],
   providers: [
-    {provide: 'bpm', useValue: 180},
+    {provide: 'bpm', useValue: 220},
     AudioPlayerService,
     SamplesService,
     TimeService,

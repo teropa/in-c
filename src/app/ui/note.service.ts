@@ -1,33 +1,57 @@
-const MIN_NOTE = {note: 'G', octave: 3};
-const MAX_NOTE = {note: 'B', octave: 5};
+import { Injectable } from '@angular/core';
+import { Module } from '../core/module.model';
+
 const OCTAVE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 const MIN_BRIGHTNESS = 33;
 const MAX_BRIGHTNESS = 66;
+
+const score: any = require('json!../../score.json');
 
 interface Note {
   note: string,
   octave: number
 }
 
+@Injectable()
 export class NoteService {
   private brightnessCache = new Map<string, number>();
 
-  getNoteBrightness(noteAndOctave: string) {
-    if (this.brightnessCache.has(noteAndOctave)) {
-      return this.brightnessCache.get(noteAndOctave);
-    } else {
-      const note = this.parseNote(noteAndOctave);
-      const value = this.noteValue(note);
-      const minValue = this.noteValue(MIN_NOTE);
-      const maxValue = this.noteValue(MAX_NOTE);
-      const valueRange = maxValue - minValue;
-      const relativeValue = (value - minValue) / valueRange;
-      const brightnessRange = MAX_BRIGHTNESS - MIN_BRIGHTNESS;
-      const brightness = MIN_BRIGHTNESS + brightnessRange * relativeValue;
-      this.brightnessCache.set(noteAndOctave, brightness);
-      return brightness;
-    }
+  getNotePositionInScale(noteAndOctave: string, moduleIdx: number) {
+    const note = this.parseNote(noteAndOctave);
+    const value = this.noteValue(note);
+    const minValue = this.getScaleMin(moduleIdx);
+    return value - minValue;    
+  }
+
+  getScaleSize(moduleIdx: number) {
+    const moduleNotes: number[] = score[moduleIdx].score
+      .reduce((nts: number[], note: any) => {
+        if (note.note) {
+          nts.push(this.noteValue(this.parseNote(note.note)));
+        }
+        if (note.gracenote) {
+          nts.push(this.noteValue(this.parseNote(note.gracenote)));
+        }
+        return nts;
+      }, []);
+    const minNote = moduleNotes.reduce((a, b) => Math.min(a, b));
+    const maxNote = moduleNotes.reduce((a, b) => Math.max(a, b));
+    return (maxNote - minNote) + 1;
+  }
+
+  getScaleMin(moduleIdx: number) {
+    return score[moduleIdx].score
+      .reduce((nts: number[], note: any) => {
+        if (note.note) {
+          nts.push(this.noteValue(this.parseNote(note.note)));
+        }
+        if (note.gracenote) {
+          nts.push(this.noteValue(this.parseNote(note.gracenote)));
+        }
+        return nts;
+      }, [])
+      .reduce((a: number, b: number) => Math.min(a, b));
   }
 
   private parseNote(noteAndOctave: string): Note {

@@ -5,9 +5,9 @@ import { audioCtx } from './audio-context';
 import { soundFonts } from './soundfonts';
 import { hotModuleReplacement } from './hot_store';
 
-//if (process.env.ENV === 'production') {
+if (process.env.ENV === 'production') {
   enableProdMode();
-//}
+}
 
 function main(initialState?: any) {
   return platformBrowserDynamic([

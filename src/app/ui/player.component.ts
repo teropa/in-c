@@ -16,12 +16,8 @@ import { TimeService } from '../core/time.service';
 @Component({
   selector: 'in-c-player',
   template: `
-    <header>
-      <h2>Bot {{playerIndex + 1}}</h2>
-      <h4>{{ playerState.player.instrumentName }}</h4>
-      <in-c-sound-vis [nowPlaying]="playerState.nowPlaying" [width]="availableWidth - 2" [height]="200">
-      </in-c-sound-vis>
-    </header>
+    <in-c-sound-vis [nowPlaying]="playerState.nowPlaying" [width]="availableWidth" [height]="450">
+    </in-c-sound-vis>
     <div class="progress-controls">
       <md-progress-circle mode="determinate" color="accent" [value]="playerState.progress">
       </md-progress-circle>
@@ -31,12 +27,6 @@ import { TimeService } from '../core/time.service';
       </button>
     </div>
     <div class="sound-controls">
-      <div class="sound-control">
-        <div class="left-label">L</div>
-        <md-slider [formControl]="panControl" min="-1" max="1" step="0.01" class="pan-slider">
-        </md-slider>
-        <div class="right-label">R</div>
-      </div>
       <div class="sound-control">
         <md-icon class="left-label md-24">volume_down</md-icon>
         <md-slider [formControl]="gainControl" min="0" max="1" step="0.005" class="gain-slider">
@@ -52,11 +42,9 @@ import { TimeService } from '../core/time.service';
       justify-content: space-between;
       align-items: center;
     }
-    header {
-      width: 100%;
-    }
     .progress-controls {
       position: relative;
+      color: white;
     }
     .progress-controls md-progress-circle, .progress-controls button {
       position: absolute;
@@ -72,14 +60,11 @@ import { TimeService } from '../core/time.service';
       margin-top: -27px;
     }
     in-c-sound-vis {
+      display: block;
       flex-shrink: 0;
     }
     .pan-slider >>> .md-slider-track-fill {
       visibility: hidden;
-    }
-    in-c-sound-vis {
-      display: block;
-      margin: 1px;
     }
     .sound-controls {
       width: 100%;
@@ -88,6 +73,7 @@ import { TimeService } from '../core/time.service';
       display: flex;
       justify-content: space-between;
       align-items: center;
+      color: #e3e3e3;
     }
     .sound-control md-slider {
       flex-grow: 1;

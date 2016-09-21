@@ -18,6 +18,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
                    [playerState]="playerState"
                    [playerIndex]="idx"
                    [availableWidth]="getPlayerWidth(players$ | async)"
+                   [availableHeight]="height"
                    (panChange)="panChange(playerState, $event)"
                    (gainChange)="gainChange(playerState, $event)">
       </in-c-player>
@@ -57,6 +58,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @ViewChild('container') container: ElementRef;
   width = 0;
+  height = 0;
 
   constructor(private store: Store<AppState>,
               private pulse: PulseService,
@@ -65,7 +67,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.pulse.onInit();
-    this.setWidth();
+    this.setSize();
   }
 
   ngOnDestroy() {
@@ -89,8 +91,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   @HostListener('window:resize')
-  setWidth() {
+  setSize() {
     this.width = this.container.nativeElement.offsetWidth;
+    this.height = this.container.nativeElement.offsetHeight;
   }
 
 

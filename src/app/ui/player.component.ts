@@ -16,7 +16,7 @@ import { TimeService } from '../core/time.service';
 @Component({
   selector: 'in-c-player',
   template: `
-    <in-c-sound-vis [nowPlaying]="playerState.nowPlaying" [width]="availableWidth" [height]="450">
+    <in-c-sound-vis [nowPlaying]="playerState.nowPlaying" [width]="availableWidth" [height]="availableHeight">
     </in-c-sound-vis>
     <div class="progress-controls">
       <md-progress-circle mode="determinate" color="accent" [value]="playerState.progress">
@@ -26,24 +26,20 @@ import { TimeService } from '../core/time.service';
         <md-icon *ngIf="isPlaying()" class="md-24" title="Advance">fast_forward</md-icon>
       </button>
     </div>
-    <div class="sound-controls">
-      <div class="sound-control">
-        <md-icon class="left-label md-24">volume_down</md-icon>
-        <md-slider [formControl]="gainControl" min="0" max="1" step="0.005" class="gain-slider">
-        </md-slider>
-        <md-icon class="right-label md-24">volume_up</md-icon>
-      </div>
-    </div>
   `,
   styles: [`
     :host {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .progress-controls {
       position: relative;
+    }
+    in-c-sound-vis, progress-controls {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+    }
+
+    .progress-controls {
       color: white;
     }
     .progress-controls md-progress-circle, .progress-controls button {
@@ -58,31 +54,12 @@ import { TimeService } from '../core/time.service';
     .progress-controls button {
       margin-left: -27px;
       margin-top: -27px;
+      background-color: rgba(255, 255, 255, 0.2);
     }
-    in-c-sound-vis {
-      display: block;
-      flex-shrink: 0;
+    .progress-controls >>> path {
+      stroke: rgba(255, 255, 255, 0.2) !important;
     }
-    .pan-slider >>> .md-slider-track-fill {
-      visibility: hidden;
-    }
-    .sound-controls {
-      width: 100%;
-    }
-    .sound-control {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      color: #e3e3e3;
-    }
-    .sound-control md-slider {
-      flex-grow: 1;
-    }
-    .sound-control .left-label, .sound-control .right-label {
-      width: 24px;
-      height: 24px;
-      text-align: center;
-    }
+
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -93,6 +70,7 @@ export class PlayerComponent implements OnChanges {
   @Input() playerState: PlayerState;
   @Input() playerIndex: number;
   @Input() availableWidth: number;
+  @Input() availableHeight: number;
 
   @Output() panChange = this.panControl.valueChanges;
   @Output() gainChange = this.gainControl.valueChanges;

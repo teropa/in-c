@@ -187,17 +187,16 @@ function pulse(state: AppStateRecord, time: number, bpm: number) {
   return updateNowPlaying(assignPlaylists(state.set('beat', nextBeat), time, bpm), time, bpm);
 }
 
-const initialPlayerStates = List((<Player[]>require('json!../../ensemble.json'))
-  .map((p: Player) => playerStateFactory({
-    player: playerFactory(p),
-    moduleIndex: -1,
-    progress: 0,
-    canAdvance: true,
-    nowPlaying: List.of<SoundRecord>(),
-    pan: Math.random() * 1.8 - 0.9,
-    gain: 0.75
-  }))
-);
+const playerData: Player[] = require('json!../../ensemble.json') ;
+const initialPlayerStates = List(playerData.map((p, i) => playerStateFactory({
+  player: playerFactory(p),
+  moduleIndex: -1,
+  progress: 0,
+  canAdvance: true,
+  nowPlaying: List.of<SoundRecord>(),
+  pan: (i / (playerData.length - 1)) * 2 - 1,
+  gain: 0.75
+})));
 
 const initialState = appStateFactory({
   score: readScore(require('json!../../score.json')),

@@ -16,7 +16,7 @@ import { TimeService } from '../core/time.service';
 @Component({
   selector: 'in-c-player',
   template: `
-    <in-c-sound-vis [nowPlaying]="playerState.nowPlaying" [width]="availableWidth" [height]="availableHeight">
+    <in-c-sound-vis [nowPlaying]="playerState.nowPlaying" [width]="availableWidth" [height]="400" [style.height.px]="400">
     </in-c-sound-vis>
     <div class="progress-controls">
       <md-progress-circle mode="determinate" color="accent" [value]="playerState.progress">
@@ -29,17 +29,20 @@ import { TimeService } from '../core/time.service';
   `,
   styles: [`
     :host {
-      position: relative;
+      display: flex;
+      flex-direction: column;
     }
-    in-c-sound-vis, progress-controls {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      bottom: 0;
+
+    in-c-sound-vis {
+      flex: 0;
+      border-top: 1px solid #444;
+      border-bottom: 1px solid #444;
     }
 
     .progress-controls {
+      flex: 1;
+
+      position: relative;
       color: white;
     }
     .progress-controls md-progress-circle, .progress-controls button {
@@ -70,7 +73,6 @@ export class PlayerComponent implements OnChanges {
   @Input() playerState: PlayerState;
   @Input() playerIndex: number;
   @Input() availableWidth: number;
-  @Input() availableHeight: number;
 
   @Output() panChange = this.panControl.valueChanges;
   @Output() gainChange = this.gainControl.valueChanges;

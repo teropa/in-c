@@ -18,26 +18,25 @@ import { AudioPlayerService } from './audio/audio-player.service';
                    [playerState]="playerState"
                    [playerIndex]="idx"
                    [availableWidth]="getPlayerWidth(players$ | async)"
-                   [availableHeight]="height"
                    (panChange)="panChange(playerState, $event)"
                    (gainChange)="gainChange(playerState, $event)">
       </in-c-player>
     </div>
-    <!--in-c-top-bar [paused]="paused$ | async"
+    <in-c-top-bar [paused]="paused$ | async"
                   (pause)="pause()"
                   (resume)="resume()">
-    </in-c-top-bar-->
+    </in-c-top-bar>
   `,
   styles: [`
     .container {
       position: fixed;
       left: 0;
       right: 0;
-      top: 0;
+      top: 50px;
       bottom: 0;
 
       display: flex;
-      background-color: rgb(25, 25, 25)
+      background-color: black;
     }
     .player {
       flex: 1;

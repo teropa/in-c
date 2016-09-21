@@ -18,9 +18,7 @@ const CLEANUP_INTERVAL = 10 * 1000;
 
 @Component({
   selector: 'in-c-sound-vis',
-  template: `
-    <canvas #cnvs></canvas>
-  `,
+  template: `<canvas #cnvs></canvas>`,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {

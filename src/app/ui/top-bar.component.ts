@@ -10,7 +10,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
       <button md-icon-button *ngIf="!paused" (click)="pause.next()">
         <md-icon class="md-24">pause</md-icon>
       </button>
-      <h1>In C</h1>
+      <h1>Terry Riley's In C</h1>
     </header>
   `,
   styles: [`
@@ -20,19 +20,18 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
       left: 0;
       right: 0;
       height: 50px;
-
       padding: 5px;
+      box-sizing: border-box;
 
       background-color: black;
       color: white;
     }
     h1 {
       margin: 0;
-      line-height: 50px;
+      line-height: 40px;
     }
     button {
       float: right;
-      margin-top: 5px;
     }
   `]
 })

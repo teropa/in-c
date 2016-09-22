@@ -5,11 +5,13 @@ export interface PlayerStats {
   minModuleIndex: number;
   maxModuleIndex: number;
   playerCount: number;
+  totalProgress: number;
 }
 
 export interface PlayerStatsRecord extends TypedRecord<PlayerStatsRecord>, PlayerStats {}
 export const playerStatsFactory = makeTypedFactory<PlayerStats, PlayerStatsRecord>({
   minModuleIndex: null,
   maxModuleIndex: null,
-  playerCount: 0
+  playerCount: 0,
+  totalProgress: 0
 });

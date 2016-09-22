@@ -162,9 +162,11 @@ function updateNowPlaying(state: AppStateRecord, time: number, bpm: number) {
 
 function updatePlayerStats(state: AppStateRecord) {
   const mods = state.players.map(p => p.moduleIndex);
+  const totalProgress = state.players.map(p => p.progress).reduce((s, p) => s + p, 0) / state.players.size;
   const stats = state.stats.merge({
     minModuleIndex: mods.min(),
-    maxModuleIndex: mods.max()
+    maxModuleIndex: mods.max(),
+    totalProgress
   });
   const players = state.players.map(p => p.merge({canAdvance: canAdvance(p, state.score, stats)}));
   return state.merge({stats, players});

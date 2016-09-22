@@ -91,7 +91,7 @@ function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>,
   }
 }
 
-function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord>, time: number, beat: number, bpm: number) {
+function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, bpm: number) {
   const shouldBePlaying = playerState.moduleIndex >= 0;
   const hasNothingToPlay = !playerState.playlist || playerState.playlist.lastBeat <= beat;
   if (shouldBePlaying && hasNothingToPlay) {
@@ -142,10 +142,10 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
     });
 }
 
-function assignPlaylists(state: AppStateRecord, time: number, bpm: number) {
+function assignPlaylists(state: AppStateRecord, bpm: number) {
   const {score, beat} = state;
   const players = state.players
-    .map(player => assignPlaylist(player, score, time, beat, bpm));
+    .map(player => assignPlaylist(player, score, beat, bpm));
   return state.merge({players});
 }
 
@@ -186,7 +186,7 @@ function advancePlayer(state: AppStateRecord, instrument: string) {
 
 function pulse(state: AppStateRecord, time: number, bpm: number) {
   const nextBeat = state.beat + 1;
-  return updateNowPlaying(assignPlaylists(state.set('beat', nextBeat), time, bpm), time, bpm);
+  return updateNowPlaying(assignPlaylists(state.set('beat', nextBeat), bpm), time, bpm);
 }
 
 const playerData: Player[] = require('json!../../ensemble.json') ;

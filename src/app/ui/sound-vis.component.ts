@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import { List } from 'immutable';
 import { Sound } from '../core/sound.model';
-import { NoteService } from './note.service';
 import { TimeService } from '../core/time.service';
 
 const CLEANUP_INTERVAL = 10 * 1000;
@@ -31,7 +30,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   private animating = false;
   private cleanupInterval: number;
 
-  constructor(private time: TimeService, private notes: NoteService) {
+  constructor(private time: TimeService) {
   }
 
   @ViewChild('cnvs') set canvasRef(ref: ElementRef) {
@@ -55,9 +54,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
       this.setCanvasSize();
     }
     if (changes['nowPlaying']) {
-      this.nowPlaying
-        //.filterNot(sound => sound.velocity === 'low')
-        .forEach(sound => this.sounds.add(sound));
+      this.nowPlaying.forEach(s => this.sounds.add(s));
     }
   }
 
@@ -79,17 +76,19 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
 
     this.sounds.forEach(sound => {
       const age = now - sound.attackAt;
-      const duration = sound.releaseAt - sound.attackAt;
-      if (age < 0 || age > duration * 2) {
+      const duration = Math.max(0.2, sound.releaseAt - sound.attackAt);
+      if (age < 0 || age > duration) {
         return;
       }
 
-      const noteHeight = this.height / this.notes.getScaleSize(sound.fromModuleIdx);
-      const notePos = this.notes.getNotePositionInScale(sound.note, sound.fromModuleIdx);
+      const noteHeight = Math.ceil(this.height / sound.coordinates.modulePitchExtent);
+      const notePos = sound.coordinates.relativePitch;
       const noteDur = sound.releaseAt - sound.attackAt;
+      const soundWidth = (sound.coordinates.soundDuration / sound.coordinates.moduleDuration) * this.width;
 
-      const y = this.height - notePos * noteHeight - noteHeight;
-      const alpha = 1 - age / duration / 2;
+      const x = Math.floor((sound.coordinates.relativeStart / sound.coordinates.moduleDuration) * this.width);
+      const y = Math.floor(this.height - notePos * noteHeight - noteHeight);
+      const alpha = 1 - age;
 
       let brightness = 50;
       if (sound.velocity === 'medium') {
@@ -101,7 +100,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
       this.context.fillStyle = `hsla(${sound.hue}, 75%, ${brightness}%, ${alpha})`;
       this.context.beginPath();
       (<any>this.context).filter = "blur(1px)";
-      this.context.fillRect(0, y, this.width, noteHeight);
+      this.context.fillRect(x, y, soundWidth, noteHeight);
     });
     requestAnimationFrame(() => this.draw());
   }
@@ -117,7 +116,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   private cleanUp() {
     this.sounds.forEach(sound => {
       const age = this.time.now() - sound.attackAt;
-      if (age > 5) {
+      if (age > 10) {
         this.sounds.delete(sound);
       }
     });

@@ -2,6 +2,7 @@ import { List } from 'immutable';
 import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
 
 import { PlayerStateRecord } from './player-state.model';
+import { SoundCoordinatesRecord } from './sound-coordinates.model';
 
 export interface Sound {
   instrument: string,
@@ -9,8 +10,9 @@ export interface Sound {
   velocity: string,
   attackAt: number,
   releaseAt: number,
+  
   hue: number,
-  fromModuleIdx: number
+  coordinates: SoundCoordinatesRecord
 }
 
 export interface SoundRecord extends TypedRecord<SoundRecord>, Sound {}
@@ -21,5 +23,5 @@ export const soundFactory = makeTypedFactory<Sound, SoundRecord>({
   attackAt: 0,
   releaseAt: 0,
   hue: 0,
-  fromModuleIdx: 0
+  coordinates: null
 });

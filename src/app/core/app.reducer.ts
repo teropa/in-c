@@ -9,10 +9,14 @@ import { PlaylistRecord, playlistFactory} from './playlist.model';
 import { PlaylistItemRecord, playlistItemFactory } from './playlist-item.model';
 import { PlayerStatsRecord, playerStatsFactory } from './player-stats.model';
 import { SoundRecord, soundFactory } from './sound.model';
+import { SoundCoordinatesRecord, soundCoordinatesFactory } from './sound-coordinates.model';
+
 import { PULSE, ADVANCE, ADJUST_PAN, ADJUST_GAIN, PAUSE, RESUME } from './actions';
 
-const GRACENOTE_DURATION = 0.15;
+const GRACENOTE_DURATION = 0.1;
 const ADVANCEMENT_DECAY_FACTORY = 0.95;
+
+const OCTAVE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 function generateHues(score: ModuleRecord[]) {
   const wrapHue = (n: number) => n % 256;
@@ -34,11 +38,17 @@ function generateHues(score: ModuleRecord[]) {
 
 function readScore(fullScore: ModuleRecord[]): List<ModuleRecord> {
   const hues = generateHues(fullScore);
-  return List(fullScore.map(({number, score}, idx) => moduleFactory({
-    number,
-    score: <List<NoteRecord>>List(score.map(noteFactory)),
-    hue: hues[idx]
-  })));
+  return List(fullScore.map(({number, score}, idx) => {
+    const parsedScore = <List<NoteRecord>>List(score.map(noteFactory));
+    const allNoteValues = parsedScore.flatMap(noteValues);
+    return moduleFactory({
+      number,
+      score: parsedScore,
+      hue: hues[idx],
+      minNoteValue: allNoteValues.min(),
+      maxNoteValue: allNoteValues.max()
+    });
+  }));
 }
 
 function getBeatsUntilStart(score: List<NoteRecord>, noteIdx: number) {
@@ -69,8 +79,10 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, fromBea
   const duration = mod.score.reduce((sum, note) => sum + note.duration, 0);
   return playlistFactory({
     items,
+    firstBeat: fromBeat,
     lastBeat: fromBeat + duration,
-    imperfectionDelay: -0.005 + Math.random() * 0.01
+    imperfectionDelay: -0.005 + Math.random() * 0.01,
+    fromModule: mod
   });
 }
 
@@ -111,8 +123,21 @@ function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord
 
 function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: number, bpm: number) {
   const pulseDuration = 60 / bpm;
+  const mod = playerState.playlist.fromModule;
+  const playlistFirstBeat = playerState.playlist.firstBeat;
+  const modDuration = mod.score.reduce((sum, n) => sum + n.duration, 0);
 
-  function makeSound(note: string, velocity: string, fromOffset: number, toOffset: number, hue: number) {
+  function makeSoundCoordinates(note: string, duration: number, fromBeat: number) {
+    return soundCoordinatesFactory({
+      modulePitchExtent: mod.maxNoteValue - mod.minNoteValue + 1,
+      relativePitch: noteValue(note) - mod.minNoteValue,
+      relativeStart: fromBeat - playlistFirstBeat,
+      moduleDuration: modDuration,
+      soundDuration: duration
+    });
+  }
+
+  function makeSound(note: string, velocity: string, fromOffset: number, toOffset: number, fromBeat: number, toBeat: number, hue: number) {
     return soundFactory({
       instrument: playerState.player.instrument,
       note,
@@ -120,7 +145,7 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
       attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
       releaseAt: time + toOffset,
       hue,
-      fromModuleIdx: playerState.moduleIndex
+      coordinates: makeSoundCoordinates(note, toBeat - fromBeat, fromBeat)
     })
   }
 
@@ -128,18 +153,46 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
     .skipWhile(itm => itm.fromBeat < beat)
     .takeWhile(itm => itm.fromBeat < beat + 1)
     .flatMap(itm => {
-      const fromOffset = (itm.fromBeat - beat) * pulseDuration;
-      const toOffset = (itm.toBeat - beat) * pulseDuration;
-      const sound = makeSound(itm.note, itm.velocity, fromOffset, toOffset, itm.hue);
+      const relFromBeat = itm.fromBeat - beat;
+      const relToBeat = itm.toBeat - beat;
+      const fromOffset = relFromBeat * pulseDuration;
+      const toOffset = relToBeat * pulseDuration;
+      const sound = makeSound(itm.note, itm.velocity, fromOffset, toOffset, itm.fromBeat, itm.toBeat, itm.hue);
       if (itm.gracenote) {
+        const graceRelFromBeat = relFromBeat - GRACENOTE_DURATION;
+        const graceRelToBeat = relFromBeat;
+        const graceFromOffset = graceRelFromBeat * pulseDuration;
+        const graceToOffset = graceRelToBeat * pulseDuration;
         return [
-          makeSound(itm.gracenote, 'low', fromOffset - GRACENOTE_DURATION * pulseDuration, fromOffset, itm.hue),
+          // Todo: Properly skip gracenotes in visualization (setting 0:s here)
+          makeSound(itm.gracenote, 'low', graceFromOffset, graceToOffset, 0, 0, itm.hue),
           sound
         ];
       } else {
         return [sound];
       }
     });
+}
+
+function parseNote(noteAndOctave: string): {note: string, octave: number} {
+  const [, note, octave] = /^(\w[b\#]?)(\d)$/.exec(noteAndOctave);
+  return {note: note.toUpperCase(), octave: parseInt(octave, 10)};
+}
+
+function noteValues(note: NoteRecord) {
+  const vs: number[] = []
+  if (note.note) {
+    vs.push(noteValue(note.note));
+  }
+  if (note.gracenote) {
+    vs.push(noteValue(note.gracenote));
+  }
+  return List(vs);
+}
+
+function noteValue(noteAndOctave: string) {
+  const {note, octave} = parseNote(noteAndOctave);
+  return octave * 12 + OCTAVE.indexOf(note);
 }
 
 function assignPlaylists(state: AppStateRecord, bpm: number) {

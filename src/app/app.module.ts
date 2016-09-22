@@ -1,4 +1,4 @@
-import { NgModule, ApplicationRef } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -34,6 +34,7 @@ import { NoteService } from './ui/note.service';
     MdProgressCircleModule,
     MdSliderModule
   ],
+  exports: [ AppComponent ],
   providers: [
     {provide: 'bpm', useValue: 220},
     AudioPlayerService,
@@ -48,7 +49,7 @@ import { NoteService } from './ui/note.service';
     SoundVisComponent,
     TopBarComponent
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [ AppComponent ]
 })
 export class AppModule {
 

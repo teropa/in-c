@@ -3,9 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "webpack-dashboard -- webpack-dev-server --inline --hot --progress --host 0.0.0.0 --port 8080",
-    "build": "rimraf dist && webpack --config config/webpack.prod.js --progress --profile --bail",
-    "typings": "typings",
-    "postinstall": "typings install"
+    "build": "rimraf dist && webpack --config config/webpack.prod.js --progress --profile --bail"
   },
   "license": "ISC",
   "dependencies": {
@@ -16,16 +14,20 @@
     "@angular/http": "2.0.0",
     "@angular/platform-browser": "2.0.0",
     "@angular/platform-browser-dynamic": "2.0.0",
-    "@angular2-material/button": "2.0.0-alpha.8-1",
-    "@angular2-material/core": "2.0.0-alpha.8-1",
-    "@angular2-material/icon": "2.0.0-alpha.8-1",
-    "@angular2-material/progress-circle": "2.0.0-alpha.8-1",
-    "@angular2-material/slider": "2.0.0-alpha.8-1",
+    "@angular2-material/button": "2.0.0-alpha.8-2",
+    "@angular2-material/core": "2.0.0-alpha.8-2",
+    "@angular2-material/icon": "2.0.0-alpha.8-2",
+    "@angular2-material/progress-circle": "2.0.0-alpha.8-2",
+    "@angular2-material/slider": "2.0.0-alpha.8-2",
     "@mohayonao/web-audio-api-shim": "0.3.0",
     "@ngrx/core": "1.2.0",
     "@ngrx/effects": "2.0.0-beta.3",
-    "@ngrx/store": "2.1.2",
+    "@ngrx/store": "2.2.1",
     "@ngrx/store-devtools": "3.1.0",
+    "@types/core-js": "0.9.34",
+    "@types/hammerjs": "2.0.33",
+    "@types/node": "6.0.40",
+    "@types/whatwg-fetch": "0.0.31",
     "core-js": "2.4.1",
     "hammerjs": "2.0.8",
     "immutable": "3.8.1",
@@ -34,7 +36,7 @@
     "typed-immutable-record": "0.0.5",
     "web-animations-js": "2.2.2",
     "whatwg-fetch": "1.0.0",
-    "zone.js": "0.6.23"
+    "zone.js": "0.6.25"
   },
   "devDependencies": {
     "angular2-template-loader": "0.5.0",
@@ -50,11 +52,10 @@
     "rimraf": "2.5.4",
     "style-loader": "0.13.1",
     "ts-loader": "0.8.2",
-    "typescript": "1.8.10",
-    "typings": "1.3.3",
+    "typescript": "2.0.3",
     "webpack": "1.13.2",
     "webpack-dashboard": "0.1.8",
-    "webpack-dev-server": "1.15.2",
+    "webpack-dev-server": "1.16.1",
     "webpack-merge": "0.14.1",
     "worker-loader": "0.7.1"
   }

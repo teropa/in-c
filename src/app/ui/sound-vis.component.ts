@@ -26,7 +26,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   @Input() nowPlaying: List<Sound>;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private sounds = new Set<Sound>();
+  private sounds: Sound[] = [];
   private animating = false;
   private cleanupInterval: number;
 
@@ -54,7 +54,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
       this.setCanvasSize();
     }
     if (changes['nowPlaying']) {
-      this.nowPlaying.forEach(s => this.sounds.add(s));
+      this.nowPlaying.forEach(s => this.sounds.push(s));
     }
   }
 
@@ -74,11 +74,12 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
 
     const now = this.time.now();
 
-    this.sounds.forEach(sound => {
+    for (let i = 0 ; i < this.sounds.length ; i++) {
+      const sound = this.sounds[i];
       const age = now - sound.attackAt;
       const duration = Math.max(0.2, sound.releaseAt - sound.attackAt);
       if (age < 0 || age > duration * 3) {
-        return;
+        continue;
       }
 
       const noteHeight = Math.ceil(this.height / sound.coordinates.modulePitchExtent);
@@ -99,28 +100,19 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
       }
 
       this.context.fillStyle = `hsla(${sound.hue}, 75%, ${brightness}%, ${alpha})`;
-      this.context.beginPath();
       (<any>this.context).filter = "blur(1px)";
       this.context.fillRect(x, y, soundWidth, noteHeight);
-    });
+    }
     requestAnimationFrame(() => this.draw());
   }
   
-  private getX() {
-    return this.width / 2;
-  }
-
-  private getY() {
-    return this.height / 2;
-  }
-  
   private cleanUp() {
-    this.sounds.forEach(sound => {
-      const age = this.time.now() - sound.attackAt;
+    for (let i = this.sounds.length - 1 ; i >= 0 ; i--) {
+      const age = this.time.now() - this.sounds[i].attackAt;
       if (age > 10) {
-        this.sounds.delete(sound);
+        this.sounds.splice(i, 1);
       }
-    });
+    }
   }
 
 }

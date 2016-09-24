@@ -35,6 +35,7 @@ interface SoundBlock {
 export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   @Input() width: number;
   @Input() height: number;
+  @Input() playerCount: number;
   @Input() nowPlaying: List<Sound>;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
@@ -70,8 +71,9 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
-  private makeSoundBlock({attackAt, releaseAt, coordinates, velocity, hue}: Sound) {
-    const w = this.width / BLUR_FACTOR;
+  private makeSoundBlock({attackAt, releaseAt, coordinates, velocity, hue, fromPlayer}: Sound) {
+    const fullW = this.width / BLUR_FACTOR;
+    const w = fullW / this.playerCount;
     const h = this.height / BLUR_FACTOR;
     const noteHeight = Math.ceil(h / coordinates.modulePitchExtent);
     let brightness = 50;
@@ -83,7 +85,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     return {
       attackAt,
       duration: Math.max(0.2, releaseAt - attackAt),
-      x: Math.floor((coordinates.relativeStart / coordinates.moduleDuration) * w),
+      x: Math.floor(w * fromPlayer.index + (coordinates.relativeStart / coordinates.moduleDuration) * w),
       y: Math.floor(h - coordinates.relativePitch * noteHeight - noteHeight),
       width: Math.ceil((coordinates.soundDuration / coordinates.moduleDuration) * w),
       height: Math.ceil(h / coordinates.modulePitchExtent),

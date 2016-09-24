@@ -2,22 +2,16 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
-  OnChanges,
-  Output
 } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { Store } from '@ngrx/store'; 
 
 import { AppState } from '../core/app-state.model';
 import { PlayerState } from '../core/player-state.model';
 import { ADVANCE } from '../core/actions';
-import { TimeService } from '../core/time.service';
 
 @Component({
   selector: 'in-c-player',
   template: `
-    <in-c-sound-vis [nowPlaying]="playerState.nowPlaying" [width]="availableWidth" [height]="400" [style.height.px]="400">
-    </in-c-sound-vis>
     <div class="progress-controls">
       <md-progress-circle mode="determinate" color="accent" [value]="playerState.progress">
       </md-progress-circle>
@@ -30,15 +24,7 @@ import { TimeService } from '../core/time.service';
   styles: [`
     :host {
       display: flex;
-      flex-direction: column;
     }
-
-    in-c-sound-vis {
-      flex: 0;
-      border-top: 1px solid #444;
-      border-bottom: 1px solid #444;
-    }
-
     .progress-controls {
       flex: 1;
 
@@ -66,24 +52,10 @@ import { TimeService } from '../core/time.service';
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayerComponent implements OnChanges {
-  panControl = new FormControl(0);
-  gainControl = new FormControl(1);
-
+export class PlayerComponent {
   @Input() playerState: PlayerState;
-  @Input() playerIndex: number;
-  @Input() availableWidth: number;
 
-  @Output() panChange = this.panControl.valueChanges;
-  @Output() gainChange = this.gainControl.valueChanges;
-
-  constructor(private time: TimeService,
-              private store: Store<AppState>) {
-  }
-
-  ngOnChanges() {
-    this.panControl.setValue(this.playerState.pan, {emitEvent: false});
-    this.gainControl.setValue(this.playerState.gain, {emitEvent: false});
+  constructor(private store: Store<AppState>) {
   }
 
   isPlaying() {

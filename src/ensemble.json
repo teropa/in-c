@@ -2,26 +2,31 @@
   {
     "instrument": "synthetic-marimba-high",
     "instrumentName": "Synthetic Marimba",
-    "baseGain": 0.8
+    "gain": 0.8,
+    "pan": -0.9
   },
   {
     "instrument": "gnarly-trance-pluck-high",
     "instrumentName": "Gnarly Trance Pluck",
-    "baseGain": 0.1
+    "gain": 0.1,
+    "pan": -0.4
   },
   {
     "instrument": "tight-synth-bass",
     "instrumentName": "Tight Synth Bass",
-    "baseGain": 0.5
+    "gain": 0.5,
+    "pan": 0
   },
   {
     "instrument": "glass-string-structures",
     "instrumentName": "Glass String Structures",
-    "baseGain": 0.5
+    "gain": 0.5,
+    "pan": 0.4
   },
   {
     "instrument": "delicate-bells",
     "instrumentName": "Delicate Bells",
-    "baseGain": 0.2
+    "gain": 0.2,
+    "pan": 0.9
   }
 ]

@@ -11,6 +11,7 @@ export interface AppState {
   beat: number;
   players: List<PlayerStateRecord>,
   stats: PlayerStatsRecord,
+  nowPlaying: List<SoundRecord>,
   paused: boolean
 }
 
@@ -20,6 +21,7 @@ export const appStateFactory = makeTypedFactory<AppState, AppStateRecord>({
   beat: -1,
   players: null,
   stats: null,
+  nowPlaying: List<SoundRecord>(),
   paused: false
 });
 

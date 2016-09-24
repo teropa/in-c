@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
 
-import { PAUSE, RESUME, ADJUST_PAN, ADJUST_GAIN } from './core/actions';
+import { PAUSE, RESUME } from './core/actions';
 import { AppState } from './core/app-state.model';
 import { PlayerState } from './core/player-state.model';
 import { PulseService } from './core/pulse.service';
@@ -12,14 +12,16 @@ import { AudioPlayerService } from './audio/audio-player.service';
 @Component({
   selector: 'in-c-app',
   template: `
-    <div class="container" #container (click)="audioPlayer.enableAudioContext()">
-      <in-c-player *ngFor="let playerState of players$ | async; let idx = index; trackBy: trackPlayer"
+    <in-c-sound-vis [nowPlaying]="nowPlaying$ | async"
+                    [width]="width"
+                    [height]="400"
+                    [playerCount]="(players$ | async).size"
+                    [style.height.px]="400">
+    </in-c-sound-vis>
+    <div class="player-controls" #container (click)="audioPlayer.enableAudioContext()">
+      <in-c-player *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
                    class="player"
-                   [playerState]="playerState"
-                   [playerIndex]="idx"
-                   [availableWidth]="getPlayerWidth(players$ | async)"
-                   (panChange)="panChange(playerState, $event)"
-                   (gainChange)="gainChange(playerState, $event)">
+                   [playerState]="playerState">
       </in-c-player>
     </div>
     <in-c-top-bar [paused]="paused$ | async"
@@ -28,11 +30,18 @@ import { AudioPlayerService } from './audio/audio-player.service';
     </in-c-top-bar>
   `,
   styles: [`
-    .container {
+    in-c-sound-vis {
+      position: fixed;
+      left: 0,
+      right: 0;
+      top: 50px;
+      height: 400px;
+    }
+    .player-controls {
       position: fixed;
       left: 0;
       right: 0;
-      top: 50px;
+      top: 450px;
       bottom: 0;
 
       display: flex;
@@ -40,11 +49,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
     }
     .player {
       flex: 1;
-
       box-sizing: border-box;
-    }
-    .player:first-child {
-      border-left-width: 0;
     }
   `]
 })
@@ -57,7 +62,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @ViewChild('container') container: ElementRef;
   width = 0;
-  height = 0;
 
   constructor(private store: Store<AppState>,
               private pulse: PulseService,
@@ -77,24 +81,10 @@ export class AppComponent implements OnInit, OnDestroy {
     return obj.player.instrument;
   }
 
-  getPlayerWidth(players: List<PlayerState>) {
-    return Math.ceil(this.width / players.size);
-  }
-
-  panChange(playerState: PlayerState, pan: number) {
-    this.store.dispatch({type: ADJUST_PAN, payload: {instrument: playerState.player.instrument, pan}});
-  }
-
-  gainChange(playerState: PlayerState, gain: number) {
-    this.store.dispatch({type: ADJUST_GAIN, payload: {instrument: playerState.player.instrument, gain}});
-  }
-
   @HostListener('window:resize')
   setSize() {
     this.width = this.container.nativeElement.offsetWidth;
-    this.height = this.container.nativeElement.offsetHeight;
   }
-
 
   pause() {
     this.store.dispatch({type: PAUSE});

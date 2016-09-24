@@ -7,7 +7,7 @@ import { Map } from 'immutable';
 import { AppState } from '../core/app-state.model';
 import { Player } from '../core/player.model';
 import { PlayerState } from '../core/player-state.model';
-import { PULSE, ADJUST_PAN, ADJUST_GAIN } from '../core/actions';
+import { PULSE } from '../core/actions';
 import { SamplesService, Sample } from './samples.service';
 
 const GRACENOTE_OFFSET = 0.07;
@@ -18,7 +18,7 @@ export class AudioPlayerService implements OnDestroy {
   private convolver: ConvolverNode;
   private convolverDry: GainNode;
   private convolverWet: GainNode;
-  private playerPipelines: Map<string, {baseGain: GainNode, gain: GainNode, pan: StereoPannerNode}> = Map.of();
+  private playerPipelines: Map<string, {gain: GainNode, pan: StereoPannerNode}> = Map.of();
 
   constructor(private actions$: Actions,
               private store$: Store<AppState>,
@@ -43,11 +43,6 @@ export class AudioPlayerService implements OnDestroy {
     .withLatestFrom(this.store$)
     .do(([action, state]) => this.playState(state, action.payload));
 
-  @Effect({dispatch: false}) paramAdjust$ = this.actions$
-    .ofType(ADJUST_PAN, ADJUST_GAIN)
-    .withLatestFrom(this.store$)
-    .do(([_, state]) => this.updatePlayerPipelines(state));
-
   enableAudioContext() {
     const buffer = this.audioCtx.createBuffer(1, 1, 44100);
     const bufferSource = this.audioCtx.createBufferSource();
@@ -62,17 +57,11 @@ export class AudioPlayerService implements OnDestroy {
   
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
-    state.players.forEach(playerState => {
-      playerState.nowPlaying.forEach(({instrument, note, velocity, attackAt, releaseAt}) => {
-        const sample = this.samples.getSample(instrument, note, velocity);
-        const pipelineNode = this.createOrUpdatePlayerPipeline(instrument, playerState.player.baseGain, playerState.gain, playerState.pan);
-        this.playSample(sample, attackAt, releaseAt, pipelineNode);
-      });
+    state.nowPlaying.forEach(({instrument, note, velocity, attackAt, releaseAt, fromPlayer}) => {
+      const sample = this.samples.getSample(instrument, note, velocity);
+      const pipelineNode = this.getPlayerPipeline(instrument, fromPlayer.gain, fromPlayer.pan);
+      this.playSample(sample, attackAt, releaseAt, pipelineNode);
     });
-  }
-
-  private updatePlayerPipelines(state: AppState) {
-    state.players.forEach(p => this.createOrUpdatePlayerPipeline(p.player.instrument, p.player.baseGain, p.gain, p.pan));
   }
 
   private playBeat(time: number, bpm: number) {
@@ -122,21 +111,19 @@ export class AudioPlayerService implements OnDestroy {
     node.connect(this.convolver);
   }
 
-  private createOrUpdatePlayerPipeline(instrument: string, baseGainVal: number, gainVal: number, panVal: number) {
+  private getPlayerPipeline(instrument: string, gainVal: number, panVal: number) {
     if (!this.playerPipelines.has(instrument)) {
-      const baseGain = this.audioCtx.createGain();
       const gain = this.audioCtx.createGain();
       const pan = this.audioCtx.createStereoPanner();
-      baseGain.connect(gain);
+      gain.gain.value = gainVal;
+      pan.pan.value = panVal;
       gain.connect(pan);
       this.connect(pan);
-      this.playerPipelines = this.playerPipelines.set(instrument, {baseGain, gain, pan});
+      this.playerPipelines = this.playerPipelines.set(instrument, {gain, pan});
+      return gain;
+    } else {
+      return this.playerPipelines.get(instrument).gain;
     }
-    const {baseGain, gain, pan} = this.playerPipelines.get(instrument);
-    baseGain.gain.value = baseGainVal;
-    gain.gain.value = gainVal;
-    pan.pan.value = panVal;
-    return baseGain;
   }
 
 }

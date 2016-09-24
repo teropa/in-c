@@ -11,7 +11,7 @@ import { PlayerStatsRecord, playerStatsFactory } from './player-stats.model';
 import { SoundRecord, soundFactory } from './sound.model';
 import { SoundCoordinatesRecord, soundCoordinatesFactory } from './sound-coordinates.model';
 
-import { PULSE, ADVANCE, ADJUST_PAN, ADJUST_GAIN, PAUSE, RESUME } from './actions';
+import { PULSE, ADVANCE, PAUSE, RESUME } from './actions';
 
 const GRACENOTE_DURATION = 0.1;
 const ADVANCEMENT_DECAY_FACTORY = 0.95;
@@ -155,7 +155,8 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
       attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
       releaseAt: time + toOffset,
       hue,
-      coordinates: makeSoundCoordinates(note, toBeat - fromBeat, fromBeat)
+      coordinates: makeSoundCoordinates(note, toBeat - fromBeat, fromBeat),
+      fromPlayer: playerState.player
     })
   }
 
@@ -202,14 +203,14 @@ function assignPlaylists(state: AppStateRecord, bpm: number) {
 }
 
 function updateNowPlaying(state: AppStateRecord, time: number, bpm: number) {
-  const players = state.players.map(playerState => {
+  const nowPlaying = state.players.flatMap(playerState => {
     if (playerState.playlist) {
-      return playerState.merge({nowPlaying: getNowPlaying(playerState, state.beat, time, bpm)});
+      return getNowPlaying(playerState, state.beat, time, bpm);
     } else {
-      return playerState;
+      return List();
     }
   });
-  return state.merge({players});
+  return state.merge({nowPlaying});
 }
 
 function updatePlayerStats(state: AppStateRecord) {
@@ -242,14 +243,11 @@ function pulse(state: AppStateRecord, time: number, bpm: number) {
 }
 
 const playerData: Player[] = require('json!../../ensemble.json') ;
-const initialPlayerStates = List(playerData.map((p, i) => playerStateFactory({
-  player: playerFactory(p),
+const initialPlayerStates = List(playerData.map((p, index) => playerStateFactory({
+  player: playerFactory(Object.assign({index}, p)),
   moduleIndex: -1,
   progress: 0,
-  canAdvance: true,
-  nowPlaying: List.of<SoundRecord>(),
-  pan: (i / (playerData.length - 1)) * 2 - 1,
-  gain: 0.75
+  canAdvance: true
 })));
 
 const initialState = appStateFactory({
@@ -257,6 +255,7 @@ const initialState = appStateFactory({
   beat: 0,
   players: initialPlayerStates,
   stats: playerStatsFactory().merge({playerCount: initialPlayerStates.size}),
+  nowPlaying: List<SoundRecord>(),
   paused: false
 });
 
@@ -266,16 +265,6 @@ export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, 
       return pulse(state, action.payload.time, action.payload.bpm);
     case ADVANCE:
       return advancePlayer(state, action.payload);
-    case ADJUST_PAN:
-      const playerIdxForPan = state.players
-        .findIndex(p => p.player.instrument === action.payload.instrument);
-      return state
-        .setIn(['players', playerIdxForPan, 'pan'], Math.min(1, Math.max(-1, action.payload.pan)));
-    case ADJUST_GAIN:
-      const playerIdxForGain = state.players
-        .findIndex(p => p.player.instrument === action.payload.instrument);
-      return state
-        .setIn(['players', playerIdxForGain, 'gain'], Math.min(1, Math.max(0, action.payload.gain)));
     case PAUSE:
       return state.merge({paused: true});
     case RESUME:

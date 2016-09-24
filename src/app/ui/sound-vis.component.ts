@@ -14,6 +14,7 @@ import { Sound } from '../core/sound.model';
 import { TimeService } from '../core/time.service';
 
 const CLEANUP_INTERVAL = 10 * 1000;
+const BLUR_FACTOR = 4;
 
 interface SoundBlock {
   attackAt: number,
@@ -70,7 +71,9 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   }
 
   private makeSoundBlock({attackAt, releaseAt, coordinates, velocity, hue}: Sound) {
-    const noteHeight = Math.ceil(this.height / coordinates.modulePitchExtent);
+    const w = this.width / BLUR_FACTOR;
+    const h = this.height / BLUR_FACTOR;
+    const noteHeight = Math.ceil(h / coordinates.modulePitchExtent);
     let brightness = 50;
     if (velocity === 'medium') {
       brightness = 60;
@@ -80,19 +83,19 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     return {
       attackAt,
       duration: Math.max(0.2, releaseAt - attackAt),
-      x: Math.floor((coordinates.relativeStart / coordinates.moduleDuration) * this.width),
-      y: Math.floor(this.height - coordinates.relativePitch * noteHeight - noteHeight),
-      width: (coordinates.soundDuration / coordinates.moduleDuration) * this.width,
-      height: Math.ceil(this.height / coordinates.modulePitchExtent),
+      x: Math.floor((coordinates.relativeStart / coordinates.moduleDuration) * w),
+      y: Math.floor(h - coordinates.relativePitch * noteHeight - noteHeight),
+      width: Math.ceil((coordinates.soundDuration / coordinates.moduleDuration) * w),
+      height: Math.ceil(h / coordinates.modulePitchExtent),
       hue,
       brightness
     }
   }
 
   private setCanvasSize() {
-    this.canvas.width = this.width;
+    this.canvas.width = this.width / BLUR_FACTOR;
     this.canvas.style.width = `${this.width}px`;
-    this.canvas.height = this.height;
+    this.canvas.height = this.height / BLUR_FACTOR;
     this.canvas.style.height = `${this.height}px`;
   }
 
@@ -115,7 +118,6 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
       const alpha = Math.min(1, Math.max(0, 1 - alphaFactor));
 
       this.context.fillStyle = `hsla(${hue}, 75%, ${brightness}%, ${alpha})`;
-      (<any>this.context).filter = "blur(1px)";
       this.context.fillRect(x, y, width, height);
     }
     requestAnimationFrame(() => this.draw());

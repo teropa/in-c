@@ -15,6 +15,7 @@ const GRACENOTE_OFFSET = 0.07;
 @Injectable()
 export class AudioPlayerService implements OnDestroy {
   private subscription: Subscription;
+  private compressor: DynamicsCompressorNode;
   private convolver: ConvolverNode;
   private convolverDry: GainNode;
   private convolverWet: GainNode;
@@ -24,14 +25,19 @@ export class AudioPlayerService implements OnDestroy {
               private store$: Store<AppState>,
               private samples: SamplesService,
               @Inject('audioCtx') private audioCtx: AudioContext) {
+    this.compressor = audioCtx.createDynamicsCompressor();
     this.convolver = audioCtx.createConvolver();
     this.convolverDry = audioCtx.createGain();
     this.convolverWet = audioCtx.createGain();
     this.convolverDry.gain.value = 0.8;
     this.convolverWet.gain.value = 0.2;
+
+    this.compressor.connect(this.convolverDry);
+    this.compressor.connect(this.convolver);
     this.convolver.connect(this.convolverWet);
     this.convolverDry.connect(audioCtx.destination);
     this.convolverWet.connect(audioCtx.destination);
+
     samples.loadSample(require('../../samples/minster1_000_ortf_48k.wav')).then(buf => {
       this.convolver.buffer = buf;
     });
@@ -104,8 +110,7 @@ export class AudioPlayerService implements OnDestroy {
   }
 
   private connect(node: AudioNode) {
-    node.connect(this.convolverDry);
-    node.connect(this.convolver);
+    node.connect(this.compressor);
   }
 
   private getPlayerPipeline(instrument: string, gainVal: number, panVal: number) {

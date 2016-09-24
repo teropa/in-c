@@ -15,6 +15,17 @@ import { TimeService } from '../core/time.service';
 
 const CLEANUP_INTERVAL = 10 * 1000;
 
+interface SoundBlock {
+  attackAt: number,
+  duration: number,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  hue: number,
+  brightness: number
+}
+
 @Component({
   selector: 'in-c-sound-vis',
   template: `<canvas #cnvs></canvas>`,
@@ -26,7 +37,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   @Input() nowPlaying: List<Sound>;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
-  private sounds: Sound[] = [];
+  private sounds: SoundBlock[] = [];
   private animating = false;
   private cleanupInterval: number;
 
@@ -54,7 +65,27 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
       this.setCanvasSize();
     }
     if (changes['nowPlaying']) {
-      this.nowPlaying.forEach(s => this.sounds.push(s));
+      this.nowPlaying.forEach(s => this.sounds.push(this.makeSoundBlock(s)));
+    }
+  }
+
+  private makeSoundBlock({attackAt, releaseAt, coordinates, velocity, hue}: Sound) {
+    const noteHeight = Math.ceil(this.height / coordinates.modulePitchExtent);
+    let brightness = 50;
+    if (velocity === 'medium') {
+      brightness = 60;
+    } else if (velocity === 'high') {
+      brightness = 70;
+    }
+    return {
+      attackAt,
+      duration: Math.max(0.2, releaseAt - attackAt),
+      x: Math.floor((coordinates.relativeStart / coordinates.moduleDuration) * this.width),
+      y: Math.floor(this.height - coordinates.relativePitch * noteHeight - noteHeight),
+      width: (coordinates.soundDuration / coordinates.moduleDuration) * this.width,
+      height: Math.ceil(this.height / coordinates.modulePitchExtent),
+      hue,
+      brightness
     }
   }
 
@@ -75,33 +106,17 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     const now = this.time.now();
 
     for (let i = 0 ; i < this.sounds.length ; i++) {
-      const sound = this.sounds[i];
-      const age = now - sound.attackAt;
-      const duration = Math.max(0.2, sound.releaseAt - sound.attackAt);
+      const {attackAt, duration, x, y, width, height, hue, brightness} = this.sounds[i];
+      const age = now - attackAt;
       if (age < 0 || age > duration * 3) {
         continue;
       }
-
-      const noteHeight = Math.ceil(this.height / sound.coordinates.modulePitchExtent);
-      const notePos = sound.coordinates.relativePitch;
-      const noteDur = sound.releaseAt - sound.attackAt;
-      const soundWidth = (sound.coordinates.soundDuration / sound.coordinates.moduleDuration) * this.width;
-
-      const x = Math.floor((sound.coordinates.relativeStart / sound.coordinates.moduleDuration) * this.width);
-      const y = Math.floor(this.height - notePos * noteHeight - noteHeight);
       const alphaFactor = (age - duration) / duration;
       const alpha = Math.min(1, Math.max(0, 1 - alphaFactor));
 
-      let brightness = 50;
-      if (sound.velocity === 'medium') {
-        brightness = 60;
-      } else if (sound.velocity === 'high') {
-        brightness = 70;
-      }
-
-      this.context.fillStyle = `hsla(${sound.hue}, 75%, ${brightness}%, ${alpha})`;
+      this.context.fillStyle = `hsla(${hue}, 75%, ${brightness}%, ${alpha})`;
       (<any>this.context).filter = "blur(1px)";
-      this.context.fillRect(x, y, soundWidth, noteHeight);
+      this.context.fillRect(x, y, width, height);
     }
     requestAnimationFrame(() => this.draw());
   }

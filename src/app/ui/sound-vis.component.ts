@@ -13,7 +13,7 @@ import { List } from 'immutable';
 import { Sound } from '../core/sound.model';
 import { TimeService } from '../core/time.service';
 
-const CLEANUP_INTERVAL = 10 * 1000;
+const CLEANUP_INTERVAL = 5 * 1000;
 const BLUR_FACTOR = 4;
 
 interface SoundBlock {

@@ -71,9 +71,6 @@ export class AudioPlayerService implements OnDestroy {
     const osc = this.audioCtx.createOscillator();
     const gain = this.audioCtx.createGain();
 
-    const echoDelay = this.audioCtx.createDelay(0.1);
-    const echoGain = this.audioCtx.createGain();
-
     osc.frequency.value = 440 * Math.pow(2, 3/12);
 
     osc.connect(gain);

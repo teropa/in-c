@@ -8,11 +8,7 @@ if (process.env.ENV === 'production') {
   enableProdMode();
 }
 
-function main(initialState?: any) {
-  return platformBrowserDynamic([
-    {provide: 'audioCtx', useValue: audioCtx},
-    {provide: 'soundFonts', useValue: soundFonts}
-  ]).bootstrapModule(AppModule);
-}
-
-document.addEventListener('DOMContentLoaded', () => main);
+platformBrowserDynamic([
+  {provide: 'audioCtx', useValue: audioCtx},
+  {provide: 'soundFonts', useValue: soundFonts}
+]).bootstrapModule(AppModule);

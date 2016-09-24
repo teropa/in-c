@@ -40,7 +40,9 @@ function readScore(fullScore: ModuleRecord[]): List<ModuleRecord> {
   const hues = generateHues(fullScore);
   return List(fullScore.map(({number, score}, idx) => {
     const parsedScore = <List<NoteRecord>>List(score.map(noteFactory));
-    const allNoteValues = parsedScore.flatMap(noteValues);
+    const allNoteValues = parsedScore
+      .filter(n => !!n.note)
+      .map(n => noteValue(n.note));
     return moduleFactory({
       number,
       score: parsedScore,
@@ -125,14 +127,22 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
   const pulseDuration = 60 / bpm;
   const mod = playerState.playlist.fromModule;
   const playlistFirstBeat = playerState.playlist.firstBeat;
-  const modDuration = mod.score.reduce((sum, n) => sum + n.duration, 0);
+  const headingPauses = mod.score
+    .takeWhile(n => !n.note)
+    .reduce((sum, n) => sum + n.duration, 0);
+  const tailingPauses = mod.score
+    .reverse()
+    .takeWhile(n => !n.note)
+    .reduce((sum, n) => sum + n.duration, 0);
+  const modDuration = mod.score
+    .reduce((sum, n) => sum + n.duration, 0);
 
   function makeSoundCoordinates(note: string, duration: number, fromBeat: number) {
     return soundCoordinatesFactory({
       modulePitchExtent: mod.maxNoteValue - mod.minNoteValue + 1,
       relativePitch: noteValue(note) - mod.minNoteValue,
-      relativeStart: fromBeat - playlistFirstBeat,
-      moduleDuration: modDuration,
+      relativeStart: fromBeat - playlistFirstBeat - headingPauses,
+      moduleDuration: modDuration - headingPauses - tailingPauses,
       soundDuration: duration
     });
   }
@@ -177,17 +187,6 @@ function getNowPlaying(playerState: PlayerStateRecord, beat: number, time: numbe
 function parseNote(noteAndOctave: string): {note: string, octave: number} {
   const [, note, octave] = /^(\w[b\#]?)(\d)$/.exec(noteAndOctave);
   return {note: note.toUpperCase(), octave: parseInt(octave, 10)};
-}
-
-function noteValues(note: NoteRecord) {
-  const vs: number[] = []
-  if (note.note) {
-    vs.push(noteValue(note.note));
-  }
-  if (note.gracenote) {
-    vs.push(noteValue(note.gracenote));
-  }
-  return List(vs);
 }
 
 function noteValue(noteAndOctave: string) {

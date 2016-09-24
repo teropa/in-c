@@ -77,7 +77,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     this.sounds.forEach(sound => {
       const age = now - sound.attackAt;
       const duration = Math.max(0.2, sound.releaseAt - sound.attackAt);
-      if (age < 0 || age > duration) {
+      if (age < 0 || age > duration * 3) {
         return;
       }
 
@@ -88,7 +88,8 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
 
       const x = Math.floor((sound.coordinates.relativeStart / sound.coordinates.moduleDuration) * this.width);
       const y = Math.floor(this.height - notePos * noteHeight - noteHeight);
-      const alpha = 1 - age;
+      const alphaFactor = (age - duration) / duration;
+      const alpha = Math.min(1, Math.max(0, 1 - alphaFactor));
 
       let brightness = 50;
       if (sound.velocity === 'medium') {

@@ -4,13 +4,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   selector: 'in-c-top-bar',
   template: `
     <header>
+      <!--
       <button md-icon-button *ngIf="paused" (click)="resume.next()">
         <md-icon class="md-24">play_arrow</md-icon>
       </button>
       <button md-icon-button *ngIf="!paused" (click)="pause.next()">
         <md-icon class="md-24">pause</md-icon>
       </button>
-      <h1>Terry Riley's In C</h1>
+      -->
     </header>
   `,
   styles: [`
@@ -23,7 +24,6 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
       padding: 5px;
       box-sizing: border-box;
 
-      background-color: black;
       color: white;
     }
     h1 {

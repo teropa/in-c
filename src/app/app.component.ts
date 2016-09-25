@@ -14,11 +14,14 @@ import { AudioPlayerService } from './audio/audio-player.service';
   template: `
     <in-c-sound-vis [nowPlaying]="nowPlaying$ | async"
                     [width]="width"
-                    [height]="400"
-                    [playerCount]="(players$ | async).size"
-                    [style.height.px]="400">
+                    [height]="visHeight"
+                    [playerCount]="(players$ | async).size">
     </in-c-sound-vis>
-    <div class="player-controls" #container (click)="audioPlayer.enableAudioContext()">
+    <div class="title">
+      <h2>Terry Riley's</h2>
+      <h1>In C</h1>
+    </div>
+    <div class="player-controls" (click)="audioPlayer.enableAudioContext()">
       <in-c-player *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
                    class="player"
                    [playerState]="playerState">
@@ -30,22 +33,45 @@ import { AudioPlayerService } from './audio/audio-player.service';
     </in-c-top-bar>
   `,
   styles: [`
-    in-c-sound-vis {
+    in-c-sound-vis, .title {
       position: fixed;
-      left: 0,
+      left: 0;
       right: 0;
-      top: 50px;
-      height: 400px;
+      top: 0;
+      height: 61.8%;
+    }
+    .title {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .title h1, .title h2 {
+      flex: 0;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+      text-transform: uppercase;
+      font-family: 'texgyreadventorregular', sans-serif;
+    }
+    .title h1 {
+      font-size: 10rem;
+      line-height: 10rem;
+      color: #f1f1f1;
+    }
+    .title h2 {
+      font-size: 3.3rem;
+      line-height: 3rem;
+      color: #f1f1f1;
     }
     .player-controls {
       position: fixed;
       left: 0;
       right: 0;
-      top: 450px;
+      top: 61.8%;
       bottom: 0;
 
       display: flex;
-      background-color: black;
     }
     .player {
       flex: 1;
@@ -60,8 +86,8 @@ export class AppComponent implements OnInit, OnDestroy {
   nowPlaying$ = this.store.select('nowPlaying');
   stats$ = this.store.select('stats');
 
-  @ViewChild('container') container: ElementRef;
   width = 0;
+  visHeight = 0;
 
   constructor(private store: Store<AppState>,
               private pulse: PulseService,
@@ -83,7 +109,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   @HostListener('window:resize')
   setSize() {
-    this.width = this.container.nativeElement.offsetWidth;
+    this.width = window.innerWidth
+    this.visHeight = window.innerHeight * 0.618;
   }
 
   pause() {

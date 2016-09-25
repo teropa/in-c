@@ -23,6 +23,8 @@ import { TimeService } from './core/time.service';
 import { AudioPlayerService } from './audio/audio-player.service';
 import { SamplesService } from './audio/samples.service';
 
+require('../fonts/texgyreadventor_regular_macroman/stylesheet.css');
+
 @NgModule({
   imports: [
     BrowserModule,

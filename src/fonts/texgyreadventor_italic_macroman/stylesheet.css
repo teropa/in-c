@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'texgyreadventoritalic';
+    src: url('texgyreadventor-italic-webfont.eot');
+    src: url('texgyreadventor-italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('texgyreadventor-italic-webfont.woff') format('woff'),
+         url('texgyreadventor-italic-webfont.ttf') format('truetype'),
+         url('texgyreadventor-italic-webfont.svg#texgyreadventoritalic') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+

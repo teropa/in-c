@@ -42,7 +42,7 @@ export class ProgressCircleComponent {
   }
 
   getPath(progress: number) {
-    const center = 50;
+    const center = 51;
     const radius = 40;
     const alpha = 360 * Math.min(progress, 99.99) / 100;
     const a = (90 - alpha) * Math.PI / 180;

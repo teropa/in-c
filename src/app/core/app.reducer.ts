@@ -88,25 +88,20 @@ function makePlaylist(playerState: PlayerStateRecord, mod: ModuleRecord, fromBea
   });
 }
 
-function canAdvance(playerState: PlayerStateRecord, score: List<ModuleRecord>, playerStats: PlayerStatsRecord) {
-  const isLast = playerState.moduleIndex === score.size - 1;
+function canAdvance(playerState: PlayerStateRecord, playerStats: PlayerStatsRecord) {
   const isFarAhead = playerState.moduleIndex - playerStats.minModuleIndex >= 2;
-  return !isLast && !isFarAhead;
+  return !playerState.finished && !isFarAhead;
 }
 
 function assignModule(playerState: PlayerStateRecord, score: List<ModuleRecord>, playerStats: PlayerStatsRecord) {
-  if (canAdvance(playerState, score, playerStats)) {
-    return playerState.merge({
-      moduleIndex: playerState.moduleIndex + 1,
-      progress: (playerState.moduleIndex + 2) / score.size * 100
-    });
-  } else {
-    return playerState;
-  }
+  return playerState.merge({
+    moduleIndex: playerState.moduleIndex + 1,
+    progress: (playerState.moduleIndex + 2) / score.size * 100
+  });
 }
 
 function assignPlaylist(playerState: PlayerStateRecord, score: List<ModuleRecord>, beat: number, bpm: number) {
-  const shouldBePlaying = playerState.moduleIndex >= 0;
+  const shouldBePlaying = playerState.moduleIndex >= 0 && !playerState.finished;
   const hasNothingToPlay = !playerState.playlist || playerState.playlist.lastBeat <= beat;
   if (shouldBePlaying && hasNothingToPlay) {
     const moduleScoreLength = score
@@ -221,14 +216,19 @@ function updatePlayerStats(state: AppStateRecord) {
     maxModuleIndex: mods.max(),
     totalProgress
   });
-  const players = state.players.map(p => p.merge({canAdvance: canAdvance(p, state.score, stats)}));
+  const players = state.players.map(p => p.merge({canAdvance: canAdvance(p, stats)}));
   return state.merge({stats, players});
 }
 
 function advancePlayer(state: AppStateRecord, instrument: string) {
   const playerIdx = state.players.findIndex(p => p.player.instrument === instrument);
   const {score, stats} = state;
-  if (canAdvance(state.players.get(playerIdx), score, state.stats)) {
+  const playerState = state.players.get(playerIdx)
+  if (playerState.moduleIndex === score.size - 1) {
+    const players = state.players
+      .update(playerIdx, player => player.merge({finished: true}));
+    return updatePlayerStats(state.merge({players}));
+  } else if (canAdvance(state.players.get(playerIdx), state.stats)) {
     const players = state.players
       .update(playerIdx, player => assignModule(player, score, stats));
     return updatePlayerStats(state.merge({players}));
@@ -247,7 +247,8 @@ const initialPlayerStates = List(playerData.map((p, index) => playerStateFactory
   player: playerFactory(Object.assign({index}, p)),
   moduleIndex: -1,
   progress: 0,
-  canAdvance: true
+  canAdvance: true,
+  finished: false
 })));
 
 const initialState = appStateFactory({

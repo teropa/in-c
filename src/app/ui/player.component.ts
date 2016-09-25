@@ -25,9 +25,7 @@ import { ADVANCE } from '../core/actions';
     }
     .progress-controls {
       flex: 1;
-
       position: relative;
-      color: white;
     }
     in-c-progress-circle, in-c-advance-button {
       position: absolute;
@@ -42,7 +40,6 @@ import { ADVANCE } from '../core/actions';
       margin-left: -27px;
       margin-top: -27px;
     }
-
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -50,10 +47,6 @@ export class PlayerComponent {
   @Input() playerState: PlayerState;
 
   constructor(private store: Store<AppState>) {
-  }
-
-  isPlaying() {
-    return this.playerState.moduleIndex >= 0;
   }
 
   advance() {

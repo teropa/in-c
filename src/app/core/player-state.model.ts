@@ -6,11 +6,12 @@ import { PlaylistRecord } from './playlist.model';
 import { PlaylistItemRecord } from './playlist-item.model';
 
 export interface PlayerState {
-  player: PlayerRecord;
-  moduleIndex?: number;
-  progress?: number;
-  canAdvance: boolean;
-  playlist?: PlaylistRecord;
+  player: PlayerRecord,
+  moduleIndex?: number,
+  progress?: number,
+  canAdvance: boolean,
+  playlist?: PlaylistRecord,
+  finished: boolean
 }
 
 export interface PlayerStateRecord extends TypedRecord<PlayerStateRecord>, PlayerState {}
@@ -20,6 +21,7 @@ export const playerStateFactory = makeTypedFactory<PlayerState, PlayerStateRecor
   moduleIndex: null,
   progress: 0,
   canAdvance: true,
-  playlist: null
+  playlist: null,
+  finished: false
 });
 

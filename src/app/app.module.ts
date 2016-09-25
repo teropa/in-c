@@ -12,6 +12,7 @@ import { MdSliderModule } from '@angular2-material/slider';
 import { provideHotStoreModule } from '../hot_store';
 import { AppComponent } from './app.component';
 import { PlayerComponent } from './ui/player.component';
+import { AdvanceButtonComponent } from './ui/advance-button.component';
 import { ProgressCircleComponent } from './ui/progress-circle.component';
 import { SoundVisComponent } from './ui/sound-vis.component';
 import { TopBarComponent } from './ui/top-bar.component';
@@ -45,6 +46,7 @@ import { SamplesService } from './audio/samples.service';
   declarations: [
     AppComponent,
     PlayerComponent,
+    AdvanceButtonComponent,
     ProgressCircleComponent,
     SoundVisComponent,
     TopBarComponent

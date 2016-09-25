@@ -5,7 +5,11 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
   selector: 'in-c-progress-circle',
   template: `
     <svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100">
-      <svg:path [attr.d]="getPath()"
+      <svg:path class="background-path"
+                [attr.d]="getBackgroundPath()">
+      </svg:path>
+      <svg:path class="progress-path"
+                [attr.d]="getProgressPath()"
                 [attr.stroke]="getStroke()">
       </svg:path>
     </svg>
@@ -19,6 +23,9 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
       stroke-width: 10;
       transition: all 0.5s ease;
     }
+    .background-path {
+      stroke: rgba(100, 100, 100, 0.2);
+    }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -26,10 +33,18 @@ export class ProgressCircleComponent {
   @Input() progress: number;
   @Input() hue = 0;
 
-  getPath() {
+  getProgressPath() {
+    return this.getPath(this.progress);
+  }
+
+  getBackgroundPath() {
+    return this.getPath(100);
+  }
+
+  getPath(progress: number) {
     const center = 50;
     const radius = 40;
-    const alpha = 360 * Math.min(this.progress, 99.99) / 100;
+    const alpha = 360 * Math.min(progress, 99.99) / 100;
     const a = (90 - alpha) * Math.PI / 180;
 
     const x = center + radius * Math.cos(a);

@@ -12,20 +12,17 @@ const MetronomeWorker = require('worker!./metronome.worker');
 @Injectable()
 export class PulseService implements OnDestroy {
   private startTime: number;
+
   private metronome = new MetronomeWorker();
   private messages$ = Observable.fromEvent(this.metronome, 'message');
+
   private storeSubscription: Subscription;
   private pulseCount = 1;
 
   @Effect({dispatch: false}) init$ = this.store
     .take(1)
-    .do(state => this.start(state.playing));
+    .do(() => this.start());
   
-  @Effect({dispatch: false}) start$ = this.actions
-    .ofType(PLAY)
-    .withLatestFrom(this.store)
-    .do(([_, state]) => this.start(state.playing));
-
   @Effect() pulse$ = this.messages$
     .concatMap(() => this.makePulses());
 
@@ -37,14 +34,12 @@ export class PulseService implements OnDestroy {
     this.storeSubscription = mergeEffects(this).subscribe(store);
   }
 
-  start(doStart = false) {
-    if (doStart) {
-      this.startTime = this.time.now();
-      this.metronome.postMessage({
-        command: 'start',
-        interval: this.getBeatInterval() * 1000
-      });
-    }
+  start() {
+    this.startTime = this.time.now();
+    this.metronome.postMessage({
+      command: 'start',
+      interval: this.getBeatInterval() * 1000
+    });
   }
 
   ngOnDestroy() {

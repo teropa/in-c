@@ -46,6 +46,7 @@ export class AudioPlayerService implements OnDestroy {
   @Effect({dispatch: false}) play$ = this.actions$
     .ofType(PULSE)
     .withLatestFrom(this.store$)
+    .filter(([action, state]) => state.playing)
     .do(([action, state]) => this.playState(state, action.payload));
 
   enableAudioContext() {

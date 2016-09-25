@@ -1,9 +1,9 @@
-import { Component, ElementRef, OnInit, OnDestroy, HostListener, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, HostListener, ViewChild } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
 
-import { PAUSE, RESUME } from './core/actions';
+import { PLAY, PAUSE, RESUME } from './core/actions';
 import { AppState } from './core/app-state.model';
 import { PlayerState } from './core/player-state.model';
 import { PulseService } from './core/pulse.service';
@@ -17,15 +17,28 @@ import { AudioPlayerService } from './audio/audio-player.service';
                     [height]="visHeight"
                     [playerCount]="(players$ | async).size">
     </in-c-sound-vis>
-    <div class="title">
+    <div class="title" *ngIf="!(playing$ | async)">
       <h2>Terry Riley's</h2>
       <h1>In C</h1>
     </div>
-    <div class="player-controls" (click)="audioPlayer.enableAudioContext()">
+    <div class="player-controls"
+         *ngIf="playing$ | async">
       <in-c-player *ngFor="let playerState of players$ | async; trackBy: trackPlayer"
                    class="player"
                    [playerState]="playerState">
       </in-c-player>
+    </div>
+    <div class="intro"
+         *ngIf="!(playing$ | async)">
+      <p>
+        Sequence your own unique arrangement of <a href="https://en.wikipedia.org/wiki/In_C" target="_blank">"In C"</a>
+        with five automated bot performers.
+      </p>
+      <button (click)="play()">Play</button>
+      <p>
+        Arranged and developed by <a href="https://twitter.com/teropa">@teropa</a>.
+        <a href="https://github.com/teropa/in-c">Fork me on GitHub</a>.
+      </p>
     </div>
     <in-c-top-bar [paused]="paused$ | async"
                   (pause)="pause()"
@@ -64,7 +77,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
       line-height: 3rem;
       color: #f1f1f1;
     }
-    .player-controls {
+    .player-controls, .intro {
       position: fixed;
       left: 0;
       right: 0;
@@ -73,14 +86,36 @@ import { AudioPlayerService } from './audio/audio-player.service';
 
       display: flex;
     }
+    .intro {
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+    }
+    .intro p, .intro button {
+      max-width: 800px;
+    }
+    .intro a, .intro a:active .intro a:visited {
+      color: #f1f1f1;
+    }
+    .intro button {
+      padding: 1em 5em;
+      font-family: 'texgyreadventorbold', sans-serif;
+      font-size: 1.5em;
+      text-transform: uppercase;
+    }
+    .intro p {
+      font-family: 'texgyreadventorregular', sans-serif;
+      color: #f1f1f1;
+    }
     .player {
       flex: 1;
       box-sizing: border-box;
     }
   `]
 })
-export class AppComponent implements OnInit, OnDestroy {
+export class AppComponent implements OnInit {
 
+  playing$ = this.store.select('playing').distinctUntilChanged();
   paused$ = this.store.select('paused').distinctUntilChanged();
   players$ = this.store.select('players');
   nowPlaying$ = this.store.select('nowPlaying');
@@ -90,17 +125,11 @@ export class AppComponent implements OnInit, OnDestroy {
   visHeight = 0;
 
   constructor(private store: Store<AppState>,
-              private pulse: PulseService,
               private audioPlayer: AudioPlayerService) {
   }
 
   ngOnInit() {
-    this.pulse.onInit();
     this.setSize();
-  }
-
-  ngOnDestroy() {
-    this.pulse.onDestroy();
   }
 
   trackPlayer(index: number, obj: PlayerState): any {
@@ -111,6 +140,11 @@ export class AppComponent implements OnInit, OnDestroy {
   setSize() {
     this.width = window.innerWidth
     this.visHeight = window.innerHeight * 0.618;
+  }
+
+  play() {
+    this.audioPlayer.enableAudioContext();
+    this.store.dispatch({type: PLAY});
   }
 
   pause() {

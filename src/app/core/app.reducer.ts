@@ -11,7 +11,7 @@ import { PlayerStatsRecord, playerStatsFactory } from './player-stats.model';
 import { SoundRecord, soundFactory } from './sound.model';
 import { SoundCoordinatesRecord, soundCoordinatesFactory } from './sound-coordinates.model';
 
-import { PULSE, ADVANCE, PAUSE, RESUME } from './actions';
+import { PLAY, PULSE, ADVANCE, PAUSE, RESUME } from './actions';
 
 const GRACENOTE_DURATION = 0.1;
 const ADVANCEMENT_DECAY_FACTORY = 0.95;
@@ -253,6 +253,7 @@ const initialPlayerStates = List(playerData.map((p, index) => playerStateFactory
 
 const initialState = appStateFactory({
   score: readScore(require('json!../../score.json')),
+  playing: false,
   beat: 0,
   players: initialPlayerStates,
   stats: playerStatsFactory().merge({playerCount: initialPlayerStates.size}),
@@ -262,6 +263,8 @@ const initialState = appStateFactory({
 
 export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, action: Action) => {
   switch (action.type) {
+    case PLAY:
+      return state.merge({playing: true});
     case PULSE:
       return pulse(state, action.payload.time, action.payload.bpm);
     case ADVANCE:

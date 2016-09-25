@@ -7,6 +7,7 @@ import { PlayerStatsRecord } from './player-stats.model';
 import { SoundRecord } from './sound.model';
 
 export interface AppState {
+  playing: boolean,
   score: List<ModuleRecord>,
   beat: number;
   players: List<PlayerStateRecord>,
@@ -17,6 +18,7 @@ export interface AppState {
 
 export interface AppStateRecord extends TypedRecord<AppStateRecord>, AppState {}
 export const appStateFactory = makeTypedFactory<AppState, AppStateRecord>({
+  playing: false,
   score: null,
   beat: -1,
   players: null,

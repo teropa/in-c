@@ -24,6 +24,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
 import { SamplesService } from './audio/samples.service';
 
 require('../fonts/texgyreadventor_regular_macroman/stylesheet.css');
+require('../fonts/texgyreadventor_bold_macroman/stylesheet.css');
 
 @NgModule({
   imports: [

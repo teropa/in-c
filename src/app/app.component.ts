@@ -20,7 +20,8 @@ import { AudioPlayerService } from './audio/audio-player.service';
 @Component({
   selector: 'in-c-app',
   template: `
-    <in-c-sound-vis [nowPlaying]="nowPlaying$ | async"
+    <in-c-sound-vis [isPlaying]="playing$ | async"
+                    [nowPlaying]="nowPlaying$ | async"
                     [width]="width"
                     [height]="visHeight"
                     [playerCount]="(players$ | async).size">

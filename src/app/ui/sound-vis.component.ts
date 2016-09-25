@@ -36,6 +36,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   @Input() width: number;
   @Input() height: number;
   @Input() playerCount: number;
+  @Input() isPlaying: boolean;
   @Input() nowPlaying: List<Sound>;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
@@ -76,11 +77,15 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     const w = fullW / this.playerCount;
     const h = this.height / BLUR_FACTOR;
     const noteHeight = Math.ceil(h / coordinates.modulePitchExtent);
-    let brightness = 50;
-    if (velocity === 'medium') {
-      brightness = 60;
-    } else if (velocity === 'high') {
-      brightness = 70;
+    let brightness = 20;
+    if (this.isPlaying) {
+      if (velocity === 'medium') {
+        brightness = 60;
+      } else if (velocity === 'high') {
+        brightness = 70;
+      } else {
+        brightness = 50;
+      }
     }
     return {
       attackAt,

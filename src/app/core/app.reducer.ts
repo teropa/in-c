@@ -239,7 +239,34 @@ function advancePlayer(state: AppStateRecord, instrument: string) {
 
 function pulse(state: AppStateRecord, time: number, bpm: number) {
   const nextBeat = state.beat + 1;
+  if (!state.playing) {
+    state = assignScreensaverModules(state, nextBeat);
+  }
   return updateNowPlaying(assignPlaylists(state.set('beat', nextBeat), bpm), time, bpm);
+}
+
+function assignScreensaverModules(state: AppStateRecord, nextBeat: number) {
+  return state.merge({
+    players: state.players.map(p => assignScreensaverModule(p, nextBeat))
+  });
+}
+
+function assignScreensaverModule(playerState: PlayerStateRecord, nextBeat: number) {
+  const hasNothingToPlay = !playerState.playlist || playerState.playlist.lastBeat <= nextBeat;
+  if (hasNothingToPlay) {
+    console.log('assigning');
+    return playerState.merge({moduleIndex: Math.floor(Math.random() * 53)});
+  } else {
+    return playerState;
+  }
+}
+
+function play(state: AppStateRecord) {
+  return state.merge({
+    playing: true,
+    nowPlaying: List(),
+    players: state.players.map(p => p.merge({moduleIndex: -1, playlist: null}))
+  });
 }
 
 const playerData: Player[] = require('json!../../ensemble.json') ;
@@ -264,7 +291,7 @@ const initialState = appStateFactory({
 export const appReducer: ActionReducer<AppStateRecord> = (state = initialState, action: Action) => {
   switch (action.type) {
     case PLAY:
-      return state.merge({playing: true});
+      return play(state);
     case PULSE:
       return pulse(state, action.payload.time, action.payload.bpm);
     case ADVANCE:

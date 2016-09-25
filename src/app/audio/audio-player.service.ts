@@ -2,7 +2,6 @@ import { Injectable, Inject, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 import { Effect, Actions, mergeEffects } from '@ngrx/effects';
-import { Map } from 'immutable';
 
 import { AppState } from '../core/app-state.model';
 import { Player } from '../core/player.model';
@@ -19,7 +18,7 @@ export class AudioPlayerService implements OnDestroy {
   private convolver: ConvolverNode;
   private convolverDry: GainNode;
   private convolverWet: GainNode;
-  private playerPipelines: Map<string, {gain: GainNode, pan: StereoPannerNode}> = Map.of();
+  private playerPipelines = new Map<string, {gain: GainNode, pan: StereoPannerNode}>();
 
   constructor(private actions$: Actions,
               private store$: Store<AppState>,
@@ -121,7 +120,7 @@ export class AudioPlayerService implements OnDestroy {
       pan.pan.value = panVal;
       gain.connect(pan);
       this.connect(pan);
-      this.playerPipelines = this.playerPipelines.set(instrument, {gain, pan});
+      this.playerPipelines.set(instrument, {gain, pan});
       return gain;
     } else {
       return this.playerPipelines.get(instrument).gain;

@@ -1,4 +1,12 @@
-import { Component, ElementRef, OnInit, HostListener, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  HostListener,
+  animate,
+  style,
+  transition,
+  trigger
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
@@ -17,13 +25,16 @@ import { AudioPlayerService } from './audio/audio-player.service';
                     [height]="visHeight"
                     [playerCount]="(players$ | async).size">
     </in-c-sound-vis>
-    <in-c-title *ngIf="!(playing$ | async)">
+    <in-c-title *ngIf="!(playing$ | async)"
+                [@titleTransition]="'in'">
     </in-c-title>
     <in-c-player-controls *ngIf="playing$ | async"
-                          [playerStates]="players$ | async">
+                          [playerStates]="players$ | async"
+                          [@playerControlsTransition]="'in'">
     </in-c-player-controls>
     <in-c-intro *ngIf="!(playing$ | async)"
-                (play)="play()">
+                (play)="play()"
+                [@introTransition]="'in'">
     </in-c-intro>
     <in-c-top-bar [paused]="paused$ | async"
                   (pause)="pause()"
@@ -45,7 +56,28 @@ import { AudioPlayerService } from './audio/audio-player.service';
       top: 61.8%;
       bottom: 0;
     }
-  `]
+  `],
+  animations: [
+    trigger('titleTransition', [
+      transition('* => void', [
+        style({transform: 'translateY(0)'}),
+        animate('150ms ease-in', style({transform: 'translateY(-300px)'}))
+      ])
+    ]),
+    trigger('introTransition', [
+      transition('* => void', [
+        style({transform: 'translateY(0)'}),
+        animate('150ms ease-in', style({transform: 'translateY(300px)'}))
+      ])
+    ]),
+    trigger('playerControlsTransition', [
+      transition('void => *', [
+        style({transform: 'translateY(300px)'}),
+        animate('150ms 550ms ease-out', style({transform: 'translateY(0)'}))
+      ])
+    ])
+
+  ]
 })
 export class AppComponent implements OnInit {
 

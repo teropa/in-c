@@ -4,13 +4,13 @@ import { Component, EventEmitter, Output } from '@angular/core';
   selector: 'in-c-intro',
   template: `
     <p>
-      Sequence your own unique arrangement of
+      Play your own unique arrangement of
       <a href="https://en.wikipedia.org/wiki/In_C" target="_blank">"In C"</a>
       with five automated bot performers.
     </p>
     <button (click)="play.next()">Play</button>
     <p>
-      Arranged and developed by <a href="https://twitter.com/teropa">@teropa</a>.
+      Developed by <a href="https://twitter.com/teropa">@teropa</a>.
       <a href="https://github.com/teropa/in-c">Fork me on GitHub</a>.
     </p>
   `,
@@ -29,6 +29,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
       font-family: 'texgyreadventorbold', sans-serif;
       font-size: 1.5em;
       text-transform: uppercase;
+      cursor: pointer;
     }
     p {
       font-family: 'texgyreadventorregular', sans-serif;

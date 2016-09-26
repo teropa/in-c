@@ -21,10 +21,11 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
     }
     path {
       stroke-width: 10;
+      fill: none;
       transition: all 0.5s ease;
     }
     .background-path {
-      stroke: rgba(100, 100, 100, 0.2);
+      stroke: rgb(100, 100%, 100%);
     }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush

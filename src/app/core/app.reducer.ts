@@ -254,7 +254,6 @@ function assignScreensaverModules(state: AppStateRecord, nextBeat: number) {
 function assignScreensaverModule(playerState: PlayerStateRecord, nextBeat: number) {
   const hasNothingToPlay = !playerState.playlist || playerState.playlist.lastBeat <= nextBeat;
   if (hasNothingToPlay) {
-    console.log('assigning');
     return playerState.merge({moduleIndex: Math.floor(Math.random() * 53)});
   } else {
     return playerState;

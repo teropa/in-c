@@ -4,7 +4,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
   selector: 'in-c-intro',
   template: `
     <p>
-      Play your own unique arrangement of
+      Play your own unique performance of
       <a href="https://en.wikipedia.org/wiki/In_C" target="_blank">"In C"</a>
       with five automated bot performers.
     </p>

@@ -24,7 +24,8 @@ import { AudioPlayerService } from './audio/audio-player.service';
                     [nowPlaying]="nowPlaying$ | async"
                     [width]="width"
                     [height]="visHeight"
-                    [playerCount]="(players$ | async).size">
+                    [playerCount]="(players$ | async).size"
+                    [stats]="stats$ | async">
     </in-c-sound-vis>
     <in-c-title *ngIf="!(playing$ | async)"
                 [@titleTransition]="'in'">
@@ -43,19 +44,26 @@ import { AudioPlayerService } from './audio/audio-player.service';
     </in-c-top-bar>
   `,
   styles: [`
-    in-c-sound-vis, in-c-title {
+    in-c-title {
       position: fixed;
       left: 0;
       right: 0;
       top: 0;
       height: 61.8%;
     }
-    in-c-player-controls, in-c-intro {
+    in-c-intro {
       position: fixed;
       left: 0;
       right: 0;
       top: 61.8%;
       bottom: 0;
+    }
+    in-c-sound-vis, in-c-player-controls {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 100%;
     }
   `],
   animations: [
@@ -73,7 +81,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
     ]),
     trigger('playerControlsTransition', [
       transition('void => *', [
-        style({transform: 'translateY(300px)'}),
+        style({transform: 'translateY(600px)'}),
         animate('150ms 550ms ease-out', style({transform: 'translateY(0)'}))
       ])
     ])
@@ -86,6 +94,7 @@ export class AppComponent implements OnInit {
   paused$ = this.store.select('paused').distinctUntilChanged();
   players$ = this.store.select('players');
   nowPlaying$ = this.store.select('nowPlaying');
+  stats$ = this.store.select('stats');
 
   width = 0;
   visHeight = 0;
@@ -101,7 +110,7 @@ export class AppComponent implements OnInit {
   @HostListener('window:resize')
   setSize() {
     this.width = window.innerWidth
-    this.visHeight = window.innerHeight * 0.618;
+    this.visHeight = window.innerHeight;
   }
 
   play() {

@@ -9,7 +9,9 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { List } from 'immutable';
+import { PlayerStats } from '../core/player-stats.model';
 import { Sound } from '../core/sound.model';
 import { TimeService } from '../core/time.service';
 
@@ -29,7 +31,15 @@ interface SoundBlock {
 
 @Component({
   selector: 'in-c-sound-vis',
-  template: `<canvas #cnvs></canvas>`,
+  template: `<canvas #cnvs [style.transform]="getCanvasTransform()"></canvas>`,
+  styles: [`
+    :host {
+      perspective: 300px;
+    }
+    canvas {
+      transition: transform 1s ease;
+    }
+  `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
@@ -38,13 +48,14 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   @Input() playerCount: number;
   @Input() isPlaying: boolean;
   @Input() nowPlaying: List<Sound>;
+  @Input() stats: PlayerStats;
   private canvas: HTMLCanvasElement;
   private context: CanvasRenderingContext2D;
   private sounds: SoundBlock[] = [];
   private animating = false;
   private cleanupInterval: number;
 
-  constructor(private time: TimeService) {
+  constructor(private time: TimeService, private domSanitizer: DomSanitizer) {
   }
 
   @ViewChild('cnvs') set canvasRef(ref: ElementRef) {
@@ -70,6 +81,16 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     if (changes['nowPlaying']) {
       this.nowPlaying.forEach(s => this.sounds.push(this.makeSoundBlock(s)));
     }
+  }
+
+  getCanvasTransform() {
+    const prog = this.stats.totalProgress / 100;
+    const sine = Math.sin(prog * 2 * Math.PI);
+    const rotateZ = Math.ceil(prog * 360);
+    const rotateY = 20 * sine;
+    const rotateX = 30 * sine;
+    const translateZ = -150 * sine;
+    return this.domSanitizer.bypassSecurityTrustStyle(`translateZ(${translateZ}px) rotateZ(${rotateZ}deg) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`);
   }
 
   private makeSoundBlock({attackAt, releaseAt, coordinates, velocity, hue, fromPlayer}: Sound) {

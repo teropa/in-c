@@ -15,6 +15,7 @@ import { PLAY, PAUSE, RESUME } from './core/actions';
 import { AppState } from './core/app-state.model';
 import { PlayerState } from './core/player-state.model';
 import { AudioPlayerService } from './audio/audio-player.service';
+import { SamplesService } from './audio/samples.service';
 
 @Component({
   selector: 'in-c-app',
@@ -34,6 +35,7 @@ import { AudioPlayerService } from './audio/audio-player.service';
                           [@playerControlsTransition]="'in'">
     </in-c-player-controls>
     <in-c-intro *ngIf="!(playing$ | async)"
+                [samplesLoaded]="samples.samplesLoaded | async"
                 (play)="play()"
                 [@introTransition]="'in'">
     </in-c-intro>
@@ -99,7 +101,8 @@ export class AppComponent implements OnInit {
   visHeight = 0;
 
   constructor(private store: Store<AppState>,
-              private audioPlayer: AudioPlayerService) {
+              private audioPlayer: AudioPlayerService,
+              private samples: SamplesService) {
   }
 
   ngOnInit() {

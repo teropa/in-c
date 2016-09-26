@@ -37,8 +37,8 @@ export class AudioPlayerService implements OnDestroy {
     this.convolverDry.connect(audioCtx.destination);
     this.convolverWet.connect(audioCtx.destination);
 
-    samples.loadSample(require('../../samples/minster1_000_ortf_48k.wav')).then(buf => {
-      this.convolver.buffer = buf;
+    samples.samplesLoaded.then(() => {
+      this.convolver.buffer = samples.getSampleBuffer('convolution');
     });
     this.subscription = mergeEffects(this).subscribe(store$);
   }
@@ -64,7 +64,7 @@ export class AudioPlayerService implements OnDestroy {
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
     state.nowPlaying.forEach(({instrument, note, velocity, attackAt, releaseAt, fromPlayer}) => {
-      const sample = this.samples.getSample(instrument, note, velocity);
+      const sample = this.samples.getNoteSample(instrument, note, velocity);
       const pipelineNode = this.getPlayerPipeline(instrument, fromPlayer.gain, fromPlayer.pan);
       this.playSample(sample, attackAt, releaseAt, pipelineNode);
     });

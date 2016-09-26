@@ -35,12 +35,16 @@ export const VELOCITY_OFFSETS = {
 @Injectable()
 export class SamplesService {
 
-  constructor(@Inject('audioCtx') private audioCtx: AudioContext,
-              @Inject('soundFonts') private soundFonts: Map<string, AudioBuffer>) {
+  constructor(@Inject('samples') private samples: Map<string, AudioBuffer>,
+              @Inject('samplesLoaded') public samplesLoaded: Promise<boolean>) {
   }
 
-  getSample(instrument: string, noteAndOctave: string, velocity = 'medium'): Sample {
-    let soundfont = this.soundFonts.get(instrument);
+  getSampleBuffer(key: string) {
+    return this.samples.get(key);
+  }
+
+  getNoteSample(key: string, noteAndOctave: string, velocity = 'medium'): Sample {
+    let soundfont = this.samples.get(key);
     if (soundfont) {
       return {
         buffer: soundfont,
@@ -50,12 +54,6 @@ export class SamplesService {
     } else {
       return null;
     }
-  }
-
-  loadSample(url: string) {
-    return fetch(url)
-      .then(res => res.arrayBuffer())
-      .then(arrayBuffer => (<any>this.audioCtx).decodeAudioData(arrayBuffer));
   }
 
 }

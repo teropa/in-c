@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
   selector: 'in-c-intro',
@@ -8,7 +8,11 @@ import { Component, EventEmitter, Output } from '@angular/core';
       <a href="https://en.wikipedia.org/wiki/In_C" target="_blank">Terry Riley's "In C"</a>
       with five automated bot performers.
     </p>
-    <button (click)="play.next()">Play</button>
+    <button [disabled]="!samplesLoaded"
+            (click)="play.next()">
+      <span *ngIf="samplesLoaded">Play</span>
+      <span *ngIf="!samplesLoaded">Loading...</span>
+    </button>
     <p>
       Developed by <a href="https://twitter.com/teropa">@teropa</a>.
       <a href="https://github.com/teropa/in-c">Fork me on GitHub</a>.
@@ -41,5 +45,6 @@ import { Component, EventEmitter, Output } from '@angular/core';
   `]
 })
 export class IntroComponent {
+  @Input() samplesLoaded: boolean;
   @Output() play = new EventEmitter();
 }

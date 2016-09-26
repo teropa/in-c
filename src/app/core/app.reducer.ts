@@ -71,6 +71,8 @@ function makePlaylistItem(note: NoteRecord, index: number, score: List<NoteRecor
       toBeat,
       hue
     });
+  } else {
+    return null;
   }
 }
 

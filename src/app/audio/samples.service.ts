@@ -47,6 +47,8 @@ export class SamplesService {
         startPosition: VELOCITY_OFFSETS[velocity] + NOTES[noteAndOctave][0],
         endPosition: VELOCITY_OFFSETS[velocity] + NOTES[noteAndOctave][1]
       };
+    } else {
+      return null;
     }
   }
 

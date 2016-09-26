@@ -8,6 +8,9 @@
     "experimentalDecorators": true,
     "removeComments": false,
     "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noFallthroughCasesInSwitch": true,
     "suppressImplicitAnyIndexErrors": true,
     "types": [
       "core-js",

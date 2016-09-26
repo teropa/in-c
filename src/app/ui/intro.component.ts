@@ -5,7 +5,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
   template: `
     <p>
       Play your own unique performance of
-      <a href="https://en.wikipedia.org/wiki/In_C" target="_blank">"In C"</a>
+      <a href="https://en.wikipedia.org/wiki/In_C" target="_blank">Terry Riley's "In C"</a>
       with five automated bot performers.
     </p>
     <button (click)="play.next()">Play</button>

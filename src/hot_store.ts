@@ -34,7 +34,7 @@ export function hotModuleReplacement(
   module.hot.dispose((data: any) => {
     console.time('dispose');
     const appRef: ApplicationRef = MODULE_REF.injector.get(ApplicationRef);
-    appRef.components.map(comp => {
+    const displayNewNodes = appRef.components.map(comp => {
 
       // Create new host element
       const componentNode = comp.location.nativeElement;
@@ -48,12 +48,15 @@ export function hotModuleReplacement(
       const parentNode = componentNode.parentNode;
       parentNode.insertBefore(newNode, componentNode);
 
-      // Destroy previous
-      comp.destroy();
-
       // Make the new host element visible
-      newNode.style.display = newNodeDisplay;
+      return () => newNode.style.display = newNodeDisplay;
     });
+
+    // Destroy previous
+    MODULE_REF.destroy();
+
+    displayNewNodes.forEach(fn => fn());
+    
     const store: Store<any> = MODULE_REF.injector.get(Store);
     appState = getState(store);
     (<any>Object).assign(data, { appState  });

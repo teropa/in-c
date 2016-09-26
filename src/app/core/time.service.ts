@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { Effect, Actions, mergeEffects } from '@ngrx/effects';
 
 import { PAUSE, RESUME } from './actions';
-import { AppState } from './app-state.model';
+import { AppState } from '../model/app-state.model';
 
 interface FixedAudioContext extends AudioContext {
   suspend(): Promise<void>

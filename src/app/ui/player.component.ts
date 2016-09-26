@@ -5,8 +5,8 @@ import {
 } from '@angular/core';
 import { Store } from '@ngrx/store'; 
 
-import { AppState } from '../core/app-state.model';
-import { PlayerState } from '../core/player-state.model';
+import { AppState } from '../model/app-state.model';
+import { PlayerState } from '../model/player-state.model';
 import { ADVANCE } from '../core/actions';
 
 @Component({

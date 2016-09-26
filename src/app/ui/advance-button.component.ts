@@ -5,7 +5,7 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { PlayerState } from '../core/player-state.model';
+import { PlayerState } from '../model/player-state.model';
 
 @Component({
   selector: 'in-c-advance-button',

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core'
 import { List } from 'immutable';
-import { PlayerState } from '../core/player-state.model';
+import { PlayerState } from '../model/player-state.model';
 
 @Component({
   selector: 'in-c-player-controls',

@@ -12,8 +12,8 @@ import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
 
 import { PLAY, PAUSE, RESUME } from './core/actions';
-import { AppState } from './core/app-state.model';
-import { PlayerState } from './core/player-state.model';
+import { AppState } from './model/app-state.model';
+import { PlayerState } from './model/player-state.model';
 import { AudioPlayerService } from './audio/audio-player.service';
 import { SamplesService } from './audio/samples.service';
 

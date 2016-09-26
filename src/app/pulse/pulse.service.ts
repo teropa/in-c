@@ -3,7 +3,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Effect, mergeEffects } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
-import { AppState } from '../core/app-state.model';
+import { AppState } from '../model/app-state.model';
 import { PLAY, PULSE } from '../core/actions';
 import { TimeService } from '../core/time.service';
 

@@ -11,8 +11,8 @@ import {
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { List } from 'immutable';
-import { PlayerStats } from '../core/player-stats.model';
-import { Sound } from '../core/sound.model';
+import { PlayerStats } from '../model/player-stats.model';
+import { Sound } from '../model/sound.model';
 import { TimeService } from '../core/time.service';
 
 const CLEANUP_INTERVAL = 5 * 1000;
@@ -89,7 +89,7 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     const rotateZ = Math.ceil(prog * 360);
     const rotateY = 20 * sine;
     const rotateX = 30 * sine;
-    const translateZ = -150 * sine;
+    const translateZ = -250 * sine;
     return this.domSanitizer.bypassSecurityTrustStyle(`translateZ(${translateZ}px) rotateZ(${rotateZ}deg) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`);
   }
 

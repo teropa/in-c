@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { StoreDevtools } from '@ngrx/store-devtools';
 
-import { AppState } from '../core/app-state.model';
+import { AppState } from '../model/app-state.model';
 
 @Component({
   selector: 'in-c-dev-controls',

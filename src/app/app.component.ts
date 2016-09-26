@@ -14,7 +14,6 @@ import { List } from 'immutable';
 import { PLAY, PAUSE, RESUME } from './core/actions';
 import { AppState } from './core/app-state.model';
 import { PlayerState } from './core/player-state.model';
-import { PulseService } from './core/pulse.service';
 import { AudioPlayerService } from './audio/audio-player.service';
 
 @Component({

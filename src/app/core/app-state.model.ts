@@ -17,6 +17,7 @@ export interface AppState {
 }
 
 export interface AppStateRecord extends TypedRecord<AppStateRecord>, AppState {}
+
 export const appStateFactory = makeTypedFactory<AppState, AppStateRecord>({
   playing: false,
   score: null,

@@ -1,11 +1,11 @@
 import { Injectable, Inject, NgZone, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { Actions, Effect, mergeEffects } from '@ngrx/effects';
+import { Effect, mergeEffects } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
-import { AppState } from './app-state.model';
-import { PLAY, PULSE } from './actions';
-import { TimeService } from './time.service';
+import { AppState } from '../core/app-state.model';
+import { PLAY, PULSE } from '../core/actions';
+import { TimeService } from '../core/time.service';
 
 const MetronomeWorker = require('worker!./metronome.worker');
 
@@ -19,7 +19,7 @@ export class PulseService implements OnDestroy {
   private storeSubscription: Subscription;
   private pulseCount = 1;
 
-  @Effect({dispatch: false}) init$ = this.store
+  @Effect({dispatch: false}) init$ = this.store$
     .take(1)
     .do(() => this.start());
   
@@ -28,10 +28,9 @@ export class PulseService implements OnDestroy {
 
   constructor(@Inject('bpm') private bpm: number,
               private time: TimeService,
-              private store: Store<AppState>,
-              private actions: Actions,
+              private store$: Store<AppState>,
               private zone: NgZone) {
-    this.storeSubscription = mergeEffects(this).subscribe(store);
+    this.storeSubscription = mergeEffects(this).subscribe(store$);
   }
 
   start() {

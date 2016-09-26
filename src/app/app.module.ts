@@ -21,7 +21,7 @@ import { SoundVisComponent } from './ui/sound-vis.component';
 import { TopBarComponent } from './ui/top-bar.component';
 
 import { appReducer } from './core/app.reducer';
-import { PulseService } from './core/pulse.service';
+import { PulseService } from './pulse/pulse.service';
 import { TimeService } from './core/time.service';
 import { AudioPlayerService } from './audio/audio-player.service';
 import { SamplesService } from './audio/samples.service';

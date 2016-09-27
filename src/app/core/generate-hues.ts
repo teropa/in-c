@@ -1,6 +1,4 @@
-import { Module } from './module.model';
-
-export function generateHues(score: Module[]) {
+export function generateHues(score: {changeHue: boolean}[]) {
   return score.reduce((hues, mod) => {
     const direction = Math.random() < 0.5 ? -1 : 1;
     let hue: number;

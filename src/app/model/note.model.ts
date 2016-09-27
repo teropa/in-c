@@ -5,13 +5,17 @@ export const GRACENOTE_DURATION = 0.1;
 const OCTAVE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 export class Note {
-  readonly note: string;
-  readonly velocity: 'low' | 'medium' | 'high' = 'medium';
+  readonly note?: string;
+  readonly velocity?: 'low' | 'medium' | 'high' = 'medium';
   readonly duration = 0;
-  readonly gracenote?: string;
+  readonly gracenote = false;
 
   constructor(fields = {}) {
     Object.assign(this, fields);
+  }
+
+  getNoteValue() {
+    return noteValue(this.note);
   }
 
 }

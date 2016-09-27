@@ -1,13 +1,9 @@
 import { List } from 'immutable';
 
 import { Module } from './module.model';
-import { Note, noteValue } from './note.model';
-import { PlayerState, initialPlayerStates } from './player-state.model';
+import { PlayerState } from './player-state.model';
 import { PlayerStats } from './player-stats.model';
 import { Sound } from './sound.model';
-import { generateHues } from './generate-hues';
-
-const SCORE_DATA = require('json!../../score.json');
 
 export class AppState {
   readonly playing = false;
@@ -71,26 +67,3 @@ export class AppState {
 
 }
 
-export const initialState = new AppState({
-  score: readScore(SCORE_DATA),
-  players: initialPlayerStates,
-  stats: new PlayerStats({playerCount: initialPlayerStates.size}),
-  nowPlaying: List<Sound>(),
-});
-
-function readScore(fullScore: Module[]): List<Module> {
-  const hues = generateHues(fullScore);
-  return List(fullScore.map(({number, score}, idx) => {
-    const parsedScore = <List<Note>>List(score.map(n => new Note(n)));
-    const allNoteValues = parsedScore
-      .filter(n => !!n.note)
-      .map(n => noteValue(n.note));
-    return new Module({
-      number,
-      score: parsedScore,
-      hue: hues[idx],
-      minNoteValue: allNoteValues.min(),
-      maxNoteValue: allNoteValues.max()
-    });
-  }));
-}

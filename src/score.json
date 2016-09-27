@@ -2,15 +2,19 @@
   {
     "number": 1,
     "score": [
-      {"note": "E4", "velocity": "high", "duration": 2, "gracenote": "C4"},
-      {"note": "E4", "velocity": "high", "duration": 2, "gracenote": "C4"},
-      {"note": "E4", "velocity": "high", "duration": 2, "gracenote": "C4"}
+      {"note": "C4", "velocity": "low", "duration": 0, "gracenote": true},
+      {"note": "E4", "velocity": "high", "duration": 2},
+      {"note": "C4", "velocity": "low", "duration": 0, "gracenote": true},
+      {"note": "E4", "velocity": "high", "duration": 2},
+      {"note": "C4", "velocity": "low", "duration": 0, "gracenote": true},
+      {"note": "E4", "velocity": "high", "duration": 2}
     ]
   },
   {
     "number": 2,
     "score": [
-      {"note": "E4", "velocity": "high", "duration": 1, "gracenote": "C4"},
+      {"note": "C4", "velocity": "low", "duration": 0, "gracenote": true},
+      {"note": "E4", "velocity": "high", "duration": 1},
       {"note": "F4", "velocity": "low", "duration": 1},
       {"note": "E4", "velocity": "medium", "duration": 2}
     ]

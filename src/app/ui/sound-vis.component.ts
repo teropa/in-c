@@ -93,16 +93,16 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     return this.domSanitizer.bypassSecurityTrustStyle(`translateZ(${translateZ}px) rotateZ(${rotateZ}deg) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`);
   }
 
-  private makeSoundBlock({attackAt, releaseAt, coordinates, velocity, hue, fromPlayer}: Sound) {
+  private makeSoundBlock({attackAt, releaseAt, coordinates, note, hue, fromPlayer}: Sound) {
     const fullW = this.width / BLUR_FACTOR;
     const w = fullW / this.playerCount;
     const h = this.height / BLUR_FACTOR;
     const noteHeight = Math.ceil(h / coordinates.modulePitchExtent);
     let brightness = 20;
     if (this.isPlaying) {
-      if (velocity === 'medium') {
+      if (note.velocity === 'medium') {
         brightness = 60;
-      } else if (velocity === 'high') {
+      } else if (note.velocity === 'high') {
         brightness = 70;
       } else {
         brightness = 50;

@@ -9,7 +9,6 @@ import { PlaylistItem } from './playlist-item.model';
 import { Sound } from './sound.model';
 import { SoundCoordinates } from './sound-coordinates.model';
 
-const ENSEMBLE_DATA: Player[] = require('json!../../ensemble.json') ;
 
 // Todo: If this had a reference to score, it would be easier to calculate some things on-demand
 export class PlayerState {
@@ -54,24 +53,19 @@ export class PlayerState {
     return this.playlist.items
       .skipWhile(itm => itm.fromBeat < beat)
       .takeWhile(itm => itm.fromBeat < beat + 1)
-      .flatMap(itm => {
+      .map(itm => {
         const relFromBeat = itm.fromBeat - beat;
         const relToBeat = itm.toBeat - beat;
-        const fromOffset = relFromBeat * pulseDuration;
-        const toOffset = relToBeat * pulseDuration;
-        const sound = Sound.make(this, time, itm.note, itm.velocity, fromOffset, toOffset, itm.fromBeat, itm.toBeat, itm.hue);
-        if (itm.gracenote) {
+        if (itm.note.gracenote) {
           const graceRelFromBeat = relFromBeat - GRACENOTE_DURATION;
           const graceRelToBeat = relFromBeat;
           const graceFromOffset = graceRelFromBeat * pulseDuration;
           const graceToOffset = graceRelToBeat * pulseDuration;
-          return [
-            // Todo: Properly skip gracenotes in visualization (setting 0:s here)
-            Sound.make(this, time, itm.gracenote, 'low', graceFromOffset, graceToOffset, 0, 0, itm.hue),
-            sound
-          ];
+          return Sound.make(this, time, itm.note, graceFromOffset, graceToOffset, 0, 0, itm.hue);
         } else {
-          return [sound];
+          const fromOffset = relFromBeat * pulseDuration;
+          const toOffset = relToBeat * pulseDuration;
+          return Sound.make(this, time, itm.note, fromOffset, toOffset, itm.fromBeat, itm.toBeat, itm.hue);
         }
       });
   }
@@ -118,10 +112,5 @@ export class PlayerState {
 
 }
 
-
-
-export const initialPlayerStates = List(ENSEMBLE_DATA.map((p, index) => new PlayerState({
-  player: new Player(Object.assign({index}, p)),
-})));
 
 

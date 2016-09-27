@@ -1,5 +1,5 @@
 import { Module } from './module.model';
-import { noteValue } from './note.model';
+import { Note } from './note.model';
 import { PlayerState } from './player-state.model';
 
 export class SoundCoordinates {
@@ -14,11 +14,11 @@ export class SoundCoordinates {
     Object.assign(this, fields);
   }
 
-  static make(playerState: PlayerState, note: string, duration: number, fromBeat: number) {
+  static make(playerState: PlayerState, note: Note, duration: number, fromBeat: number) {
     const mod = playerState.playlist.fromModule;
     return new SoundCoordinates({
-      modulePitchExtent: mod.maxNoteValue - mod.minNoteValue + 1,
-      relativePitch: noteValue(note) - mod.minNoteValue,
+      modulePitchExtent: mod.getMaxNoteValue() - mod.getMinNoteValue() + 1,
+      relativePitch: note.getNoteValue() - mod.getMinNoteValue(),
       relativeStart: fromBeat - playerState.playlist.firstBeat - mod.getHeadingPauseDuration(),
       moduleDuration: mod.getDurationWithoutPauses(),
       soundDuration: duration

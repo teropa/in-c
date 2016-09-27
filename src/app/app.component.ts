@@ -11,7 +11,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
 
-import { PLAY, PAUSE, RESUME } from './core/actions';
+import { PLAY } from './core/actions';
 import { AppState } from './model/app-state.model';
 import { PlayerState } from './model/player-state.model';
 import { AudioPlayerService } from './audio/audio-player.service';
@@ -32,6 +32,7 @@ import { SamplesService } from './audio/samples.service';
     </in-c-title>
     <in-c-player-controls *ngIf="playing$ | async"
                           [playerStates]="players$ | async"
+                          [playerStats]="stats$ | async"
                           [@playerControlsTransition]="'in'">
     </in-c-player-controls>
     <in-c-intro *ngIf="!(playing$ | async)"
@@ -118,14 +119,6 @@ export class AppComponent implements OnInit {
   play() {
     this.audioPlayer.enableAudioContext();
     this.store.dispatch({type: PLAY});
-  }
-
-  pause() {
-    this.store.dispatch({type: PAUSE});
-  }
-
-  resume() {
-    this.store.dispatch({type: RESUME});
   }
 
 }

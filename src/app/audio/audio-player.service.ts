@@ -1,7 +1,7 @@
-import { Injectable, Inject, OnDestroy } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
-import { Effect, Actions, mergeEffects } from '@ngrx/effects';
+import { Effect, Actions } from '@ngrx/effects';
 
 import { AppState } from '../model/app-state.model';
 import { Player } from '../model/player.model';
@@ -12,13 +12,19 @@ import { SamplesService, Sample } from './samples.service';
 const GRACENOTE_OFFSET = 0.07;
 
 @Injectable()
-export class AudioPlayerService implements OnDestroy {
+export class AudioPlayerService {
   private subscription: Subscription;
   private compressor: DynamicsCompressorNode;
   private convolver: ConvolverNode;
   private convolverDry: GainNode;
   private convolverWet: GainNode;
   private playerPipelines = new Map<string, {gain: GainNode, pan: StereoPannerNode}>();
+
+  @Effect({dispatch: false}) play$ = this.actions$
+    .ofType(PULSE)
+    .withLatestFrom(this.store$)
+    .filter(([action, state]) => state.playing)
+    .do(([action, state]) => this.playState(state, action.payload));
 
   constructor(private actions$: Actions,
               private store$: Store<AppState>,
@@ -40,15 +46,7 @@ export class AudioPlayerService implements OnDestroy {
     samples.samplesLoaded.then(() => {
       this.convolver.buffer = samples.getSampleBuffer('convolution');
     });
-    this.subscription = mergeEffects(this).subscribe(store$);
   }
-
-  @Effect({dispatch: false}) play$ = this.actions$
-    .ofType(PULSE)
-    .withLatestFrom(this.store$)
-    .filter(([action, state]) => state.playing)
-    .do(([action, state]) => this.playState(state, action.payload));
-
   enableAudioContext() {
     const buffer = this.audioCtx.createBuffer(1, 1, 44100);
     const bufferSource = this.audioCtx.createBufferSource();
@@ -57,10 +55,6 @@ export class AudioPlayerService implements OnDestroy {
     bufferSource.start();
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-  
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
     state.nowPlaying.forEach(({instrument, note, velocity, attackAt, releaseAt, fromPlayer}) => {

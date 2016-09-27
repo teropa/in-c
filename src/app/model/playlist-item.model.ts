@@ -1,45 +1,41 @@
 import { List } from 'immutable';
-import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
 
-import { NoteRecord } from './note.model';
+import { Note } from './note.model';
 
-export interface PlaylistItem {
-  note: string,
-  gracenote: string,
-  velocity: string,
-  fromBeat: number,
-  toBeat: number,
-  hue: number
-}
+// Todo: Could we just hold on to Note instead of copying attributes?
+export class PlaylistItem {
+  readonly note: string;
+  readonly gracenote?: string;
+  readonly velocity: 'low' | 'medium' | 'high' = 'medium';
+  readonly fromBeat = 0;
+  readonly toBeat = 0;
+  readonly hue = 0;
 
-export interface PlaylistItemRecord extends TypedRecord<PlaylistItemRecord>, PlaylistItem {}
-export const playlistItemFactory = makeTypedFactory<PlaylistItem, PlaylistItemRecord>({
-  note: null,
-  gracenote: null,
-  velocity: 'medium',
-  fromBeat: 0,
-  toBeat: 0,
-  hue: 0
-});
-
-export function makePlaylistItem(note: NoteRecord, index: number, score: List<NoteRecord>, startBeat: number, hue: number) {
-  if (note.note) {
-    const fromBeat = startBeat + getBeatsUntilNote(score, index);
-    const toBeat = fromBeat + note.duration;
-    return playlistItemFactory({
-      note: note.note,
-      velocity: note.velocity,
-      gracenote: note.gracenote,
-      fromBeat,
-      toBeat,
-      hue
-    });
-  } else {
-    return null;
+  constructor(fields = {}) {
+    Object.assign(this, fields);
+  }
+  
+  static fromNote(note: Note, index: number, score: List<Note>, startBeat: number, hue: number) {
+    if (note.note) {
+      const fromBeat = startBeat + getBeatsUntilNote(score, index);
+      const toBeat = fromBeat + note.duration;
+      return new PlaylistItem({
+        note: note.note,
+        velocity: note.velocity,
+        gracenote: note.gracenote,
+        fromBeat,
+        toBeat,
+        hue
+      });
+    } else {
+      return null;
+    }
   }
 }
 
-function getBeatsUntilNote(score: List<NoteRecord>, noteIdx: number) {
+
+
+function getBeatsUntilNote(score: List<Note>, noteIdx: number) {
   return score
     .take(noteIdx)
     .reduce((sum, note) => sum + note.duration, 0);

@@ -1,30 +1,37 @@
 import { List } from 'immutable';
-import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
 
-import { PlayerRecord } from './player.model';
-import { SoundCoordinatesRecord } from './sound-coordinates.model';
+import { Player } from './player.model';
+import { PlayerState } from './player-state.model';
+import { SoundCoordinates } from './sound-coordinates.model';
 
-export interface Sound {
-  instrument: string,
-  note: string,
-  velocity: string,
-  attackAt: number,
-  releaseAt: number,
+// Todo: Could we just hold on to note instead of copying stuff? 
+export class Sound {
+  readonly instrument: string;
+  readonly note: string;
+  readonly velocity: 'low' | 'medium' | 'high' = 'medium';
+  readonly attackAt: number;
+  readonly releaseAt: number;
   
-  hue: number,
-  coordinates: SoundCoordinatesRecord
+  readonly hue: number;
+  readonly coordinates: SoundCoordinates;
 
-  fromPlayer: PlayerRecord
+  readonly fromPlayer: Player;
+
+  constructor(fields = {}) {
+    Object.assign(this, fields);
+  }
+
+  static make(playerState: PlayerState, time: number, note: string, velocity: string, fromOffset: number, toOffset: number, fromBeat: number, toBeat: number, hue: number) {
+    return new Sound({
+      instrument: playerState.player.instrument,
+      note,
+      velocity,
+      attackAt: time + fromOffset + playerState.playlist.imperfectionDelay,
+      releaseAt: time + toOffset,
+      hue,
+      coordinates: SoundCoordinates.make(playerState, note, toBeat - fromBeat, fromBeat),
+      fromPlayer: playerState.player
+    })
+  }
+
 }
-
-export interface SoundRecord extends TypedRecord<SoundRecord>, Sound {}
-export const soundFactory = makeTypedFactory<Sound, SoundRecord>({
-  instrument: null,
-  note: null,
-  velocity: 'medium',
-  attackAt: 0,
-  releaseAt: 0,
-  hue: 0,
-  coordinates: null,
-  fromPlayer: null
-});

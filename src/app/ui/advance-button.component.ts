@@ -6,13 +6,14 @@ import {
   Output
 } from '@angular/core';
 import { PlayerState } from '../model/player-state.model';
+import { PlayerStats } from '../model/player-stats.model';
 
 @Component({
   selector: 'in-c-advance-button',
   template: `
     <button md-fab
             (click)="advance.next()"
-            [disabled]="!playerState.canAdvance"
+            [disabled]="!playerState.canAdvance(playerStats)"
             [ngSwitch]="getState()">
       <md-icon *ngSwitchCase="'notStarted'" class="md-24" title="Start">play_arrow</md-icon>
       <md-icon *ngSwitchCase="'playing'" class="md-24" title="Advance">fast_forward</md-icon>
@@ -29,6 +30,7 @@ import { PlayerState } from '../model/player-state.model';
 })
 export class AdvanceButtonComponent {
   @Input() playerState: PlayerState;
+  @Input() playerStats: PlayerStats;
   @Output() advance = new EventEmitter();
 
   getState() {

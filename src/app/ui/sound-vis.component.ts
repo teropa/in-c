@@ -160,4 +160,12 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     }
   }
 
+  private getCtx() {
+    if (this.context !== null) {
+      return this.context;
+    } else {
+      throw new Error('Canvas context not here yet.');
+    }
+  }
+
 }

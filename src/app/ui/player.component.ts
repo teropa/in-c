@@ -7,6 +7,7 @@ import { Store } from '@ngrx/store';
 
 import { AppState } from '../model/app-state.model';
 import { PlayerState } from '../model/player-state.model';
+import { PlayerStats } from '../model/player-stats.model';
 import { ADVANCE } from '../core/actions';
 
 @Component({
@@ -15,7 +16,9 @@ import { ADVANCE } from '../core/actions';
     <div class="progress-controls">
       <in-c-progress-circle [progress]="playerState.progress" [hue]="playerState.playlist?.fromModule.hue">
       </in-c-progress-circle>
-      <in-c-advance-button [playerState]="playerState" (advance)="advance()">
+      <in-c-advance-button [playerState]="playerState"
+                           [playerStats]="playerStats"
+                           (advance)="advance()">
       </in-c-advance-button>
     </div>
   `,
@@ -45,6 +48,7 @@ import { ADVANCE } from '../core/actions';
 })
 export class PlayerComponent {
   @Input() playerState: PlayerState;
+  @Input() playerStats: PlayerStats;
 
   constructor(private store: Store<AppState>) {
   }

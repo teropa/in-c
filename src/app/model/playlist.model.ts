@@ -1,35 +1,31 @@
 import { List } from 'immutable';
-import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
 
-import { PlaylistItemRecord, makePlaylistItem } from './playlist-item.model';
-import { ModuleRecord, moduleDuration } from './module.model';
+import { Module } from './module.model';
+import { PlaylistItem } from './playlist-item.model';
 
-export interface Playlist {
-  items: List<PlaylistItemRecord>,
-  firstBeat: number,
-  lastBeat: number,
-  imperfectionDelay: number,
-  fromModule: ModuleRecord
+export class Playlist {
+  readonly items = List<PlaylistItem>();
+  readonly firstBeat = 0;
+  readonly lastBeat = 0;
+  readonly imperfectionDelay = 0;
+  readonly fromModule: Module;
+
+  constructor(fields = {}) {
+    Object.assign(this, fields);
+  }
+
+  static fromModule(mod: Module, fromBeat: number) {
+    const items = <List<PlaylistItem>>mod.score
+      .map((note, idx) => PlaylistItem.fromNote(note, idx, mod.score, fromBeat, mod.hue))
+      .filter(itm => !!itm);
+    return new Playlist({
+      items,
+      firstBeat: fromBeat,
+      lastBeat: fromBeat + mod.getDuration(),
+      imperfectionDelay: -0.005 + Math.random() * 0.01,
+      fromModule: mod
+    });
+  }
+
 }
 
-export interface PlaylistRecord extends TypedRecord<PlaylistRecord>, Playlist {}
-export const playlistFactory = makeTypedFactory<Playlist, PlaylistRecord>({
-  items: <List<PlaylistItemRecord>>List.of(),
-  firstBeat: 0,
-  lastBeat: 0,
-  imperfectionDelay: 0,
-  fromModule: null
-});
-
-export function makePlaylist(mod: ModuleRecord, fromBeat: number) {
-  const items = <List<PlaylistItemRecord>>mod.score
-    .map((note, idx) => makePlaylistItem(note, idx, mod.score, fromBeat, mod.hue))
-    .filter(itm => !!itm);
-  return playlistFactory({
-    items,
-    firstBeat: fromBeat,
-    lastBeat: fromBeat + moduleDuration(mod),
-    imperfectionDelay: -0.005 + Math.random() * 0.01,
-    fromModule: mod
-  });
-}

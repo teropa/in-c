@@ -1,22 +1,20 @@
 import { List } from 'immutable';
-import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
+
+export const GRACENOTE_DURATION = 0.1;
 
 const OCTAVE = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
-export interface Note {
-  note: string,
-  velocity: string,
-  duration: number,
-  gracenote?: string
-}
+export class Note {
+  readonly note: string;
+  readonly velocity: 'low' | 'medium' | 'high' = 'medium';
+  readonly duration = 0;
+  readonly gracenote?: string;
 
-export interface NoteRecord extends TypedRecord<NoteRecord>, Note {}
-export const noteFactory = makeTypedFactory<Note, NoteRecord>({
-  note: null,
-  velocity: 'medium',
-  duration: 1,
-  gracenote: null
-});
+  constructor(fields = {}) {
+    Object.assign(this, fields);
+  }
+
+}
 
 export function parseNote(noteAndOctave: string): {note: string, octave: number} {
   const [, note, octave] = /^(\w[b\#]?)(\d)$/.exec(noteAndOctave);

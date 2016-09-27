@@ -1,19 +1,11 @@
-import { List } from 'immutable';
-import { TypedRecord, makeTypedFactory } from 'typed-immutable-record';
+export class Player {
+  readonly index = 0;
+  readonly instrument: string;
+  readonly gain = 1;
+  readonly pan = 0;
 
-export interface Player {
-  index: number,
-  instrument: string,
-  instrumentName: string,
-  gain: number,
-  pan: number
+  constructor(fields = {}) {
+    Object.assign(this, fields);
+  }
+
 }
-
-export interface PlayerRecord extends TypedRecord<PlayerRecord>, Player {}
-export const playerFactory = makeTypedFactory<Player, PlayerRecord>({
-  index: 0,
-  instrument: null,
-  instrumentName: null,
-  gain: 1,
-  pan: 0
-});

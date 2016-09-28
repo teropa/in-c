@@ -28,7 +28,6 @@ function getNewFunction(originalFunction: () => void) {
     if (this.hasOwnProperty(propName)) {
       returnedValue = this[propName];
     } else {
-      console.log('getting original value');
       returnedValue = originalFunction.apply(this, args);
       Object.defineProperty(this, propName, {
         configurable: false,

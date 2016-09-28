@@ -33,7 +33,7 @@ export class AdvanceButtonComponent {
   @Input() playerStats: PlayerStats;
   @Output() advance = new EventEmitter();
 
-  getState() {
+  getState(): 'notStarted' | 'playing' | 'playingLast' {
     if (this.playerState.progress === 100 && !this.playerState.finished) {
       return 'playingLast';
     } else if (this.playerState.moduleIndex >= 0) {

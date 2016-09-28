@@ -18,7 +18,7 @@ import { ADVANCE } from '../core/actions';
            [max]="100"
            [step]="1"
            [value]="currentProgress$ | async"
-           (change)="onProgressChange($event.target.value)">
+           (input)="onProgressChange($event.target.value)">
   `,
   styles: [`
     :host {

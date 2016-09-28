@@ -35,13 +35,14 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
       font-size: 1.5em;
       text-transform: uppercase;
       cursor: pointer;
+      background-color: rgba(255, 255, 255, 0.7);
     }
     p {
       font-family: 'texgyreadventorregular', sans-serif;
-      color: #f1f1f1;
+      color: rgba(255, 255, 255, 0.7);
     }
     a, a:active, a:visited {
-      color: #f1f1f1;
+      color: rgba(255, 255, 255, 0.7);
     }
   `]
 })

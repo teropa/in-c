@@ -21,7 +21,7 @@ import { Component } from '@angular/core';
       font-family: 'texgyreadventorregular', sans-serif;
       font-size: 12rem;
       line-height: 10rem;
-      color: #f1f1f1;
+      color: rgba(255, 255, 255, 0.7);
     }
   `]
 })

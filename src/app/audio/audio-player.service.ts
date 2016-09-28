@@ -13,6 +13,10 @@ const PULSE_DURATION = 0.15;
 const PULSE_FREQUENCY = 440 * Math.pow(2, 3/12);
 const PULSE_GAIN = 0.05;
 
+interface ResumableAudioContext extends AudioContext {
+  resume(): void;
+}
+
 @Injectable()
 export class AudioPlayerService {
   private subscription: Subscription;
@@ -31,7 +35,7 @@ export class AudioPlayerService {
   constructor(private actions$: Actions,
               private store$: Store<AppState>,
               private samples: SamplesService,
-              @Inject('audioCtx') private audioCtx: AudioContext) {
+              @Inject('audioCtx') private audioCtx: ResumableAudioContext) {
     this.compressor = audioCtx.createDynamicsCompressor();
     this.convolver = audioCtx.createConvolver();
     this.convolverDry = audioCtx.createGain();
@@ -49,12 +53,14 @@ export class AudioPlayerService {
       this.convolver.buffer = samples.getSampleBuffer('convolution');
     });
   }
+
   enableAudioContext() {
-    const buffer = this.audioCtx.createBuffer(1, 1, 44100);
+    this.audioCtx.resume();
+    const buffer = this.audioCtx.createBuffer(1, 1, 22050);
     const bufferSource = this.audioCtx.createBufferSource();
     bufferSource.buffer = buffer;
     bufferSource.connect(this.audioCtx.destination);
-    bufferSource.start();
+    bufferSource.start(this.audioCtx.currentTime);
   }
 
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {

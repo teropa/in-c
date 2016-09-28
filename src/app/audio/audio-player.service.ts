@@ -9,7 +9,9 @@ import { PlayerState } from '../model/player-state.model';
 import { PULSE } from '../core/actions';
 import { SamplesService, Sample } from './samples.service';
 
-const GRACENOTE_OFFSET = 0.07;
+const PULSE_DURATION = 0.15;
+const PULSE_FREQUENCY = 440 * Math.pow(2, 3/12);
+const PULSE_GAIN = 0.05;
 
 @Injectable()
 export class AudioPlayerService {
@@ -56,31 +58,32 @@ export class AudioPlayerService {
   }
 
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
-    this.playBeat(time, bpm);
-    state.nowPlaying.forEach(({instrument, note, attackAt, releaseAt, fromPlayer}) => {
-      const sample = this.samples.getNoteSample(instrument, note.note, note.velocity);
-      const pipelineNode = this.getPlayerPipeline(instrument, fromPlayer.gain, fromPlayer.pan);
-      this.playSample(sample, attackAt, releaseAt, pipelineNode);
-    });
+    this.playPulse(time, bpm);
+    this.playPlayers(state);
   }
 
-  private playBeat(time: number, bpm: number) {
-    const duration = 0.15;
-    const maxGain = 0.05;
-
+  private playPulse(time: number, bpm: number) {
     const osc = this.audioCtx.createOscillator();
     const gain = this.audioCtx.createGain();
 
-    osc.frequency.value = 440 * Math.pow(2, 3/12);
+    osc.frequency.value = PULSE_FREQUENCY;
 
     osc.connect(gain);
     this.connect(gain)
 
     osc.start(time);
-    osc.stop(time + duration);
+    osc.stop(time + PULSE_DURATION);
 
-    gain.gain.setValueAtTime(maxGain, time);
-    gain.gain.linearRampToValueAtTime(0, time + duration);
+    gain.gain.setValueAtTime(PULSE_GAIN, time);
+    gain.gain.linearRampToValueAtTime(0, time + PULSE_DURATION);
+  }
+
+  private playPlayers(state: AppState) {
+    state.nowPlaying.forEach(({instrument, note, attackAt, releaseAt, fromPlayer}) => {
+      const sample = this.samples.getNoteSample(instrument, note.note, note.velocity);
+      const pipelineNode = this.getPlayerPipeline(instrument, fromPlayer.gain, fromPlayer.pan);
+      this.playSample(sample, attackAt, releaseAt, pipelineNode);
+    });
   }
 
   private playSample(sample: Sample, attackAt: number, releaseAt: number, next: AudioNode) {

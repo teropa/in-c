@@ -44,10 +44,6 @@ import { SamplesService } from './audio/samples.service';
                   (play)="play()"
                   [@introTransition]="'in'">
       </in-c-intro>
-      <in-c-top-bar [paused]="paused$ | async"
-                    (pause)="pause()"
-                    (resume)="resume()">
-      </in-c-top-bar>
     </div>
   `,
   styles: [`

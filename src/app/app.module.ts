@@ -18,7 +18,6 @@ import { PlayerComponent } from './ui/player.component';
 import { AdvanceButtonComponent } from './ui/advance-button.component';
 import { ProgressCircleComponent } from './ui/progress-circle.component';
 import { SoundVisComponent } from './ui/sound-vis.component';
-import { TopBarComponent } from './ui/top-bar.component';
 
 import { appReducer } from './core/app.reducer';
 import { PulseService } from './pulse/pulse.service';
@@ -58,8 +57,7 @@ require('../fonts/texgyreadventor_bold_macroman/stylesheet.css');
     PlayerComponent,
     AdvanceButtonComponent,
     ProgressCircleComponent,
-    SoundVisComponent,
-    TopBarComponent
+    SoundVisComponent
   ],
   bootstrap: [ AppComponent ]
 })

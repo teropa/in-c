@@ -11,8 +11,8 @@ import {
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { List } from 'immutable';
-import { PlayerStats } from '../core/player-stats.model';
-import { Sound } from '../core/sound.model';
+import { PlayerStats } from '../model/player-stats.model';
+import { Sound } from '../model/sound.model';
 import { TimeService } from '../core/time.service';
 
 const CLEANUP_INTERVAL = 5 * 1000;
@@ -89,20 +89,20 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     const rotateZ = Math.ceil(prog * 360);
     const rotateY = 20 * sine;
     const rotateX = 30 * sine;
-    const translateZ = -150 * sine;
+    const translateZ = -250 * sine;
     return this.domSanitizer.bypassSecurityTrustStyle(`translateZ(${translateZ}px) rotateZ(${rotateZ}deg) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`);
   }
 
-  private makeSoundBlock({attackAt, releaseAt, coordinates, velocity, hue, fromPlayer}: Sound) {
+  private makeSoundBlock({attackAt, releaseAt, coordinates, note, hue, fromPlayer}: Sound) {
     const fullW = this.width / BLUR_FACTOR;
     const w = fullW / this.playerCount;
     const h = this.height / BLUR_FACTOR;
     const noteHeight = Math.ceil(h / coordinates.modulePitchExtent);
     let brightness = 20;
     if (this.isPlaying) {
-      if (velocity === 'medium') {
+      if (note.velocity === 'medium') {
         brightness = 60;
-      } else if (velocity === 'high') {
+      } else if (note.velocity === 'high') {
         brightness = 70;
       } else {
         brightness = 50;
@@ -157,6 +157,14 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
       if (age > 10) {
         this.sounds.splice(i, 1);
       }
+    }
+  }
+
+  private getCtx() {
+    if (this.context !== null) {
+      return this.context;
+    } else {
+      throw new Error('Canvas context not here yet.');
     }
   }
 

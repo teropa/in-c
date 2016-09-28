@@ -1,8 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { List, Range } from 'immutable';
 import { Subscription } from 'rxjs/Subscription';
+import { Action } from '@ngrx/store';
 import { StoreDevtools } from '@ngrx/store-devtools';
 
-import { AppState } from '../core/app-state.model';
+import { AppState } from '../model/app-state.model';
+import { PlayerState } from '../model/player-state.model';
+import { ADVANCE } from '../core/actions';
 
 @Component({
   selector: 'in-c-dev-controls',
@@ -11,8 +15,8 @@ import { AppState } from '../core/app-state.model';
     <button (click)="devtools.reset()">Reset</button>
     <input type="range"
            [min]="0"
-           [max]="maxProgress$ | async"
-           [step]="0.01"
+           [max]="100"
+           [step]="1"
            [value]="currentProgress$ | async"
            (change)="onProgressChange($event.target.value)">
   `,
@@ -43,8 +47,6 @@ import { AppState } from '../core/app-state.model';
 })
 export class DevControlsComponent implements OnInit, OnDestroy {
 
-  maxProgress$ = this.devtools.state
-    .map((s: AppState) => s.score.size );
   currentProgress$ = this.devtools.state
     .map((s: AppState) => s.stats.totalProgress );
   
@@ -56,16 +58,16 @@ export class DevControlsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.stateSubscription = this.devtools.liftedState.subscribe(({actionsById, skippedActionIds, stagedActionIds, computedStates }) => {
-        this.actions = [];
-        for (let i = 0; i < stagedActionIds.length; i++) {
-          const actionId = stagedActionIds[i];
-          const { state } = computedStates[i];
-          this.actions.push({
-            key: actionId,
-            state
-          });
-        }
-      });
+      this.actions = [];
+      for (let i = 0; i < stagedActionIds.length; i++) {
+        const actionId = stagedActionIds[i];
+        const { state } = computedStates[i];
+        this.actions.push({
+          key: actionId,
+          state
+        });
+      }
+    });
   }
 
   ngOnDestroy() {
@@ -73,6 +75,16 @@ export class DevControlsComponent implements OnInit, OnDestroy {
   }
 
   onProgressChange(newProgress: number) {
+    let currentState: AppState;
+    this.devtools.state.take(1).subscribe(s => currentState = s);
+    if (newProgress < currentState.stats.totalProgress) {
+      this.travelBack(newProgress);
+    } else {
+      this.travelForward(currentState, newProgress);
+    }
+  }
+
+  private travelBack(newProgress: number) {
     for (let i = this.actions.length - 1 ; i >= 0 ; i--) {
       const action = this.actions[i];
       if (action.state && action.state.stats.totalProgress > newProgress) {
@@ -82,6 +94,24 @@ export class DevControlsComponent implements OnInit, OnDestroy {
       }
     }
     this.devtools.sweep();
+  }
+
+  private travelForward(currentState: AppState, newProgress: number) {
+    const targetModuleIndex = Math.floor(newProgress * currentState.score.size / 100);
+    const actions = currentState.players
+      .flatMap(p => this.getPlayerAdvances(p, targetModuleIndex))
+      .sortBy(a => a.moduleIdx)
+      .map(a => (<Action>{type: ADVANCE, payload: a.instrument}));
+    actions.forEach(a => this.devtools.performAction(a));
+  }
+
+  private getPlayerAdvances(p: PlayerState, targetModuleIndex: number): List<{instrument: string, moduleIdx: number}> {
+    if (p.moduleIndex < targetModuleIndex) {
+      return List<{instrument: string, moduleIdx: number}>(Range(p.moduleIndex, targetModuleIndex)
+        .map(i => ({instrument: p.player.instrument, moduleIdx: i})));
+    } else {
+      return List<{instrument: string, moduleIdx: number}>();
+    }
   }
 
 }

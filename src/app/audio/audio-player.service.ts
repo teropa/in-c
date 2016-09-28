@@ -1,24 +1,30 @@
-import { Injectable, Inject, OnDestroy } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
-import { Effect, Actions, mergeEffects } from '@ngrx/effects';
+import { Effect, Actions } from '@ngrx/effects';
 
-import { AppState } from '../core/app-state.model';
-import { Player } from '../core/player.model';
-import { PlayerState } from '../core/player-state.model';
+import { AppState } from '../model/app-state.model';
+import { Player } from '../model/player.model';
+import { PlayerState } from '../model/player-state.model';
 import { PULSE } from '../core/actions';
 import { SamplesService, Sample } from './samples.service';
 
 const GRACENOTE_OFFSET = 0.07;
 
 @Injectable()
-export class AudioPlayerService implements OnDestroy {
+export class AudioPlayerService {
   private subscription: Subscription;
   private compressor: DynamicsCompressorNode;
   private convolver: ConvolverNode;
   private convolverDry: GainNode;
   private convolverWet: GainNode;
   private playerPipelines = new Map<string, {gain: GainNode, pan: StereoPannerNode}>();
+
+  @Effect({dispatch: false}) play$ = this.actions$
+    .ofType(PULSE)
+    .withLatestFrom(this.store$)
+    .filter(([action, state]) => state.playing)
+    .do(([action, state]) => this.playState(state, action.payload));
 
   constructor(private actions$: Actions,
               private store$: Store<AppState>,
@@ -40,15 +46,7 @@ export class AudioPlayerService implements OnDestroy {
     samples.samplesLoaded.then(() => {
       this.convolver.buffer = samples.getSampleBuffer('convolution');
     });
-    this.subscription = mergeEffects(this).subscribe(store$);
   }
-
-  @Effect({dispatch: false}) play$ = this.actions$
-    .ofType(PULSE)
-    .withLatestFrom(this.store$)
-    .filter(([action, state]) => state.playing)
-    .do(([action, state]) => this.playState(state, action.payload));
-
   enableAudioContext() {
     const buffer = this.audioCtx.createBuffer(1, 1, 44100);
     const bufferSource = this.audioCtx.createBufferSource();
@@ -57,14 +55,10 @@ export class AudioPlayerService implements OnDestroy {
     bufferSource.start();
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-  
   private playState(state: AppState, {time, bpm}: {time: number, bpm: number}) {
     this.playBeat(time, bpm);
-    state.nowPlaying.forEach(({instrument, note, velocity, attackAt, releaseAt, fromPlayer}) => {
-      const sample = this.samples.getNoteSample(instrument, note, velocity);
+    state.nowPlaying.forEach(({instrument, note, attackAt, releaseAt, fromPlayer}) => {
+      const sample = this.samples.getNoteSample(instrument, note.note, note.velocity);
       const pipelineNode = this.getPlayerPipeline(instrument, fromPlayer.gain, fromPlayer.pan);
       this.playSample(sample, attackAt, releaseAt, pipelineNode);
     });

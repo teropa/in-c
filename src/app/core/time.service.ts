@@ -3,8 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 import { Effect, Actions, mergeEffects } from '@ngrx/effects';
 
-import { PAUSE, RESUME } from './actions';
-import { AppState } from './app-state.model';
+import { AppState } from '../model/app-state.model';
 
 interface FixedAudioContext extends AudioContext {
   suspend(): Promise<void>
@@ -21,29 +20,12 @@ export class TimeService implements OnDestroy {
     this.subscription = mergeEffects(this).subscribe(store);
   }
 
-  @Effect({dispatch: false}) pauseResume$ = this.actions
-    .ofType(PAUSE, RESUME)
-    .withLatestFrom(this.store)
-    .do(([_, state]) => this.pauseOrResume(state.paused));
-
-  @Effect({dispatch: false}) init$ = this.store
-    .take(1)
-    .do(state => this.pauseOrResume(state.paused));
-
   now() {
     return this.audioCtx.currentTime;
   }
 
   getMillisecondsTo(t: number) {
     return (t - this.now()) * 1000;
-  }
-
-  pauseOrResume(pause: boolean) {
-    if (pause) {
-      this.audioCtx.suspend();
-    } else {
-      this.audioCtx.resume();
-    }
   }
 
   ngOnDestroy() {

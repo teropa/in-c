@@ -4,9 +4,9 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   selector: 'in-c-intro',
   template: `
     <p>
-      Play your own unique performance of
+      Play your own unique version of
       <a href="https://en.wikipedia.org/wiki/In_C" target="_blank">Terry Riley's "In C"</a>
-      with five automated bot performers.
+      with the help of five automated bot performers.
     </p>
     <button [disabled]="!samplesLoaded"
             (click)="play.next()">
@@ -26,7 +26,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
       align-items: center;
     }
     p, button {
-      max-width: 800px;
+      max-width: 760px;
+      text-align: center;
     }
     button {
       padding: 1em 5em;

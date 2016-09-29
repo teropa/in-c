@@ -2,6 +2,7 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var DashboardPlugin = require('webpack-dashboard/plugin');
 var helpers = require('./helpers');
+var autoprefixer = require('autoprefixer');
 
 module.exports = {
 
@@ -37,7 +38,7 @@ module.exports = {
       {
         test: /\.css$/,
         include: helpers.root('src', 'app'),
-        loader: 'raw'
+        loader: 'raw!postcss'
       }
     ]
   },
@@ -47,6 +48,12 @@ module.exports = {
 
     new webpack.optimize.CommonsChunkPlugin({
       name: ['app', 'vendor', 'polyfills']
+    }),
+
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        postcss: [ autoprefixer ]
+      }
     })
 
   ]

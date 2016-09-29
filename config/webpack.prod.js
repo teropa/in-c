@@ -2,6 +2,7 @@ var webpack = require('webpack');
 var webpackMerge = require('webpack-merge');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var autoprefixer = require('autoprefixer');
 var commonConfig = require('./webpack.common.js');
 var helpers = require('./helpers');
 
@@ -30,7 +31,8 @@ module.exports = webpackMerge(commonConfig, {
       options: {
         htmlLoader: {
           minimize: false // workaround for ng2
-        }
+        },
+        postcss: [ autoprefixer ]
       }
     }),
     new HtmlWebpackPlugin({

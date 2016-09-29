@@ -22,24 +22,9 @@ import { Sound } from '../model/sound.model';
   template: require('./container.component.html'),
   styles: [require('./container.component.css')],
   animations: [
-    trigger('titleTransition', [
-      transition('* => void', [
-        style({transform: 'translateY(0)'}),
-        animate('150ms ease-in', style({transform: 'translateY(-300px)'}))
-      ])
-    ]),
-    trigger('introTransition', [
-      transition('* => void', [
-        style({transform: 'translateY(0)'}),
-        animate('150ms ease-in', style({transform: 'translateY(300px)'}))
-      ])
-    ]),
-    trigger('playerControlsTransition', [
-      transition('void => *', [
-        style({transform: 'translateY(600px)'}),
-        animate('150ms 550ms ease-out', style({transform: 'translateY(0)'}))
-      ])
-    ])
+    trigger('titleTransition', moveOut('-300px')),
+    trigger('introTransition', moveOut('300px')),
+    trigger('playerControlsTransition', moveIn('600px', '550ms'))
   ],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
@@ -69,4 +54,23 @@ export class ContainerComponent {
   }
   
 
+}
+
+
+function moveOut(toY: string) {
+  return [
+    transition('* => void', [
+      style({transform: 'translateY(0)'}),
+      animate('150ms ease-in', style({transform: `translateY(${toY})`}))
+    ])
+  ]
+}
+
+function moveIn(fromY: string, delay = '0ms') {
+  return [
+    transition('void => *', [
+      style({transform: `translateY(${fromY})`}),
+      animate(`150ms ${delay} ease-out`, style({transform: 'translateY(0)'}))
+    ])
+  ]
 }

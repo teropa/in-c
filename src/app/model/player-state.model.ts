@@ -40,8 +40,18 @@ export class PlayerState {
   }
 
   canAdvance(playerStats: PlayerStats) {
-    const isFarAhead = this.moduleIndex - playerStats.minModuleIndex >= 2;
-    return !this.finished && !isFarAhead;
+    if (this.isPlayingLast()) {
+      // Can only advance (finish) when everyone is on the last module
+      return playerStats.totalProgress === 100;
+    } else {
+      // Can only advance if less than 2 modules ahead of everyone
+      const isFarAhead = this.moduleIndex - playerStats.minModuleIndex >= 2;
+      return !this.finished && !isFarAhead;
+    }
+  }
+
+  isPlayingLast() {
+    return this.progress === 100 && !this.finished;
   }
 
   getNowPlaying(beat: number, time: number, bpm: number) {

@@ -81,7 +81,9 @@ export class AudioPlayerService {
     osc.start(time);
     osc.stop(time + PULSE_DURATION);
 
-    gain.gain.setValueAtTime(PULSE_GAIN, time);
+    gain.gain.value = 0;
+    gain.gain.setValueAtTime(0, time)
+    gain.gain.linearRampToValueAtTime(PULSE_GAIN, time + 0.01);
     gain.gain.linearRampToValueAtTime(0, time + PULSE_DURATION);
   }
 

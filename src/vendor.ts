@@ -5,6 +5,11 @@ import '@angular/common';
 import '@angular/forms';
 import '@angular/http';
 
+import '@ngrx/store';
+import '@ngrx/effects';
+import '@angular2-material/button';
+import '@angular2-material/icon';
+
 import 'rxjs/Observable';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/concatMap';

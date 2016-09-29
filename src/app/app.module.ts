@@ -6,8 +6,6 @@ import { Store, StoreModule } from '@ngrx/store';
 import { EffectsModule } from '@ngrx/effects';
 import { MdButtonModule } from '@angular2-material/button';
 import { MdIconModule } from '@angular2-material/icon';
-import { MdProgressCircleModule } from '@angular2-material/progress-circle';
-import { MdSliderModule } from '@angular2-material/slider';
 
 import { provideHotStoreModule } from '../hot_store';
 import { AppComponent } from './app.component';
@@ -37,9 +35,7 @@ require('../fonts/texgyreadventor_bold_macroman/stylesheet.css');
     EffectsModule.run(AudioPlayerService),
     EffectsModule.run(PulseService),
     MdButtonModule,
-    MdIconModule.forRoot(),
-    MdProgressCircleModule,
-    MdSliderModule
+    MdIconModule.forRoot()
   ],
   exports: [ AppComponent ],
   providers: [

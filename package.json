@@ -17,8 +17,6 @@
     "@angular2-material/button": "2.0.0-alpha.8-2",
     "@angular2-material/core": "2.0.0-alpha.8-2",
     "@angular2-material/icon": "2.0.0-alpha.8-2",
-    "@angular2-material/progress-circle": "2.0.0-alpha.8-2",
-    "@angular2-material/slider": "2.0.0-alpha.8-2",
     "@mohayonao/web-audio-api-shim": "0.3.0",
     "@ngrx/core": "1.2.0",
     "@ngrx/effects": "2.0.0",

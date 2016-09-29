@@ -87,9 +87,9 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
     const prog = this.stats.totalProgress / 100;
     const sine = Math.sin(prog * 2 * Math.PI);
     const rotateZ = Math.ceil(prog * 360);
-    const rotateY = Math.ceil(Math.min(prog, 1 - prog) * 360);
-    const rotateX = Math.ceil(sine * 360);
-    const translateZ = -250 * Math.abs(sine);
+    const rotateY = Math.ceil(Math.min(prog, 1 - prog) * 30);
+    const rotateX = Math.ceil(sine * 30);
+    const translateZ = -500 * Math.abs(sine);
     return this.domSanitizer.bypassSecurityTrustStyle(`translateZ(${translateZ}px) rotateZ(${rotateZ}deg) rotateY(${rotateY}deg) rotateX(${rotateX}deg)`);
   }
 

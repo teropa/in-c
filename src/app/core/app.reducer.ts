@@ -21,7 +21,12 @@ export const appReducer: ActionReducer<AppState> = (state = getInitialState(), a
     case PULSE:
       return state.pulse(action.payload.time, action.payload.bpm);
     case ADVANCE:
-      return state.advancePlayer(action.payload);
+      const advancedState = state.advancePlayer(action.payload);
+      if (advancedState.areAllFinished()) {
+        return getInitialState();
+      } else {
+        return advancedState;
+      }
     default:
       return state;
   }

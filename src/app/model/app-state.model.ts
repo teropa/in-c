@@ -17,6 +17,10 @@ export class AppState {
     Object.assign(this, fields);
   }
 
+  areAllFinished() {
+    return this.players.every(p => p.finished);
+  }
+
   play() {
     return this.merge({
       playing: true,

@@ -3,31 +3,8 @@ import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
   selector: 'in-c-progress-circle',
-  template: `
-    <svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 100 100">
-      <svg:path class="background-path"
-                [attr.d]="getBackgroundPath()">
-      </svg:path>
-      <svg:path class="progress-path"
-                [attr.d]="getProgressPath()"
-                [attr.stroke]="getStroke()">
-      </svg:path>
-    </svg>
-  `,
-  styles: [`
-    svg {
-      width: 100px;
-      height: 100px;
-    }
-    path {
-      stroke-width: 10;
-      fill: none;
-      transition: all 0.5s ease;
-    }
-    .background-path {
-      stroke: rgb(100, 100%, 100%);
-    }
-  `],
+  template: require('./progress-circle.component.html'),
+  styles: [require('./progress-circle.component.css')],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProgressCircleComponent {

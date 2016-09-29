@@ -1,0 +1,7 @@
+:host {
+  display: flex;
+}
+in-c-player {
+  flex: 1;
+  box-sizing: border-box;
+}

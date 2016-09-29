@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+p, button {
+  max-width: 760px;
+  text-align: center;
+}
+button {
+  padding: 1em 5em;
+  font-family: 'texgyreadventorbold', sans-serif;
+  font-size: 1.5em;
+  text-transform: uppercase;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+p {
+  font-family: 'texgyreadventorregular', sans-serif;
+  color: rgba(255, 255, 255, 0.7);
+}
+a, a:active, a:visited {
+  color: rgba(255, 255, 255, 0.7);
+}

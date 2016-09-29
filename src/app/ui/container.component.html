@@ -1,0 +1,21 @@
+<in-c-sound-vis [isPlaying]="isPlaying"
+                [nowPlaying]="nowPlaying"
+                [width]="width"
+                [height]="height"
+                [playerCount]="playerStates.size"
+                [stats]="stats">
+</in-c-sound-vis>
+<in-c-title *ngIf="!isPlaying"
+            [@titleTransition]="'in'">
+</in-c-title>
+<in-c-intro *ngIf="!isPlaying"
+            [samplesLoaded]="samplesLoaded"
+            (play)="play.next()"
+            [@introTransition]="'in'">
+</in-c-intro>
+<in-c-players *ngIf="isPlaying"
+              [playerStates]="playerStates"
+              [playerStats]="stats"
+              (advancePlayer)="advancePlayer.next($event)"
+              [@playerControlsTransition]="'in'">
+</in-c-players>

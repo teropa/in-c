@@ -10,12 +10,12 @@ import { MdIconModule } from '@angular2-material/icon';
 import { provideHotStoreModule } from '../hot_store';
 import { AppComponent } from './app.component';
 import { ContainerComponent } from './ui/container.component';
-import { TitleComponent } from './ui/title.component';
-import { IntroComponent } from './ui/intro.component';
-import { PlayerControlsComponent } from './ui/player-controls.component';
-import { PlayerComponent } from './ui/player.component';
-import { AdvanceButtonComponent } from './ui/advance-button.component';
-import { ProgressCircleComponent } from './ui/progress-circle.component';
+import { TitleComponent } from './ui/intro/title.component';
+import { IntroComponent } from './ui/intro/intro.component';
+import { PlayersComponent } from './ui/players/players.component';
+import { PlayerComponent } from './ui/players/player.component';
+import { AdvanceButtonComponent } from './ui/players/advance-button.component';
+import { ProgressCircleComponent } from './ui/players/progress-circle.component';
 import { SoundVisComponent } from './ui/sound-vis.component';
 
 import { appReducer } from './core/app.reducer';
@@ -51,7 +51,7 @@ require('../fonts/texgyreadventor_bold_macroman/stylesheet.css');
     ContainerComponent,
     TitleComponent,
     IntroComponent,
-    PlayerControlsComponent,
+    PlayersComponent,
     PlayerComponent,
     AdvanceButtonComponent,
     ProgressCircleComponent,

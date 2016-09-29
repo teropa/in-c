@@ -19,59 +19,8 @@ import { Sound } from '../model/sound.model';
 
 @Component({
   selector: 'in-c-container',
-  template: `
-    <in-c-sound-vis [isPlaying]="isPlaying"
-                    [nowPlaying]="nowPlaying"
-                    [width]="width"
-                    [height]="height"
-                    [playerCount]="playerStates.size"
-                    [stats]="stats">
-    </in-c-sound-vis>
-    <in-c-title *ngIf="!isPlaying"
-                [@titleTransition]="'in'">
-    </in-c-title>
-    <in-c-intro *ngIf="!isPlaying"
-                [samplesLoaded]="samplesLoaded"
-                (play)="play.next()"
-                [@introTransition]="'in'">
-    </in-c-intro>
-    <in-c-player-controls *ngIf="isPlaying"
-                          [playerStates]="playerStates"
-                          [playerStats]="stats"
-                          (advancePlayer)="advancePlayer.next($event)"
-                          [@playerControlsTransition]="'in'">
-    </in-c-player-controls>
-  `,
-  styles: [`
-    :host {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    }
-    in-c-title {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 61.8%;
-    }
-    in-c-intro {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 61.8%;
-      bottom: 0;
-    }
-    in-c-sound-vis, in-c-player-controls {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 100%;
-    }
-  `],
+  template: require('./container.component.html'),
+  styles: [require('./container.component.css')],
   animations: [
     trigger('titleTransition', [
       transition('* => void', [
@@ -105,7 +54,7 @@ export class ContainerComponent {
   
   @Output() play = new EventEmitter();
   @Output() advancePlayer = new EventEmitter();
-  
+
   constructor(private domSanitizer: DomSanitizer) {
   }
 

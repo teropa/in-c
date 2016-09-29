@@ -1,0 +1,12 @@
+svg {
+  width: 100px;
+  height: 100px;
+}
+path {
+  stroke-width: 10;
+  fill: none;
+  transition: all 0.5s ease;
+}
+.background-path {
+  stroke: rgb(100, 100%, 100%);
+}

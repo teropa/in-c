@@ -33,12 +33,8 @@ interface SoundBlock {
   selector: 'in-c-sound-vis',
   template: `<canvas #cnvs [style.transform]="getCanvasTransform()"></canvas>`,
   styles: [`
-    :host {
-      perspective: 300px;
-    }
-    canvas {
-      transition: transform 1s ease;
-    }
+    :host  { perspective: 300px; }
+    canvas { transition: transform 1s ease; }
   `],
   changeDetection: ChangeDetectionStrategy.OnPush
 })

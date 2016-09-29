@@ -1,0 +1,8 @@
+<div class="progress-controls">
+  <in-c-progress-circle [progress]="playerState.progress" [hue]="playerState.playlist?.fromModule.hue">
+  </in-c-progress-circle>
+  <in-c-advance-button [playerState]="playerState"
+                        [playerStats]="playerStats"
+                        (advance)="advance.next()">
+  </in-c-advance-button>
+</div>

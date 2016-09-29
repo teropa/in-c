@@ -2,7 +2,7 @@ import { ActionReducer, Action } from '@ngrx/store';
 import { List } from 'immutable';
 import { AppState } from '../model/app-state.model';
 import { Module } from '../model/module.model';
-import { Note, noteValue } from '../model/note.model';
+import { Note } from '../model/note.model';
 import { Player } from '../model/player.model';
 import { PlayerState } from '../model/player-state.model';
 import { PlayerStats } from '../model/player-stats.model';
@@ -29,19 +29,14 @@ export const appReducer: ActionReducer<AppState> = (state = getInitialState(), a
 
 
 function getInitialState() {
-  const initPlayerStates = readEnsemble();
+  const score = readScore();
+  const players = readEnsemble();
   return new AppState({
-    score: readScore(),
-    players: initPlayerStates,
-    stats: new PlayerStats({playerCount: initPlayerStates.size}),
+    score,
+    players,
+    stats: new PlayerStats({playerCount: players.size}),
     nowPlaying: List<Sound>(),
   });
-}
-
-function readEnsemble() {
-  return List(ENSEMBLE_DATA.map((p: Player, index: number) => new PlayerState({
-    player: new Player(Object.assign({index}, p)),
-  })));
 }
 
 function readScore(): List<Module> {
@@ -54,5 +49,11 @@ function readScore(): List<Module> {
       hue: hues[idx]
     });
   }));
+}
+
+function readEnsemble() {
+  return List(ENSEMBLE_DATA.map((p: Player, index: number) => new PlayerState({
+    player: new Player(Object.assign({index}, p)),
+  })));
 }
 

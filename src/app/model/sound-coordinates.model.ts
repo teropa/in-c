@@ -2,6 +2,7 @@ import { Module } from './module.model';
 import { Note } from './note.model';
 import { PlayerState } from './player-state.model';
 
+// The coordinates in visual space for a Sound. Used in visualization.
 export class SoundCoordinates {
   readonly relativePitch = 0;
   readonly modulePitchExtent = 0;

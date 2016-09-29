@@ -1,4 +1,5 @@
 import { List } from 'immutable';
+import { Memoize } from '../core/memoize-decorator';
 
 export const GRACENOTE_DURATION = 0.1;
 
@@ -14,18 +15,16 @@ export class Note {
     Object.assign(this, fields);
   }
 
+  @Memoize
   getNoteValue() {
-    return noteValue(this.note);
+    const [, note, octave] = /^(\w[b\#]?)(\d)$/.exec(this.note);
+    return parseInt(octave, 10) * 12 + OCTAVE.indexOf(note.toUpperCase());
   }
 
 }
 
-export function parseNote(noteAndOctave: string): {note: string, octave: number} {
+function parseNote(noteAndOctave: string): {note: string, octave: number} {
   const [, note, octave] = /^(\w[b\#]?)(\d)$/.exec(noteAndOctave);
   return {note: note.toUpperCase(), octave: parseInt(octave, 10)};
 }
 
-export function noteValue(noteAndOctave: string) {
-  const {note, octave} = parseNote(noteAndOctave);
-  return octave * 12 + OCTAVE.indexOf(note);
-}

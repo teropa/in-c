@@ -18,9 +18,10 @@ const SAMPLE_URLS = {
 export const samples: Map<string, AudioBuffer>
   = new Map<string, AudioBuffer>();
 
-export const samplesLoaded = Promise.all(Object.keys(SAMPLE_URLS).map(key => {
-  return loadSample(key, SAMPLE_URLS[key]);
-})).then(() => true);
+export const samplesLoaded = Promise.all(
+  Object.keys(SAMPLE_URLS)
+    .map(key => loadSample(key, SAMPLE_URLS[key]))
+).then(() => true);
 
 
 function loadSample(key: string, url: string) {

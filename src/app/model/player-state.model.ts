@@ -1,7 +1,7 @@
 import { List } from 'immutable';
 
 import { Module } from './module.model';
-import { GRACENOTE_DURATION, noteValue } from './note.model';
+import { GRACENOTE_DURATION } from './note.model';
 import { Player } from './player.model';
 import { PlayerStats } from './player-stats.model';
 import { Playlist } from './playlist.model';
@@ -9,8 +9,6 @@ import { PlaylistItem } from './playlist-item.model';
 import { Sound } from './sound.model';
 import { SoundCoordinates } from './sound-coordinates.model';
 
-
-// Todo: If this had a reference to score, it would be easier to calculate some things on-demand
 export class PlayerState {
   readonly player: Player;
   readonly moduleIndex = -1;

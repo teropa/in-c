@@ -1,4 +1,4 @@
-// Redeclare postMessage because TypeScript.
+// Redeclare postMessage because of TypeScript issues.
 declare function postMessage(msg: any): void;
 
 let interval: number;

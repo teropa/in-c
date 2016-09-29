@@ -6,7 +6,8 @@ export interface Sample {
   endPosition: number
 }
 
-export const NOTES = {
+// Would prefer to have these in a JSON file or something
+export const SOUNDFONT_NOTE_OFFSETS = {
   'G3': [0, 4],
   'C4': [4, 8],
   'E4': [8, 12],
@@ -25,7 +26,7 @@ export const NOTES = {
   'A5': [60, 64],
   'B5': [64, 68]
 };
-export const VELOCITY_OFFSETS = {
+export const SOUNDFONT_VELOCITY_OFFSETS = {
   'low': 0,
   'medium': 68,
   'high': 136
@@ -48,8 +49,8 @@ export class SamplesService {
     if (soundfont) {
       return {
         buffer: soundfont,
-        startPosition: VELOCITY_OFFSETS[velocity] + NOTES[noteAndOctave][0],
-        endPosition: VELOCITY_OFFSETS[velocity] + NOTES[noteAndOctave][1]
+        startPosition: SOUNDFONT_VELOCITY_OFFSETS[velocity] + SOUNDFONT_NOTE_OFFSETS[noteAndOctave][0],
+        endPosition: SOUNDFONT_VELOCITY_OFFSETS[velocity] + SOUNDFONT_NOTE_OFFSETS[noteAndOctave][1]
       };
     } else {
       return null;

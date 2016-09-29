@@ -10,7 +10,7 @@ import { PULSE } from '../core/actions';
 import { SamplesService, Sample } from './samples.service';
 
 const PULSE_DURATION = 0.15;
-const PULSE_FREQUENCY = 440 * Math.pow(2, 3/12);
+const PULSE_FREQUENCY = 440 * Math.pow(2, 3/12); // In C
 const PULSE_GAIN = 0.05;
 
 interface ResumableAudioContext extends AudioContext {
@@ -54,6 +54,7 @@ export class AudioPlayerService {
     });
   }
 
+  // Safari silliness
   enableAudioContext() {
     this.audioCtx.resume();
     const buffer = this.audioCtx.createBuffer(1, 1, 22050);
@@ -93,9 +94,6 @@ export class AudioPlayerService {
   }
 
   private playSample(sample: Sample, attackAt: number, releaseAt: number, next: AudioNode) {
-    if (!sample) {
-      return;
-    }
     const src = this.audioCtx.createBufferSource();
     const gain = this.audioCtx.createGain();
 

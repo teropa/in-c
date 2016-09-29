@@ -24,26 +24,26 @@ import { SamplesService } from './audio/samples.service';
   template: `
     <div class="container"
          [style.backgroundImage]="getBackgroundGradient(stats$ | async)">
-      <in-c-sound-vis [isPlaying]="playing$ | async"
+      <in-c-sound-vis [isPlaying]="isPlaying$ | async"
                       [nowPlaying]="nowPlaying$ | async"
                       [width]="width"
-                      [height]="visHeight"
+                      [height]="height"
                       [playerCount]="(players$ | async).size"
                       [stats]="stats$ | async">
       </in-c-sound-vis>
-      <in-c-title *ngIf="!(playing$ | async)"
+      <in-c-title *ngIf="!(isPlaying$ | async)"
                   [@titleTransition]="'in'">
       </in-c-title>
-      <in-c-player-controls *ngIf="playing$ | async"
-                            [playerStates]="players$ | async"
-                            [playerStats]="stats$ | async"
-                            [@playerControlsTransition]="'in'">
-      </in-c-player-controls>
-      <in-c-intro *ngIf="!(playing$ | async)"
+      <in-c-intro *ngIf="!(isPlaying$ | async)"
                   [samplesLoaded]="samples.samplesLoaded | async"
                   (play)="play()"
                   [@introTransition]="'in'">
       </in-c-intro>
+      <in-c-player-controls *ngIf="isPlaying$ | async"
+                            [playerStates]="players$ | async"
+                            [playerStats]="stats$ | async"
+                            [@playerControlsTransition]="'in'">
+      </in-c-player-controls>
     </div>
   `,
   styles: [`
@@ -100,14 +100,13 @@ import { SamplesService } from './audio/samples.service';
 })
 export class AppComponent implements OnInit {
 
-  playing$ = this.store.select('playing').distinctUntilChanged();
-  paused$ = this.store.select('paused').distinctUntilChanged();
+  isPlaying$ = this.store.select('playing').distinctUntilChanged();
   players$ = this.store.select('players');
   nowPlaying$ = this.store.select('nowPlaying');
   stats$ = this.store.select('stats');
 
   width = 0;
-  visHeight = 0;
+  height = 0;
 
   constructor(private store: Store<AppState>,
               private audioPlayer: AudioPlayerService,
@@ -131,7 +130,7 @@ export class AppComponent implements OnInit {
   @HostListener('window:resize')
   setSize() {
     this.width = window.innerWidth
-    this.visHeight = window.innerHeight;
+    this.height = window.innerHeight;
   }
 
   play() {

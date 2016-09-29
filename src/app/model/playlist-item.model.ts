@@ -16,12 +16,7 @@ export class PlaylistItem {
     if (note.note) {
       const fromBeat = startBeat + getBeatsUntilNote(score, index);
       const toBeat = fromBeat + note.duration;
-      return new PlaylistItem({
-        note: note,
-        fromBeat,
-        toBeat,
-        hue
-      });
+      return new PlaylistItem({note, fromBeat, toBeat, hue});
     } else {
       return null;
     }

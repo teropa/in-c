@@ -14,14 +14,14 @@ export class Playlist {
     Object.assign(this, fields);
   }
 
-  static fromModule(mod: Module, fromBeat: number) {
+  static fromModule(mod: Module, firstBeat: number) {
     const items = <List<PlaylistItem>>mod.score
-      .map((note, idx) => PlaylistItem.fromNote(note, idx, mod.score, fromBeat, mod.hue))
+      .map((note, idx) => PlaylistItem.fromNote(note, idx, mod.score, firstBeat, mod.hue))
       .filter(itm => !!itm);
     return new Playlist({
       items,
-      firstBeat: fromBeat,
-      lastBeat: fromBeat + mod.getDuration(),
+      firstBeat,
+      lastBeat: firstBeat + mod.getDuration(),
       imperfectionDelay: -0.005 + Math.random() * 0.01,
       fromModule: mod
     });

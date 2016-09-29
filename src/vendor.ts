@@ -5,6 +5,11 @@ import '@angular/common';
 import '@angular/forms';
 import '@angular/http';
 
-import 'rxjs';
+import 'rxjs/Observable';
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/concatMap';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/take';
+import 'rxjs/add/operator/withLatestFrom';
 
 import 'hammerjs';

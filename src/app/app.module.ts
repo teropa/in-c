@@ -9,6 +9,7 @@ import { MdIconModule } from '@angular2-material/icon';
 
 import { provideHotStoreModule } from '../hot_store';
 import { AppComponent } from './app.component';
+import { ContainerComponent } from './ui/container.component';
 import { TitleComponent } from './ui/title.component';
 import { IntroComponent } from './ui/intro.component';
 import { PlayerControlsComponent } from './ui/player-controls.component';
@@ -47,6 +48,7 @@ require('../fonts/texgyreadventor_bold_macroman/stylesheet.css');
   ],
   declarations: [
     AppComponent,
+    ContainerComponent,
     TitleComponent,
     IntroComponent,
     PlayerControlsComponent,

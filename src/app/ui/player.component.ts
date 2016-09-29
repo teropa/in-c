@@ -1,7 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Input,
+  Output
 } from '@angular/core';
 import { Store } from '@ngrx/store'; 
 
@@ -18,7 +20,7 @@ import { ADVANCE } from '../core/actions';
       </in-c-progress-circle>
       <in-c-advance-button [playerState]="playerState"
                            [playerStats]="playerStats"
-                           (advance)="advance()">
+                           (advance)="advance.next()">
       </in-c-advance-button>
     </div>
   `,
@@ -49,12 +51,5 @@ import { ADVANCE } from '../core/actions';
 export class PlayerComponent {
   @Input() playerState: PlayerState;
   @Input() playerStats: PlayerStats;
-
-  constructor(private store: Store<AppState>) {
-  }
-
-  advance() {
-    this.store.dispatch({type: ADVANCE, payload: this.playerState.player.instrument});
-  }
-
+  @Output() advance = new EventEmitter();
 }

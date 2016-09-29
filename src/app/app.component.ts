@@ -2,106 +2,34 @@ import {
   Component,
   OnInit,
   HostListener,
-  animate,
-  style,
-  transition,
-  trigger
 } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
 import { Store } from '@ngrx/store';
-import { Observable } from 'rxjs/Observable';
 import { List } from 'immutable';
 
-import { PLAY } from './core/actions';
+import { ADVANCE, PLAY } from './core/actions';
 import { AppState } from './model/app-state.model';
-import { PlayerState } from './model/player-state.model';
-import { PlayerStats } from './model/player-stats.model';
 import { AudioPlayerService } from './audio/audio-player.service';
 import { SamplesService } from './audio/samples.service';
 
 @Component({
   selector: 'in-c-app',
   template: `
-    <div class="container"
-         [style.backgroundImage]="getBackgroundGradient(stats$ | async)">
-      <in-c-sound-vis [isPlaying]="isPlaying$ | async"
-                      [nowPlaying]="nowPlaying$ | async"
-                      [width]="width"
-                      [height]="height"
-                      [playerCount]="(players$ | async).size"
-                      [stats]="stats$ | async">
-      </in-c-sound-vis>
-      <in-c-title *ngIf="!(isPlaying$ | async)"
-                  [@titleTransition]="'in'">
-      </in-c-title>
-      <in-c-intro *ngIf="!(isPlaying$ | async)"
-                  [samplesLoaded]="samples.samplesLoaded | async"
-                  (play)="play()"
-                  [@introTransition]="'in'">
-      </in-c-intro>
-      <in-c-player-controls *ngIf="isPlaying$ | async"
-                            [playerStates]="players$ | async"
-                            [playerStats]="stats$ | async"
-                            [@playerControlsTransition]="'in'">
-      </in-c-player-controls>
-    </div>
-  `,
-  styles: [`
-    .container {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    }
-    in-c-title {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 61.8%;
-    }
-    in-c-intro {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 61.8%;
-      bottom: 0;
-    }
-    in-c-sound-vis, in-c-player-controls {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 100%;
-    }
-  `],
-  animations: [
-    trigger('titleTransition', [
-      transition('* => void', [
-        style({transform: 'translateY(0)'}),
-        animate('150ms ease-in', style({transform: 'translateY(-300px)'}))
-      ])
-    ]),
-    trigger('introTransition', [
-      transition('* => void', [
-        style({transform: 'translateY(0)'}),
-        animate('150ms ease-in', style({transform: 'translateY(300px)'}))
-      ])
-    ]),
-    trigger('playerControlsTransition', [
-      transition('void => *', [
-        style({transform: 'translateY(600px)'}),
-        animate('150ms 550ms ease-out', style({transform: 'translateY(0)'}))
-      ])
-    ])
-
-  ]
+    <in-c-container [samplesLoaded]="samples.samplesLoaded | async"
+                    [isPlaying]="isPlaying$ | async"
+                    [playerStates]="playerStates$ | async"
+                    [nowPlaying]="nowPlaying$ | async"
+                    [stats]="stats$ | async"
+                    [width]="width"
+                    [height]="height"
+                    (play)="play()"
+                    (advancePlayer)="advancePlayer($event)">
+    </in-c-container>
+  `
 })
 export class AppComponent implements OnInit {
 
   isPlaying$ = this.store.select('playing').distinctUntilChanged();
-  players$ = this.store.select('players');
+  playerStates$ = this.store.select('players');
   nowPlaying$ = this.store.select('nowPlaying');
   stats$ = this.store.select('stats');
 
@@ -110,21 +38,11 @@ export class AppComponent implements OnInit {
 
   constructor(private store: Store<AppState>,
               private audioPlayer: AudioPlayerService,
-              private samples: SamplesService,
-              private domSanitizer: DomSanitizer) {
+              private samples: SamplesService) {
   }
 
   ngOnInit() {
     this.setSize();
-  }
-
-  getBackgroundGradient(stats: PlayerStats) {
-    const progressDeg = stats.totalProgress * 3.6;
-    const progressRad = progressDeg / 180 * Math.PI * 2;
-    const xPercent = 50 + Math.sin(progressRad) * 40;
-    const yPercent = 50 + Math.cos(progressRad) * 40;
-    const grad = `radial-gradient(farthest-corner at ${xPercent}% ${yPercent}%, #434343 0%, #000000 100%)`;
-    return this.domSanitizer.bypassSecurityTrustStyle(grad);
   }
 
   @HostListener('window:resize')
@@ -136,6 +54,10 @@ export class AppComponent implements OnInit {
   play() {
     this.audioPlayer.enableAudioContext();
     this.store.dispatch({type: PLAY});
+  }
+
+  advancePlayer(instrument: string) {
+    this.store.dispatch({type: ADVANCE, payload: instrument});
   }
 
 }

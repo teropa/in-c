@@ -1,4 +1,9 @@
-import { Component, Input } from '@angular/core'
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output
+} from '@angular/core'
 import { List } from 'immutable';
 import { PlayerState } from '../model/player-state.model';
 import { PlayerStats } from '../model/player-stats.model';
@@ -8,7 +13,8 @@ import { PlayerStats } from '../model/player-stats.model';
   template: `
     <in-c-player *ngFor="let playerState of playerStates; trackBy: trackPlayerState"
                   [playerState]="playerState"
-                  [playerStats]="playerStats">
+                  [playerStats]="playerStats"
+                  (advance)="advancePlayer.next(playerState.player.instrument)">
     </in-c-player>
   `,
   styles: [`
@@ -24,6 +30,7 @@ import { PlayerStats } from '../model/player-stats.model';
 export class PlayerControlsComponent {
   @Input() playerStates: List<PlayerState>;
   @Input() playerStats: PlayerStats;
+  @Output() advancePlayer = new EventEmitter();
 
   trackPlayerState(index: number, obj: PlayerState): any {
     return obj.player.instrument;

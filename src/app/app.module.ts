@@ -23,6 +23,7 @@ import { PulseService } from './pulse/pulse.service';
 import { TimeService } from './core/time.service';
 import { AudioPlayerService } from './audio/audio-player.service';
 import { SamplesService } from './audio/samples.service';
+import { LightsService } from './lights/lights.service';
 
 require('../fonts/texgyreadventor_regular_macroman/stylesheet.css');
 require('../fonts/texgyreadventor_bold_macroman/stylesheet.css');
@@ -35,6 +36,7 @@ require('../fonts/texgyreadventor_bold_macroman/stylesheet.css');
     provideHotStoreModule(appReducer),
     EffectsModule.run(AudioPlayerService),
     EffectsModule.run(PulseService),
+    EffectsModule.run(LightsService),
     MdButtonModule,
     MdIconModule.forRoot()
   ],

@@ -22,9 +22,3 @@ export class Note {
   }
 
 }
-
-function parseNote(noteAndOctave: string): {note: string, octave: number} {
-  const [, note, octave] = /^(\w[b\#]?)(\d)$/.exec(noteAndOctave);
-  return {note: note.toUpperCase(), octave: parseInt(octave, 10)};
-}
-

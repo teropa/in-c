@@ -1,5 +1,4 @@
 import { Injectable, Inject } from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
 import { Store } from '@ngrx/store';
 import { Effect, Actions } from '@ngrx/effects';
 
@@ -19,7 +18,6 @@ interface ResumableAudioContext extends AudioContext {
 
 @Injectable()
 export class AudioPlayerService {
-  private subscription: Subscription;
   private compressor: DynamicsCompressorNode;
   private convolver: ConvolverNode;
   private convolverDry: GainNode;

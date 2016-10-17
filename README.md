@@ -20,10 +20,11 @@ Built with:
 
 ## Hacking Locally
 
-You'll need to have reasonably recent versions of Node.js and NPM installed.
+You'll need to have reasonably recent versions of Node.js, NPM, and
+[Yarn](https://yarnpkg.com/) installed.
 
 ```
-npm install
+yarn
 npm start
 ```
 

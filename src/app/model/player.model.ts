@@ -1,11 +1,6 @@
-export class Player {
-  readonly index = 0;
+export interface Player {
+  readonly index: number;
   readonly instrument: string;
-  readonly gain = 1;
-  readonly pan = 0;
-
-  constructor(fields = {}) {
-    Object.assign(this, fields);
-  }
-
+  readonly gain: number;
+  readonly pan: number;
 }

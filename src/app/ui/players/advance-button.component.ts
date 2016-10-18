@@ -5,7 +5,7 @@ import {
   Input,
   Output
 } from '@angular/core';
-import { PlayerState } from '../../model/player-state.model';
+import { PlayerState, canPlayerAdvance, isPlayerPlayingLast } from '../../model/player-state.model';
 import { PlayerStats } from '../../model/player-stats.model';
 
 @Component({
@@ -20,13 +20,17 @@ export class AdvanceButtonComponent {
   @Output() advance = new EventEmitter();
 
   getState(): 'notStarted' | 'playing' | 'playingLast' {
-    if (this.playerState.isPlayingLast()) {
+    if (isPlayerPlayingLast(this.playerState)) {
       return 'playingLast';
     } else if (this.playerState.moduleIndex >= 0) {
       return 'playing';
     } else {
       return 'notStarted';
     }
+  }
+
+  canPlayerAdvance() {
+    return canPlayerAdvance(this.playerState, this.playerStats);
   }
 
 }

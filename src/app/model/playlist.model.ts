@@ -1,31 +1,25 @@
 import { List } from 'immutable';
 
-import { Module } from './module.model';
-import { PlaylistItem } from './playlist-item.model';
+import { Module, getModuleDuration } from './module.model';
+import { PlaylistItem, playlistItemFromNote } from './playlist-item.model';
 
-export class Playlist {
-  readonly items = List<PlaylistItem>();
-  readonly firstBeat = 0;
-  readonly lastBeat = 0;
-  readonly imperfectionDelay = 0;
+export interface Playlist {
+  readonly items: List<PlaylistItem>;
+  readonly firstBeat: number;
+  readonly lastBeat: number;
+  readonly imperfectionDelay: number;
   readonly fromModule: Module;
-
-  constructor(fields = {}) {
-    Object.assign(this, fields);
-  }
-
-  static fromModule(mod: Module, firstBeat: number) {
-    const items = <List<PlaylistItem>>mod.score
-      .map((note, idx) => PlaylistItem.fromNote(note, idx, mod.score, firstBeat, mod.hue))
-      .filter(itm => !!itm);
-    return new Playlist({
-      items,
-      firstBeat,
-      lastBeat: firstBeat + mod.getDuration(),
-      imperfectionDelay: -0.005 + Math.random() * 0.01,
-      fromModule: mod
-    });
-  }
-
 }
 
+export function playlistFromModule(mod: Module, firstBeat: number): Playlist {
+  const items = <List<PlaylistItem>>mod.score
+    .map((note, idx) => playlistItemFromNote(note, idx, mod.score, firstBeat, mod.hue))
+    .filter(itm => !!itm);
+  return {
+    items,
+    firstBeat,
+    lastBeat: firstBeat + getModuleDuration(mod),
+    imperfectionDelay: -0.005 + Math.random() * 0.01,
+    fromModule: mod
+  };
+}

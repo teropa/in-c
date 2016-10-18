@@ -1,6 +1,6 @@
 <button md-fab
         (click)="advance.next()"
-        [disabled]="!playerState.canAdvance(playerStats)"
+        [disabled]="!canPlayerAdvance()"
         [ngSwitch]="getState()">
   <md-icon *ngSwitchCase="'notStarted'" class="md-24" title="Start">play_arrow</md-icon>
   <md-icon *ngSwitchCase="'playing'" class="md-24" title="Advance">fast_forward</md-icon>

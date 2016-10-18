@@ -1,73 +1,64 @@
 import { List } from 'immutable';
 
 import { Module } from './module.model';
-import { PlayerState } from './player-state.model';
-import { PlayerStats } from './player-stats.model';
+import { PlayerState, advancePlayerState, assignScreensaverModuleToPlayer, getPlayerNowPlaying, initPlayerState, updatePlayerPlaylist } from './player-state.model';
+import { PlayerStats, updatePlayerStats } from './player-stats.model';
 import { Sound } from './sound.model';
 
-export class AppState {
-  readonly playing = false;
+export interface AppState {
+  readonly playing: boolean;
   readonly score: List<Module>;
-  readonly beat = 0;
+  readonly beat: number;
   readonly players: List<PlayerState>;
   readonly stats: PlayerStats;
   readonly nowPlaying: List<Sound>;
+}
 
-  constructor(fields = {}) {
-    Object.assign(this, fields);
-  }
+export function areAllFinished(state: AppState) {
+  return state.players.every(p => p.finished);
+}
 
-  areAllFinished() {
-    return this.players.every(p => p.finished);
-  }
+export function play(state: AppState): AppState {
+  return Object.assign({}, state, {
+    playing: true,
+    nowPlaying: List<Sound>(),
+    players: state.players.map(initPlayerState)
+  });
+}
 
-  play() {
-    return this.merge({
-      playing: true,
-      nowPlaying: List<Sound>(),
-      players: this.players.map(p => p.init())
-    });
-  }
+export function advancePlayer(state: AppState, instrument: string): AppState {
+  const playerIdx = state.players.findIndex(p => p.player.instrument === instrument);
+  const newPlayers = state.players.update(playerIdx, (p: PlayerState) => advancePlayerState(p, state.score, state.stats));
+  return Object.assign({}, state, {
+    players: newPlayers,
+    stats: updatePlayerStats(state.stats, newPlayers)
+  });
+}
 
-  advancePlayer(instrument: string) {
-    const playerIdx = this.players.findIndex(p => p.player.instrument === instrument);
-    const newPlayers = this.players.update(playerIdx, (p: PlayerState) => p.advance(this.score, this.stats));
-    return this.merge({
-      players: newPlayers,
-      stats: this.stats.update(newPlayers)
-    });
-  }
-
-  pulse(time: number, bpm: number) {
-    const nextBeat = this.beat + 1;
-    const updatedPlayerStates = this.players
-      .map(playerState => {
-        if (!this.playing) {
-          playerState = playerState.assignScreensaverModule(nextBeat, this.score.size);
-        }
-        return playerState.updatePlaylist(this.score, nextBeat, bpm)
-      });           
-    const nowPlaying = this.getNowPlaying(time, bpm);
-    return this.merge({
-      players: updatedPlayerStates,
-      nowPlaying,
-      beat: nextBeat
-    });
-  }
-
-  private getNowPlaying(time: number, bpm: number) {
-    return this.players.flatMap(playerState => {
-      if (playerState.playlist) {
-        return playerState.getNowPlaying(this.beat, time, bpm);
-      } else {
-        return List();
+export function pulse(state: AppState, time: number, bpm: number): AppState {
+  const nextBeat = state.beat + 1;
+  const updatedPlayerStates = state.players
+    .map(playerState => {
+      if (!state.playing) {
+        playerState = assignScreensaverModuleToPlayer(playerState, nextBeat, state.score.size);
       }
-    });
-  }
+      return updatePlayerPlaylist(playerState, state.score, nextBeat, bpm)
+    });           
+  const nowPlaying = getNowPlaying(state, time, bpm);
+  return Object.assign({}, state, {
+    players: updatedPlayerStates,
+    nowPlaying,
+    beat: nextBeat
+  });
+}
 
-  private merge(changes = {}) {
-    return new AppState(Object.assign({}, this, changes));
-  }
-
+export function getNowPlaying(state: AppState, time: number, bpm: number) {
+  return state.players.flatMap(playerState => {
+    if (playerState.playlist) {
+      return getPlayerNowPlaying(playerState, state.beat, time, bpm);
+    } else {
+      return List();
+    }
+  });
 }
 

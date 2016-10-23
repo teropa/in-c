@@ -1,28 +1,23 @@
 import { Injectable, Inject, NgZone, OnDestroy } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import { Effect } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
 import { AppState } from '../model/app-state.model';
 import { PLAY, PULSE } from '../core/actions';
 import { TimeService } from '../core/time.service';
-
-const MetronomeWorker = require('worker!./metronome.worker');
+import { Metronome } from './metronome';
 
 @Injectable()
 export class PulseService implements OnDestroy {
+  private metronome = new Metronome();
   private startTime: number;
-
-  private metronome = new MetronomeWorker();
-  private messages$ = Observable.fromEvent(this.metronome, 'message');
-
   private pulseCount = 1;
 
   @Effect({dispatch: false}) init$ = this.store$
     .take(1)
     .do(() => this.start());
   
-  @Effect() pulse$ = this.messages$
+  @Effect() pulse$ = this.metronome.tick$
     .concatMap(() => this.makePulses());
 
   constructor(@Inject('bpm') private bpm: number,
@@ -33,14 +28,11 @@ export class PulseService implements OnDestroy {
 
   start() {
     this.startTime = this.time.now();
-    this.metronome.postMessage({
-      command: 'start',
-      interval: this.getBeatInterval() * 1000
-    });
+    this.metronome.start(this.getBeatInterval() * 1000);
   }
 
   ngOnDestroy() {
-    this.metronome.terminate();
+    this.metronome.stop();
   }
 
   private makePulses() {

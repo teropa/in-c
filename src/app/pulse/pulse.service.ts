@@ -3,7 +3,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { Effect } from '@ngrx/effects';
 import { Store, Action } from '@ngrx/store';
 import { AppState } from '../model/app-state.model';
-import { PLAY, PULSE } from '../core/actions';
+import { pulse } from '../core/actions';
 import { TimeService } from '../core/time.service';
 import { Metronome } from './metronome';
 
@@ -39,7 +39,7 @@ export class PulseService implements OnDestroy {
     const pulses: Action[] = [];
     while (this.getNextPulseTime() - this.time.now() < this.getBeatInterval() * 2) {
       this.pulseCount++;
-      pulses.push({type: PULSE, payload: {time: this.getNextPulseTime(), bpm: this.bpm}});
+      pulses.push(pulse(this.getNextPulseTime(), this.bpm));
     }
     return pulses;
   }

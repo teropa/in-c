@@ -6,7 +6,7 @@ import {
 import { Store } from '@ngrx/store';
 import { List } from 'immutable';
 
-import { ADVANCE, PLAY } from './core/actions';
+import { advance, play } from './core/actions';
 import { AppState } from './model/app-state.model';
 import { AudioPlayerService } from './audio/audio-player.service';
 import { SamplesService } from './audio/samples.service';
@@ -53,11 +53,11 @@ export class AppComponent implements OnInit {
 
   play() {
     this.audioPlayer.enableAudioContext();
-    this.store.dispatch({type: PLAY});
+    this.store.dispatch(play());
   }
 
   advancePlayer(instrument: string) {
-    this.store.dispatch({type: ADVANCE, payload: instrument});
+    this.store.dispatch(advance(instrument));
   }
 
 }

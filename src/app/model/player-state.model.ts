@@ -75,7 +75,11 @@ export function getPlayerNowPlaying(ps: PlayerState, beat: number, time: number,
 }
 
 export function initPlayerState(ps: PlayerState): PlayerState {
-  return Object.assign({}, ps, {moduleIndex: -1, playlist: null});
+  return Object.assign({}, ps, {
+    moduleIndex: -1,
+    progress: 0,
+    playlist: null
+  });
 }
 
 export function assignScreensaverModuleToPlayer(ps: PlayerState, nextBeat: number, scoreSize: number): PlayerState {

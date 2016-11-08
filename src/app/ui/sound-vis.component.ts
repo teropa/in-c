@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   Input,
+  NgZone,
   OnChanges,
   OnDestroy,
   OnInit,
@@ -51,7 +52,9 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
   private animating = false;
   private cleanupInterval: number;
 
-  constructor(private time: TimeService, private domSanitizer: DomSanitizer) {
+  constructor(private time: TimeService,
+              private domSanitizer: DomSanitizer,
+              private ngZone: NgZone) {
   }
 
   @ViewChild('cnvs') set canvasRef(ref: ElementRef) {
@@ -61,8 +64,10 @@ export class SoundVisComponent implements OnChanges, OnInit, OnDestroy {
 
   ngOnInit() {
     this.animating = true;
-    this.draw();
-    this.cleanupInterval = window.setInterval(() => this.cleanUp(), CLEANUP_INTERVAL);
+    this.ngZone.runOutsideAngular(() => {
+      this.draw();
+      this.cleanupInterval = window.setInterval(() => this.cleanUp(), CLEANUP_INTERVAL);
+    });
   }
 
   ngOnDestroy() {

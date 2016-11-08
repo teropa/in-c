@@ -54,9 +54,9 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@ngrx/effects/-/effects-2.0.0.tgz#db4c3e1b69030229cb6b908477115b3479e4c4e0"
 
-"@ngrx/store-devtools@3.2.1":
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-3.2.1.tgz#2b5c3c438a1c6e0181251fadba0d071b2cbcf6c2"
+"@ngrx/store-devtools":
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/@ngrx/store-devtools/-/store-devtools-3.2.2.tgz#4409c18b8ae656a2cdfb097155855d5d5d81ab80"
 
 "@ngrx/store@2.2.1":
   version "2.2.1"
@@ -251,7 +251,18 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-autoprefixer@^6.3.1, autoprefixer@6.5.1:
+autoprefixer:
+  version "6.5.2"
+  resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-6.5.2.tgz#37cc910c5e1139ad341a006d5f6d441a380b742b"
+  dependencies:
+    browserslist "~1.4.0"
+    caniuse-db "^1.0.30000576"
+    normalize-range "^0.1.2"
+    num2fraction "^1.2.2"
+    postcss "^5.2.5"
+    postcss-value-parser "^3.2.3"
+
+autoprefixer@^6.3.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-6.5.1.tgz#ae759a5221e709f3da17c2d656230e67c43cbb75"
   dependencies:
@@ -505,6 +516,10 @@ camelcase@^3.0.0:
 caniuse-db@^1.0.30000539, caniuse-db@^1.0.30000554:
   version "1.0.30000559"
   resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000559.tgz#afbd68916dd23bfd549c26520c78631fb5e2e393"
+
+caniuse-db@^1.0.30000576:
+  version "1.0.30000578"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000578.tgz#fc4106bda3ca19df4bd9f35e491063f3d498ff31"
 
 caseless@~0.11.0:
   version "0.11.0"
@@ -1591,9 +1606,9 @@ html-minifier@^3.0.1, html-minifier@^3.1.0:
     relateurl "0.2.x"
     uglify-js "2.7.x"
 
-html-webpack-plugin@2.24.0:
-  version "2.24.0"
-  resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-2.24.0.tgz#53697cea79a9f3cd1f8c239ac71f949d5673cacb"
+html-webpack-plugin:
+  version "2.24.1"
+  resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-2.24.1.tgz#7f45fc678f66eac2d433f22336b4399da023b57e"
   dependencies:
     bluebird "^3.4.6"
     html-minifier "^3.1.0"
@@ -3691,9 +3706,9 @@ type-is@~1.6.13:
     media-typer "0.3.0"
     mime-types "~2.1.11"
 
-typescript@2.0.6:
-  version "2.0.6"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.0.6.tgz#5385499ac9811508c2c43e0ea07a1ddca435e111"
+typescript:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.0.8.tgz#c249f530890e0f992e71733b2e0554d792cb8970"
 
 uglify-js@~2.6.0:
   version "2.6.4"

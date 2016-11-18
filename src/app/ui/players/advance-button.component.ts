@@ -3,7 +3,8 @@ import {
   Component,
   EventEmitter,
   Input,
-  Output
+  Output,
+  HostListener
 } from '@angular/core';
 import { PlayerState, canPlayerAdvance, isPlayerPlayingLast } from '../../model/player-state.model';
 import { PlayerStats } from '../../model/player-stats.model';
@@ -19,6 +20,12 @@ export class AdvanceButtonComponent {
   @Input() playerStats: PlayerStats;
   @Output() advance = new EventEmitter();
 
+  @HostListener('document:keypress', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if(this.playerState.player.index + 49 === event.keyCode) {
+      this.advance.next();
+    }
+  }
   getState(): 'notStarted' | 'playing' | 'playingLast' {
     if (isPlayerPlayingLast(this.playerState)) {
       return 'playingLast';
